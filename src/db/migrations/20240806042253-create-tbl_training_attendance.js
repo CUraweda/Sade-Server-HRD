@@ -25,14 +25,6 @@ module.exports = {
         allowNull: true,
         type: Sequelize.TEXT
       },
-      longitude: {
-        allowNull: true,
-        type: Sequelize.STRING
-      },
-      latitude: {
-        allowNull: true,
-        type: Sequelize.STRING
-      },
       description: {
         allowNull: true,
         type: Sequelize.TEXT 

@@ -41,14 +41,6 @@ module.exports = {
         allowNull: true,
         type: Sequelize.STRING
       },
-      longitude: {
-        allowNull: true,
-        type: Sequelize.STRING
-      },
-      latitude: {
-        allowNull: true,
-        type: Sequelize.STRING
-      },
       start_date: {
         allowNull: true,
         type: Sequelize.DATE
