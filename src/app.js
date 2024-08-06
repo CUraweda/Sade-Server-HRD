@@ -1,8 +1,10 @@
 const express = require("express");
 const cors = require("cors");
+const passport = require("passport");
 const httpStatus = require("http-status");
 const routes = require("./route");
 const { errorConverter } = require("./middlewares/error");
+const { jwtStrategy } = require('./config/passport')
 const ApiError = require("./helper/ApiError");
 const path = require("path")
 
@@ -16,11 +18,16 @@ app.options("*", cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+// jwt authentication
+app.use(passport.initialize());
+passport.use("jwt", jwtStrategy);
+
+
 app.get("/", async (req, res) => {
   res.status(200).send(`Congratulations! API is working in port ${process.env.PORT}`);
 });
-app.use("/stg-server2/api", routes);
-app.use("/stg-server2/public", express.static(path.join(__dirname, '../public')));
+app.use("/stg-server1/api", routes);
+app.use("/stg-server1/public", express.static(path.join(__dirname, '../public')));
 
 app.use((req, res, next) => {
   next(new ApiError(httpStatus.NOT_FOUND, "Not found"));
