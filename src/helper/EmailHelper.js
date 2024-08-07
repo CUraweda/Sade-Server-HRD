@@ -1,7 +1,6 @@
 /* eslint-disable class-methods-use-this */
 
 const config = require("../config/config");
-const logger = require("../config/logger");
 const nodemailer = require("nodemailer");
 const handlebars = require("handlebars");
 const fs = require("fs");
@@ -70,7 +69,6 @@ class EmailHelper {
       });
     } catch (err) {
       console.log(err);
-      logger.error(err);
       return false;
     }
   }
