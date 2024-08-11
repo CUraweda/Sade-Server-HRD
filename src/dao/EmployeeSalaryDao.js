@@ -1,5 +1,6 @@
 const SuperDao = require("./SuperDao");
 const models = require("../models");
+const { Op } = require("sequelize");
 
 const EmployeeSalary = models.employeesalary;
 
@@ -9,14 +10,32 @@ class EmployeeSalaryDao extends SuperDao {
     }
 
     async getCount(filter) {
+        const { search } = filter
         return EmployeeSalary.count({
-            where: filter
+            where: {
+                [Op.or]: [
+                    {
+                        fixed_salary: {
+                            [Op.like]: "%" + search + "%"
+                        }
+                    }
+                ]
+            }
         });
     }
 
     async getPage(offset, limit, filter) {
+        const { search } = filter
         return EmployeeSalary.findAll({
-            where: filter,
+            where: {
+                [Op.or]: [
+                    {
+                        fixed_salary: {
+                            [Op.like]: "%" + search + "%"
+                        }
+                    }
+                ]
+            },
             offset: offset,
             limit: limit,
             order: [["id", "DESC"]],

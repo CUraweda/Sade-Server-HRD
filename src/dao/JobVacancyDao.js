@@ -32,7 +32,7 @@ class JobVacancyDao extends SuperDao {
                 [Op.or]: [
                     {
                         title: { [Op.like]: "%" + search + "%" },
-                    },
+                },
                     {
                         sub_title: { [Op.like]: "%" + search + "%" },
                     },

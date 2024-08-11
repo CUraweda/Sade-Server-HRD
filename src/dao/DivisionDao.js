@@ -31,10 +31,10 @@ class DivisionDao extends SuperDao {
             where: {
                 [Op.or]: [
                     {
-                        full_name: { [Op.like]: "%" + search + "%" },
+                        name: { [Op.like]: "%" + search + "%" },
                     },
                     {
-                        email: { [Op.like]: "%" + search + "%" },
+                        color: { [Op.like]: "%" + search + "%" },
                     },
                 ],
             },

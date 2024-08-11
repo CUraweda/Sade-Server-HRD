@@ -1,9 +1,9 @@
 const httpStatus = require("http-status");
-const EmployeeFormAnnouncementService = require("../service/EmployeeFormAnnouncementService");
+const FormAnnouncementService = require("../service/FormAnnouncementService");
 
 class EmployeeFormAnnouncementController {
     constructor() {
-        this.employeeFormAnnouncementService = new EmployeeFormAnnouncementService();
+        this.formAnnouncementService = new FormAnnouncementService();
     }
 
     getAll = async (req, res) => {
@@ -13,7 +13,7 @@ class EmployeeFormAnnouncementController {
             const { search } = req.query;
 
             const offset = limit * page;
-            const resData = await this.employeeFormAnnouncementService.showPage(
+            const resData = await this.formAnnouncementService.showPage(
                 page,
                 limit,
                 offset,
@@ -31,7 +31,7 @@ class EmployeeFormAnnouncementController {
         try {
             const id = +req.params.id;
             if (!id) res.status(httpStatus["422_CLASS"]).send("Tolong sertakan ID");
-            const resData = await this.employeeFormAnnouncementService.showOne(id);
+            const resData = await this.formAnnouncementService.showOne(id);
 
             res.status(resData.statusCode).send(resData.response);
         } catch (e) {
@@ -42,7 +42,7 @@ class EmployeeFormAnnouncementController {
 
     createOne = async (req, res) => {
         try {
-            const resData = await this.employeeFormAnnouncementService.create(req.body);
+            const resData = await this.formAnnouncementService.create(req.body);
 
             res.status(resData.statusCode).send(resData.response);
         } catch (e) {
@@ -55,7 +55,7 @@ class EmployeeFormAnnouncementController {
         try {
             const id = +req.params.id;
             if (!id) res.status(httpStatus["422_CLASS"]).send("Tolong sertakan ID");
-            const resData = await this.employeeFormAnnouncementService.update(id, req.body);
+            const resData = await this.formAnnouncementService.update(id, req.body);
 
             res.status(resData.statusCode).send(resData.response);
         } catch (e) {
@@ -68,7 +68,7 @@ class EmployeeFormAnnouncementController {
         try {
             const id = +req.params.id;
             if (!id) res.status(httpStatus["422_CLASS"]).send("Tolong sertakan ID");
-            const resData = await this.employeeFormAnnouncementService.delete(id);
+            const resData = await this.formAnnouncementService.delete(id);
 
             res.status(resData.statusCode).send(resData.response);
         } catch (e) {

@@ -39,6 +39,15 @@ class TrainingAttendanceController {
             res.status(httpStatus.BAD_GATEWAY).send(e);
         }
     };
+    
+    createByToken = async (req, res) => {
+        try{
+            console.log(req.user)
+        }catch(e){
+            console.log(e);
+            res.status(httpStatus.BAD_GATEWAY).send(e);
+        }
+    }
 
     createOne = async (req, res) => {
         try {

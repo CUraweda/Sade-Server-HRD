@@ -10,14 +10,11 @@ class FormPositionDao extends SuperDao {
     }
 
     async getCount(filter) {
-        return FormPosition.count({
-            where: filter
-        });
+        return FormPosition.count({});
     }
 
     async getPage(offset, limit, filter) {
         return FormPosition.findAll({
-            where: filter,
             offset: offset,
             limit: limit,
             order: [["id", "DESC"]],

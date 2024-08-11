@@ -16,7 +16,7 @@ class DivisionService {
 
     update = async (id, body) => {
         const dataExist = await this.divisionDao.findById(id)
-        if (dataExist) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Division Tidak Ada");
+        if (!dataExist) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Division Tidak Ada");
 
         const divisionData = await this.divisionDao.updateWhere(body, { id })
         if (!divisionData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Division Gagal diperbaharui");

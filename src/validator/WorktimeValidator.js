@@ -5,17 +5,12 @@ const ApiError = require("../helper/ApiError");
 class WorktimeValidator {
     async createUpdateValidator(req, res, next) {
         const schema = Joi.object({
-            employee_id: Joi.number().integer().required(),
-            approver_id: Joi.number().integer().required(),
-            type: Joi.string().required(),
-            status: Joi.string().required(),
-            description: Joi.string().optional(),
-            is_approved: Joi.boolean().required(),
-            start_date: Joi.date().required(),
-            end_date: Joi.date().required(),
             division_id: Joi.number().integer().required(),
-            weekday_id: Joi.number().integer().required()
-        });
+            weekday_id: Joi.number().integer().required(),
+            type: Joi.string().valid('MASUK', 'KELUAR').required(),
+            start_time: Joi.string().pattern(/^([01]\d|2[0-3]):([0-5]\d)(:([0-5]\d))?$/).optional(),
+            end_time: Joi.string().pattern(/^([01]\d|2[0-3]):([0-5]\d)(:([0-5]\d))?$/).optional()
+        });        
 
         const options = { abortEarly: false, allowUnknown: true, stripUnknown: true };
         const { error, value } = schema.validate(req.body, options);

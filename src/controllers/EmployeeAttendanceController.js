@@ -40,6 +40,16 @@ class EmployeeAttendanceController {
         }
     };
 
+    createByToken = async (req, res) => {
+        try {
+            const { division_id } = req.user
+            // const resData = await this.employeeAttendanceService
+        } catch (e) {
+            console.log(e);
+            res.status(httpStatus.BAD_GATEWAY).send(e);
+        }
+    }
+
     createOne = async (req, res) => {
         try {
             const resData = await this.employeeAttendanceService.create(req.body);

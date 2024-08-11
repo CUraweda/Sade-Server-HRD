@@ -30,7 +30,7 @@ class DivisionController {
     try {
       const id = +req.params.id;
       if (!id) res.status(httpStatus["422_CLASS"]).send("Tolong sertakan ID")
-      const resData = await this.divisionService.showUser(id);
+      const resData = await this.divisionService.showOne(id);
 
       res.status(resData.statusCode).send(resData.response);
     } catch (e) {
@@ -54,7 +54,7 @@ class DivisionController {
     try {
       const id = +req.params.id;
       if (!id) res.status(httpStatus["422_CLASS"]).send("Tolong sertakan ID")
-      const resData = await this.divisionService.updateUser(id, req.body);
+      const resData = await this.divisionService.update(id, req.body);
 
       res.status(resData.statusCode).send(resData.response);
     } catch (e) {
@@ -67,7 +67,7 @@ class DivisionController {
     try {
       const id = +req.params.id;
       if (!id) res.status(httpStatus["422_CLASS"]).send("Tolong sertakan ID")
-      const resData = await this.divisionService.deleteUser(id);
+      const resData = await this.divisionService.delete(id);
 
       res.status(resData.statusCode).send(resData.response);
     } catch (e) {

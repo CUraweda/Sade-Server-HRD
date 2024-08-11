@@ -7,9 +7,7 @@ class TrainingAttendanceValidator {
         const schema = Joi.object({
             training_id: Joi.number().integer().required(),
             title: Joi.string().required(),
-            img_path: Joi.string(),
-            longitude: Joi.string(),
-            latitude: Joi.string(),
+            files: Joi.any(),
             description: Joi.string(),
             day_id: Joi.number().integer().required()
         });

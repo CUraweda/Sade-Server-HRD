@@ -11,8 +11,6 @@ class TrainingValidator {
             purpose: Joi.string().required(),
             status: Joi.string().required(),
             location: Joi.string().required(),
-            longitude: Joi.string().required(),
-            latitude: Joi.string().required(),
             start_date: Joi.date().required(),
             end_date: Joi.date().required()
         });

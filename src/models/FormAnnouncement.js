@@ -2,7 +2,7 @@
 const { Model } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
-  class EmployeeFormAnnouncement extends Model {
+  class FormAnnouncementDao extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   
-  EmployeeFormAnnouncement.init(
+  FormAnnouncementDao.init(
     {
         employee_id: DataTypes.INTEGER,
         approver_id: DataTypes.INTEGER        
@@ -29,5 +29,5 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
   
-  return EmployeeFormAnnouncement;
+  return FormAnnouncementDao;
 };

@@ -2,7 +2,7 @@ const express = require('express')
 const applicantAcademicRoute = require("./applicantAcademicRoute");
 const applicantAppreciationRoute = require("./applicantAppreciationRoute");
 const applicantAppreciationAttachmentRoute = require("./applicantAppreciationAttachmentRoute");
-const applicantJobRoute = require("./applicantFormRoute");
+const applicantJobRoute = require("./applicantJobRoute");
 const applicantSkillRoute = require("./applicantSkillRoute");
 const applicantUnformalRoute = require("./applicantUnformalRoute");
 const applicantFormRoute = require("./applicantFormRoute");
@@ -15,12 +15,16 @@ const employeePositionRoute = require("./employeePositionRoute");
 const employeeRoute = require("./employeeRoute");
 const employeeSalaryRoute = require("./employeeSalaryRoute");
 const formPositionRoute = require("./formPositionRoute");
+const employeeAttendanceRoute = require('./employeeAttendanceRoute')
 const jobVacancyRoute = require("./jobVacancyRoute");
 const jobVacancyDetailRoute = require("./jobVacancyDetailRoute");
 const trainingAttendanceRoute = require("./trainingAttendanceRoute");
 const trainingRoute = require("./trainingRoute");
 const trainingSuggestionRoute = require("./trainingSuggestionRoute");
+const formAnnouncementRoute = require('./formAnnouncementRoute')
+const worktimeRoute = require('./worktimeRoute')
 const router = express.Router();
+
 
 const defaultRoutes = [
 
@@ -49,7 +53,7 @@ const defaultRoutes = [
     route: applicantUnformalRoute
   },
   {
-    path: "/application-form", 
+    path: "/applicant-form", 
     route: applicantFormRoute
   },
   {
@@ -81,6 +85,10 @@ const defaultRoutes = [
     route: employeeRoute
   },
   {
+    path: "/employee-attendance", 
+    route: employeeAttendanceRoute
+  },
+  {
     path: "/employee-salary", 
     route: employeeSalaryRoute
   },
@@ -89,6 +97,10 @@ const defaultRoutes = [
     route: formPositionRoute
   },
   {
+    path: "/form-announcement", 
+    route: formAnnouncementRoute
+  },
+    {
     path: "/job-vacancy-detail", 
     route: jobVacancyDetailRoute
   },
@@ -103,6 +115,10 @@ const defaultRoutes = [
   {
     path: "/training", 
     route: trainingRoute
+  },
+  {
+    path: "/worktime", 
+    route: worktimeRoute
   },
   {
     path: "/training-suggestion", 

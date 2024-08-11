@@ -16,8 +16,17 @@ module.exports = (sequelize, DataTypes) => {
       Employees.hasMany(models.formsubject, {
         foreignKey: "employee_id",
       });
+      Employees.hasOne(models.headmaster, {
+        foreignKey: "employee_id",
+      });
+      Employees.hasMany(models.formextra, {
+        foreignKey: "employee_id",
+      });
       Employees.belongsTo(models.user, {
         foreignKey: "user_id",
+      });
+      Employees.belongsTo(models.division, {
+        foreignKey: "division_id",
       });
     }
   }
@@ -26,6 +35,7 @@ module.exports = (sequelize, DataTypes) => {
       user_id: DataTypes.INTEGER,
       employee_no: DataTypes.STRING,
       full_name: DataTypes.STRING,
+      nik: DataTypes.STRING,
     gender: DataTypes.STRING,
       pob: DataTypes.STRING,
       dob: DataTypes.DATE,
@@ -44,6 +54,7 @@ module.exports = (sequelize, DataTypes) => {
       grade: DataTypes.STRING,
       email: DataTypes.STRING,
       user_id: DataTypes.INTEGER,
+      division_id: DataTypes.INTEGER,
     },
     {
       sequelize,

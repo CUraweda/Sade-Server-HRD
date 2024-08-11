@@ -2,16 +2,16 @@ const SuperDao = require("./SuperDao");
 const models = require("../models");
 const { Op } = require("sequelize");
 
-const EmployeeFormAnnouncement = models.formannouncement;
+const FormAnnouncement = models.formannouncement;
 
-class EmployeeFormAnnouncementDao extends SuperDao {
+class FormAnnouncementDao extends SuperDao {
     constructor() {
-        super(EmployeeFormAnnouncement);
+        super(FormAnnouncement);
     }
 
     async getCount(filter) {
         const { search } = filter;
-        return EmployeeFormAnnouncement.count({
+        return FormAnnouncement.count({
             where: {
                 [Op.or]: [
                     {
@@ -27,7 +27,7 @@ class EmployeeFormAnnouncementDao extends SuperDao {
 
     async getPage(offset, limit, filter) {
         const { search } = filter;
-        return EmployeeFormAnnouncement.findAll({
+        return FormAnnouncement.findAll({
             where: {
                 [Op.or]: [
                     {
@@ -45,4 +45,4 @@ class EmployeeFormAnnouncementDao extends SuperDao {
     }
 }
 
-module.exports = EmployeeFormAnnouncementDao;
+module.exports = FormAnnouncementDao;

@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
          */
         static associate(models) {
             // Define associations here
-            this.belongsTo(models.division, { foreignKey: 'divison_id' });
+            this.belongsTo(models.division, { foreignKey: 'division_id' });
             this.hasMany(models.vacancydetail, { foreignKey: "vacancy_id" })
             this.hasMany(models.applicantform, { foreignKey: "vacancy_id" })
         }
