@@ -24,8 +24,6 @@ module.exports = (sequelize, DataTypes) => {
             purpose: DataTypes.TEXT,
             status: DataTypes.STRING,
             location: DataTypes.STRING,
-            longitude: DataTypes.STRING,
-            latitude: DataTypes.STRING,
             start_date: DataTypes.DATE,
             end_date: DataTypes.DATE
         },

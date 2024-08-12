@@ -20,8 +20,6 @@ module.exports = (sequelize, DataTypes) => {
         training_id: DataTypes.INTEGER,
         title: DataTypes.STRING,
         img_path: DataTypes.TEXT,
-        longitude: DataTypes.STRING,
-        latitude: DataTypes.STRING,
         description: DataTypes.TEXT,
         day_id: DataTypes.INTEGER        
     },

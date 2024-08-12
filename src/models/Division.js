@@ -17,6 +17,7 @@ module.exports = (sequelize, DataTypes) => {
             tableName: 'ref_division',
             modelName: 'division',
             underscored: true,
+            timestamps: false
         }
     );
     return Division;

@@ -5,7 +5,7 @@ const applicantAppreciationAttachmentRoute = require("./applicantAppreciationAtt
 const applicantJobRoute = require("./applicantJobRoute");
 const applicantSkillRoute = require("./applicantSkillRoute");
 const applicantUnformalRoute = require("./applicantUnformalRoute");
-const applicationFormRoute = require("./applicationFormRoute");
+const applicantFormRoute = require("./applicantFormRoute");
 const billTypeRoute = require("./billTypeRoute");
 const divisionRoute = require("./divisionRoute");
 const employeeAccountRoute = require("./employeeAccountRoute");
@@ -15,12 +15,17 @@ const employeePositionRoute = require("./employeePositionRoute");
 const employeeRoute = require("./employeeRoute");
 const employeeSalaryRoute = require("./employeeSalaryRoute");
 const formPositionRoute = require("./formPositionRoute");
-const jobVacancyDetailRoute = require("./jobVacancyDetailRoute");
+const employeeAttendanceRoute = require('./employeeAttendanceRoute')
 const jobVacancyRoute = require("./jobVacancyRoute");
+const jobVacancyDetailRoute = require("./jobVacancyDetailRoute");
 const trainingAttendanceRoute = require("./trainingAttendanceRoute");
 const trainingRoute = require("./trainingRoute");
 const trainingSuggestionRoute = require("./trainingSuggestionRoute");
+const formAnnouncementRoute = require('./formAnnouncementRoute')
+const worktimeRoute = require('./worktimeRoute')
+const employeeVacationRoute = require('./employeeVacationRoute')
 const router = express.Router();
+
 
 const defaultRoutes = [
 
@@ -49,16 +54,20 @@ const defaultRoutes = [
     route: applicantUnformalRoute
   },
   {
-    path: "/application-form", 
-    route: applicationFormRoute
+    path: "/applicant-form", 
+    route: applicantFormRoute
   },
   {
     path: "/bill-type", 
     route: billTypeRoute
   },
   {
-    path: "/division", route: 
-    divisionRoute
+    path: "/division", 
+    route: divisionRoute
+  },
+  {
+    path: "/employee-vacation", 
+    route: employeeVacationRoute
   },
   {
     path: "/employee-account", 
@@ -69,34 +78,56 @@ const defaultRoutes = [
     route: employeeAnnouncementRoute
   },
   {
-    path: "/employee-bill", route: employeeBillRoute
+    path: "/employee-bill", 
+    route: employeeBillRoute
   },
   {
-    path: "/employee-position", route: employeePositionRoute
+    path: "/employee-position", 
+    route: employeePositionRoute
   },
   {
-    path: "/employee", route: employeeRoute
+    path: "/employee", 
+    route: employeeRoute
   },
   {
-    path: "/employee-salary", route: employeeSalaryRoute
+    path: "/employee-attendance", 
+    route: employeeAttendanceRoute
   },
   {
-    path: "/form-position", route: formPositionRoute
+    path: "/employee-salary", 
+    route: employeeSalaryRoute
   },
   {
-    path: "/job-vacancy-detail", route: jobVacancyDetailRoute
+    path: "/form-position", 
+    route: formPositionRoute
   },
   {
-    path: "/job-vacancy", route: jobVacancyRoute
+    path: "/form-announcement", 
+    route: formAnnouncementRoute
+  },
+    {
+    path: "/job-vacancy-detail", 
+    route: jobVacancyDetailRoute
   },
   {
-    path: "/training-attendance", route: trainingAttendanceRoute
+    path: "/job-vacancy", 
+    route: jobVacancyRoute
   },
   {
-    path: "/training", route: trainingRoute
+    path: "/training-attendance", 
+    route: trainingAttendanceRoute
   },
   {
-    path: "/training-suggestion", route: trainingSuggestionRoute
+    path: "/training", 
+    route: trainingRoute
+  },
+  {
+    path: "/worktime", 
+    route: worktimeRoute
+  },
+  {
+    path: "/training-suggestion", 
+    route: trainingSuggestionRoute
   }
 ];
 

@@ -5,9 +5,7 @@ const ApiError = require("../helper/ApiError");
 const verifyCallback = (req, res, resolve, reject, roles) => {
   return async (err, user, info) => {
     if (err || info || !user) {
-      return reject(
-        new ApiError(httpStatus.UNAUTHORIZED, "Please authenticate")
-      );
+      return reject(new ApiError(httpStatus.UNAUTHORIZED, "Please authenticate"));
     } else if (!roles.includes(user.role_id)) {
       return reject(new ApiError(httpStatus.UNAUTHORIZED, "Unauthorized"));
     }

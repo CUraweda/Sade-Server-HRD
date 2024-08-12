@@ -3,7 +3,7 @@ const cors = require("cors");
 const passport = require("passport");
 const httpStatus = require("http-status");
 const routes = require("./route");
-const { errorConverter } = require("./middlewares/error");
+const { errorConverter, errorHandler } = require("./middlewares/error");
 const { jwtStrategy } = require('./config/passport')
 const ApiError = require("./helper/ApiError");
 const path = require("path")
@@ -29,10 +29,9 @@ app.get("/", async (req, res) => {
 app.use("/stg-server1/api", routes);
 app.use("/stg-server1/public", express.static(path.join(__dirname, '../public')));
 
-app.use((req, res, next) => {
-  next(new ApiError(httpStatus.NOT_FOUND, "Not found"));
-});
+app.use((req, res, next) => { next(new ApiError(httpStatus.NOT_FOUND, "Not found")); });
 app.use(errorConverter);
+app.use(errorHandler);
 const db = require("./models");
 
 // Uncomment this line if you want to sync database model

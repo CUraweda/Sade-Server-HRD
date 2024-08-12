@@ -22,6 +22,7 @@ module.exports = (sequelize, DataTypes) => {
             sequelize,
             tableName: 'ref_bill_type',
             modelName: 'billtype',
+            timestamps: false
         }
     );
 
