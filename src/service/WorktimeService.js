@@ -14,6 +14,13 @@ class WorktimeService {
         return responseHandler.returnSuccess(httpStatus.CREATED, "Data Worktime Berhasil dibuat", worktimeData);
     };
 
+    upsertUID = async (body = { uid: undefined }) => {
+        const worktimeData = await this.worktimeDao.updateOrCreate(body, { uid: body.uid })
+        if (!worktimeData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Worktime Gagal dibuat")
+
+        return responseHandler.returnSuccess(httpStatus.CREATED, "Data Worktime Berhasil dibuat", worktimeData)
+    }
+
     update = async (id, body) => {
         const dataExist = await this.worktimeDao.findById(id);
         if (!dataExist) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Worktime Tidak Ada");
@@ -52,6 +59,12 @@ class WorktimeService {
 
         return responseHandler.returnSuccess(httpStatus.OK, "Data Worktime Ditemukan", worktimeData);
     };
+
+    showByUID = async (uid) => {
+        const worktimeData = await this.worktimeDao.getByUID(uid)
+        if (!worktimeData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Worktime Tidak Ditemukan")
+        return responseHandler.returnSuccess(httpStatus.OK, "Data Worktime Ditemukan", worktimeData)
+    }
 }
 
 module.exports = WorktimeService;

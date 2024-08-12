@@ -34,7 +34,7 @@ class WorktimeDao extends SuperDao {
                     },
                     {
                         end_time: { [Op.like]: "%" + search + "%" },
-                    },
+                    }
                 ],
             },
             include: [
@@ -90,6 +90,10 @@ class WorktimeDao extends SuperDao {
             limit: limit,
             order: [["id", "DESC"]],
         });
+    }
+
+    getByUID(uid){
+        return Worktime.findOne({ where: { uid } })
     }
 }
 
