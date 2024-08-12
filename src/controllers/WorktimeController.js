@@ -51,6 +51,19 @@ class WorktimeController {
         }
     };
 
+    upsertOne = async (req, res) => {
+        const { type, division_id } = req.body
+        try {
+            req.body.uid = `${type.toUpperCase()}-${division_id}`
+            const resData = await this.worktimeService.upsertUID(req.body)
+
+            res.status(resData.statusCode).send(resData.response)
+        } catch (e) {
+            console.log(e)
+            res.status(httpStatus.BAD_GATEWAY).send(e);
+        }
+    }
+
     update = async (req, res) => {
         try {
             const id = +req.params.id;
