@@ -3,6 +3,8 @@ const models = require("../models");
 const { Op } = require("sequelize");
 
 const JobVacancy = models.jobvacancy;
+const ApplicantForm = models.applicantform
+const User = models.user
 
 class JobVacancyDao extends SuperDao {
     constructor() {
@@ -40,6 +42,16 @@ class JobVacancyDao extends SuperDao {
                     },
                 ],
             },
+            include: [
+                {
+                    model: ApplicantForm,
+                    required: false,
+                    include: {
+                        model: User,
+                        required: false
+                    }
+                }
+            ],
             offset: offset,
             limit: limit,
             order: [["id", "DESC"]],

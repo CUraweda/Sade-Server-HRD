@@ -27,6 +27,11 @@ router.post(
     applicantFormController.createOne
 )
 
+router.post(
+    "/send",
+    applicantFormValidator.sendFormValidator,
+)
+
 router.put(
     "/update/:id",
     applicantFormValidator.createUpdateValidator,

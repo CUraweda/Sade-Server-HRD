@@ -3,6 +3,10 @@ const models = require("../models");
 const { Op } = require("sequelize");
 
 const EmployeeAttendance = models.employeeattendance;
+const Division = models.division
+const Employee = models.employees
+const Worktime = models.worktime
+
 
 class EmployeeAttendanceDao extends SuperDao {
     constructor() {
@@ -64,6 +68,22 @@ class EmployeeAttendanceDao extends SuperDao {
                     },
                 ],
             },
+            include: [
+                {
+                    model: Worktime,
+                    required: false
+                },
+                {
+                    model: Employee,
+                    required: false,
+                    include: [
+                        {
+                            model: Division,
+                            required: false
+                        }
+                    ]
+                },
+            ],
             offset: offset,
             limit: limit,
             order: [["id", "DESC"]],

@@ -2,6 +2,7 @@ const util = require("util");
 const multer = require("multer");
 const path = require("node:path");
 
+class 
 const fs = require("fs");
 
 const dir = "./files/achievements/";
