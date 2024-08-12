@@ -10,7 +10,8 @@ class BillTypeDao extends SuperDao {
     }
 
     async getCount(filter) {
-        const { search } = filter;
+         let { search } = filter
+        if(!search) search = ""
         return BillType.count({
             where: {
                 [Op.or]: [
@@ -22,7 +23,8 @@ class BillTypeDao extends SuperDao {
     }
 
     async getPage(offset, limit, filter) {
-        const { search } = filter;
+         let { search } = filter
+        if(!search) search = ""
         return BillType.findAll({
             where: {
                 [Op.or]: [

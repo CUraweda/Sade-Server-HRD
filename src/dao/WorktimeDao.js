@@ -12,7 +12,8 @@ class WorktimeDao extends SuperDao {
     }
 
     async getCount(filter) {
-        const { search } = filter;
+         let { search } = filter
+        if(!search) search = ""
         return Worktime.count({
             where: {
                 [Op.or]: [
@@ -50,7 +51,8 @@ class WorktimeDao extends SuperDao {
     }
 
     async getPage(offset, limit, filter) {
-        const { search } = filter;
+         let { search } = filter
+        if(!search) search = ""
         return Worktime.findAll({
             where: {
                 [Op.or]: [

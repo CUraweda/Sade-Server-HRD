@@ -10,7 +10,8 @@ class EmployeeAttachmentDao extends SuperDao {
     }
 
     async getCount(filter) {
-        const { search } = filter;
+        let { search } = filter
+        if (!search) search = ""
         return EmployeeAttachment.count({
             where: {
                 [Op.or]: [
@@ -32,7 +33,8 @@ class EmployeeAttachmentDao extends SuperDao {
     }
 
     async getPage(offset, limit, filter) {
-        const { search } = filter;
+        let { search } = filter
+        if (!search) search = ""
         return EmployeeAttachment.findAll({
             where: {
                 [Op.or]: [

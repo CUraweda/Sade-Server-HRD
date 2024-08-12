@@ -23,6 +23,7 @@ const trainingRoute = require("./trainingRoute");
 const trainingSuggestionRoute = require("./trainingSuggestionRoute");
 const formAnnouncementRoute = require('./formAnnouncementRoute')
 const worktimeRoute = require('./worktimeRoute')
+const employeeVacationRoute = require('./employeeVacationRoute')
 const router = express.Router();
 
 
@@ -61,8 +62,12 @@ const defaultRoutes = [
     route: billTypeRoute
   },
   {
-    path: "/division", route: 
-    divisionRoute
+    path: "/division", 
+    route: divisionRoute
+  },
+  {
+    path: "/employee-vacation", 
+    route: employeeVacationRoute
   },
   {
     path: "/employee-account", 

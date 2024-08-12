@@ -10,7 +10,8 @@ class ApplicantAppreciationDao extends SuperDao {
     }
 
     async getCount(filter) {
-        const { search } = filter;
+        let { search } = filter
+        if(!search) search = ""      
         return ApplicantAppreciation.count({
             where: {
                 [Op.or]: [
@@ -23,7 +24,8 @@ class ApplicantAppreciationDao extends SuperDao {
     }
 
     async getPage(offset, limit, filter) {
-        const { search } = filter;
+        let { search } = filter
+        if(!search) search = ""      
         return ApplicantAppreciation.findAll({
             where: {
                 [Op.or]: [

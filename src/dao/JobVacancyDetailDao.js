@@ -10,7 +10,8 @@ class JobVacancyDetailDao extends SuperDao {
     }
 
     async getCount(filter) {
-        const { search } = filter;
+         let { search } = filter
+        if(!search) search = ""
         return JobVacancyDetail.count({
             where: {
                 [Op.or]: [
@@ -26,7 +27,8 @@ class JobVacancyDetailDao extends SuperDao {
     }
 
     async getPage(offset, limit, filter) {
-        const { search } = filter;
+         let { search } = filter
+        if(!search) search = ""
         return JobVacancyDetail.findAll({
             where: {
                 [Op.or]: [

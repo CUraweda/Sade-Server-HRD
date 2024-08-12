@@ -10,7 +10,8 @@ class EmployeeVacationDao extends SuperDao {
     }
 
     async getCount(filter) {
-        const { search } = filter;
+         let { search } = filter
+        if(!search) search = ""
         return EmployeeVacation.count({
             where: {
                 [Op.or]: [
@@ -35,7 +36,8 @@ class EmployeeVacationDao extends SuperDao {
     }
 
     async getPage(offset, limit, filter) {
-        const { search } = filter;
+         let { search } = filter
+        if(!search) search = ""
         return EmployeeVacation.findAll({
             where: {
                 [Op.or]: [

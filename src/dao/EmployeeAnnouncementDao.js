@@ -10,7 +10,8 @@ class EmployeeAnnouncementDao extends SuperDao {
     }
 
     async getCount(filter) {
-        const { search } = filter;
+        let { search } = filter
+        if (!search) search = ""
         return EmployeeAnnouncement.count({
             where: {
                 [Op.or]: [
@@ -23,7 +24,8 @@ class EmployeeAnnouncementDao extends SuperDao {
     }
 
     async getPage(offset, limit, filter) {
-        const { search } = filter;
+         let { search } = filter
+        if(!search) search = ""
         return EmployeeAnnouncement.findAll({
             where: {
                 [Op.or]: [
