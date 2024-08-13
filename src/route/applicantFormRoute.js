@@ -22,6 +22,11 @@ router.get(
     applicantFormController.getAll
 )
 router.get(
+    "/by-vacancy/:id",
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    applicantFormController.getByVacancy
+)
+router.get(
     "/:id",
     auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
     applicantFormController.getOne
@@ -36,10 +41,10 @@ router.post(
 
 router.post(
     "/send",
+    uploadMiddleware.uploadFileMulti("files[]"),
     applicantFormValidator.sendFormValidator,
-    uploadMiddleware.uploadFileMulti("files"),
     auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
-    applicantFormController.createOne
+    applicantFormController.sendData
 )
 
 router.put(

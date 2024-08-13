@@ -27,13 +27,26 @@ class ApplicantFormController {
             const id = +req.params.id;
             if (!id) res.status(httpStatus["422_CLASS"]).send("Please provide an ID");
             const resData = await this.applicantFormService.showOne(id);
-
+            
             res.status(resData.statusCode).send(resData.response);
         } catch (e) {
             console.log(e);
             res.status(httpStatus.BAD_GATEWAY).send(e);
         }
     };
+    
+    getByVacancy = async (req, res) => {
+        try{
+            const id = +req.params.id;
+            if (!id) res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Tolong Sertakan ID");
+            const resData = await this.applicantFormService.showByVacancy(id)
+
+            res.status(resData.statusCode).send(resData.response);
+        }catch(e){
+            console.log(e);
+            res.status(httpStatus.BAD_GATEWAY).send(e);
+        }
+    }
 
     createOne = async (req, res) => {
         try {

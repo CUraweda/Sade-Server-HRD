@@ -1,6 +1,7 @@
 const Joi = require("joi");
 const httpStatus = require("http-status");
 const ApiError = require("../helper/ApiError");
+const { reconstructDetails } = require("../middlewares/desctucture");
 
 class ApplicantFormValidator {
     async createUpdateValidator(req, res, next) {
@@ -57,14 +58,13 @@ class ApplicantFormValidator {
             applicant_reason: Joi.string().required(),
             applicant_question: Joi.string().required(),
             details: Joi.object({
-                academic: Joi.object(),
-                job: Joi.object(),
-                unformal: Joi.object(),
-                appreciation: Joi.object(),
-                skill: Joi.object()
+                academic: Joi.array(),
+                job: Joi.array(),
+                unformal: Joi.array(),
+                appreciation: Joi.array(),
+                skill: Joi.array()
             }),
-            files: Joi.array(Joi.array()),
-            files_desc: Joi.array(Joi.object({
+            files_desc: Joi.array().items(Joi.object({
                 identifier: Joi.string().required(),
                 identifierIndex: Joi.number().required()
             }))
