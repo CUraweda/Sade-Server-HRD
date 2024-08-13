@@ -1,10 +1,22 @@
 const httpStatus = require("http-status");
+const constant = require('../config/constant')
 const ApplicantFormDao = require("../dao/ApplicantFormDao");
+const ApplicantAcademicService = require('../service/ApplicantAcademicService')
+const ApplicantSkillService = require('../service/ApplicantSkillService')
+const ApplicantJobService = require('../service/ApplicantJobService')
+const ApplicantUnformalService = require('../service/ApplicantUnformalService')
+const ApplicantAppreciationService = require('../service/ApplicantAppreciationService')
+
 const responseHandler = require("../helper/responseHandler");
 
 class ApplicantFormService {
     constructor() {
         this.applicantFormDao = new ApplicantFormDao();
+        this.applicantAcademicService = new ApplicantAcademicService()
+        this.applicantSkillService = new ApplicantSkillService()
+        this.applicantAppreciationService = new ApplicantAppreciationService()
+        this.applicantJobService = new ApplicantJobService()
+        this.applicantUnformalService = new ApplicantUnformalService()
     }
 
     create = async (body) => {
@@ -13,6 +25,31 @@ class ApplicantFormService {
 
         return responseHandler.returnSuccess(httpStatus.CREATED, "Applicant form created successfully", applicantFormData);
     };
+
+    createDataAndDetail = async (body) => {
+        const { detail } = body
+        delete body.detail
+
+        const applicantFormData = await this.applicantFormDao.create({ ...body, status: constant.firstApplicantFormStatus });
+        if (!applicantFormData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Failed to create applicant form");
+
+        const applicantDetailData = await this.createDetail(detail)
+        if(!applicantDetailData.response.status) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Gagal membuat data detail");
+
+        return responseHandler.returnSuccess(httpStatus.OK, "Berhasil membuat Applicant Form dan Detail", applicantFormData)
+    }
+
+    createDetail = async (body) => {
+        const { academic, job, unformal, appreciation, skill } = body
+
+        if (academic && academic.length > 1) await this.applicantAcademicService.createMany(academic).catch(() => { return responseHandler.returnError(httpStatus.BAD_REQUEST, "Gagal membuat detail Applicant Academic") })
+        if (job && job.length > 1) await this.applicantJobService.createMany(job).catch(() => { return responseHandler.returnError(httpStatus.BAD_REQUEST, "Gagal membuat detail Applicant Job") })
+        if (unformal && unformal.length > 1) await this.applicantUnformalService.createMany(unformal).catch(() => { return responseHandler.returnError(httpStatus.BAD_REQUEST, "Gagal membuat detail Applicant Unformal") })
+        if (appreciation && appreciation.length > 1) await this.applicantAppreciationService.createManyWithAttachment(appreciation).catch(() => { return responseHandler.returnError(httpStatus.BAD_REQUEST, "Gagal membuat detail Applicant Appreciation") })
+        if (skill && skill.length > 1) await this.applicantSkillService.createMany(skill).catch(() => { return responseHandler.returnError(httpStatus.BAD_REQUEST, "Gagal membuat detail Applicant Skill"); })
+
+        return responseHandler.returnSuccess(httpStatus.CREATED, "Detail Data Applicant Form Berhasil dibuat")
+    }
 
     update = async (id, body) => {
         const dataExist = await this.applicantFormDao.findById(id);

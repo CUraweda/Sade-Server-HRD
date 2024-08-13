@@ -37,6 +37,50 @@ class ApplicantFormValidator {
             return next();
         }
     }
+
+    async sendFormValidator(req, res, next) {
+        const schema = Joi.object({
+            vacancy_id: Joi.number().required(),
+            user_id: Joi.number().required(),
+            full_name: Joi.string().required(),
+            email: Joi.string().required(),
+            phone: Joi.string().required(),
+            nik: Joi.string().required(),
+            pob: Joi.string().required(),
+            dob: Joi.date().required(),
+            religion: Joi.string().required(),
+            martial_status: Joi.string().required(),
+            address: Joi.string().required(),
+            city: Joi.string().required(),
+            applicant_description: Joi.string().required(),
+            applicant_vision: Joi.string().required(),
+            applicant_reason: Joi.string().required(),
+            applicant_question: Joi.string().required(),
+            details: Joi.object({
+                academic: Joi.object(),
+                job: Joi.object(),
+                unformal: Joi.object(),
+                appreciation: Joi.object(),
+                skill: Joi.object()
+            }),
+            files: Joi.array(Joi.array()),
+            files_desc: Joi.array(Joi.object({
+                identifier: Joi.string().required(),
+                identifierIndex: Joi.number().required()
+            }))
+        });
+
+        const options = { abortEarly: false, allowUnknown: true, stripUnknown: true };
+        const { error, value } = schema.validate(req.body, options);
+
+        if (error) {
+            const errorMessage = error.details.map((details) => details.message).join(", ");
+            next(new ApiError(httpStatus.BAD_REQUEST, errorMessage));
+        } else {
+            req.body = value;
+            return next();
+        }
+    }
 }
 
 module.exports = ApplicantFormValidator;

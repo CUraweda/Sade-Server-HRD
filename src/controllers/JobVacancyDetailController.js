@@ -21,6 +21,18 @@ class JobVacancyDetailController {
             res.status(httpStatus.BAD_GATEWAY).send(e);
         }
     };
+    
+    getByVacancy = async (req, res) => {
+        try{
+            const { id } = req.params
+            const resData = await this.jobVacancyDetailService.showByVacancy(id)
+
+            res.status(resData.statusCode).send(resData.response)
+        }catch(e){
+            console.log(e);
+            res.status(httpStatus.BAD_GATEWAY).send(e);
+        }
+    }
 
     getOne = async (req, res) => {
         try {

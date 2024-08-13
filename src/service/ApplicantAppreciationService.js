@@ -1,15 +1,45 @@
 const httpStatus = require("http-status");
 const ApplicantAppreciationDao = require("../dao/ApplicantAppreciationDao");
 const responseHandler = require("../helper/responseHandler");
+const ApplicantAppreciationAttachmentDao = require("../dao/ApplicantAppreciationAttachmentDao");
 
 class ApplicantAppreciationService {
     constructor() {
         this.applicantAppreciationDao = new ApplicantAppreciationDao();
+        this.applicantAppreciationAttachmentDao = new ApplicantAppreciationAttachmentDao()
     }
 
     create = async (body) => {
         const applicantAppreciationData = await this.applicantAppreciationDao.create(body);
         if (!applicantAppreciationData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Failed to create applicant appreciation record");
+
+        return responseHandler.returnSuccess(httpStatus.CREATED, "Applicant appreciation record created successfully", applicantAppreciationData);
+    };
+
+    createMany = async (body) => {
+        const applicantAppreciationData = await this.applicantAppreciationDao.bulkCreate(body);
+        if (!applicantAppreciationData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Failed to create applicant appreciation record");
+
+        return responseHandler.returnSuccess(httpStatus.CREATED, "Applicant appreciation record created successfully", applicantAppreciationData);
+    };
+
+    createManyWithAttachment = async (body) => {
+        const { files } = body
+        if (files.length < 1) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Tidak Ada Attachment Untuk Dibuat")
+        const applicantAppreciationData = await this.applicantAppreciationDao.create(body);
+        if (!applicantAppreciationData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Failed to create applicant appreciation record");
+
+        for (let fileIndex in files) {
+            const fileData = files[fileIndex]
+            files[fileIndex] = {
+                appreciation_id: applicantAppreciationData.id,
+                file_name: fileData.filename,
+                file_path: fileData.path,
+                file_type: fileData.mimetype
+            }
+        }
+        const applicantAppreciationAttachmentData = await this.applicantAppreciationAttachmentDao.bulkCreate(files)
+        if(!applicantAppreciationAttachmentData) return responseHandler.returnError(httpStatus.OK, "Gagal Membuat Attachment, namun berhasil membuat data Applicant Appreciation")
 
         return responseHandler.returnSuccess(httpStatus.CREATED, "Applicant appreciation record created successfully", applicantAppreciationData);
     };

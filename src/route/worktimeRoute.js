@@ -26,6 +26,12 @@ router.post(
     auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
     worktimeController.createOne
 )
+router.post(
+    "/create-upsert",
+    worktimeValidator.upsertValidator,
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    worktimeController.upsertOne
+)
 
 router.put(
     "/update/:id",

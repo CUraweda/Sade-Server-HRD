@@ -30,7 +30,7 @@ class JobVacancyDetailService {
 
         return responseHandler.returnSuccess(httpStatus.OK, "Job vacancy detail deleted successfully", {});
     };
-
+    
     showPage = async (page, limit, offset, filter) => {
         const totalRows = await this.jobVacancyDetailDao.getCount(filter);
         const totalPage = Math.ceil(totalRows / limit);
@@ -45,6 +45,13 @@ class JobVacancyDetailService {
             totalPage,
         });
     };
+    
+    showByVacancy = async (vacancy_id) => {
+        const jobVacancyDetailData = await this.jobVacancyDetailDao.getByVacancyId(vacancy_id);
+        if (!jobVacancyDetailData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Failed to retrive job vacancy detail");
+    
+        return responseHandler.returnSuccess(httpStatus.OK, "Job vacancy detail retrived successfully", jobVacancyDetailData);
+    }
 
     showOne = async (id) => {
         const jobVacancyDetailData = await this.jobVacancyDetailDao.findById(id);
