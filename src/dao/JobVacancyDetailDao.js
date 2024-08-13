@@ -45,6 +45,12 @@ class JobVacancyDetailDao extends SuperDao {
             order: [["id", "DESC"]],
         });
     }
+
+    async getByVacancyId(vacancy_id){
+        return JobVacancyDetail.findAll({
+            where: { vacancy_id }
+        })
+    }
 }
 
 module.exports = JobVacancyDetailDao;

@@ -46,6 +46,39 @@ class ApplicantFormController {
         }
     };
 
+    sendData = async (req, res) => {
+        const { files_desc, details } = req.body
+        try {
+            if (req.files) {
+                for (descIndex in files_desc) {
+                    const { identifier, identifierIndex } = files_desc[descIndex]
+                    if (!req.files[descIndex]) continue
+                    const fileData = req.files[descIndex]
+                    switch (identifier) {
+                        case "applicant_profile":
+                            req.body.file_path = fileData.path
+                            break;
+                        case "appreciation":
+                            const { appreciation } = details
+                            if (!appreciation || !appreciation[identifierIndex]) continue
+                            if(!appreciation[identifierIndex].files) appreciation[identifierIndex].files = []
+                            appreciation[identifierIndex].files.push(fileData)
+                            break;
+                        default:
+                            continue
+                    }
+                }
+                delete req.body.files_desc
+            }
+            const resData = await this.applicantFormService.createDataAndDetail(req.body)
+
+            res.status(resData.statusCode).send(resData.response);
+        } catch (e) {
+            console.log(e);
+            res.status(httpStatus.BAD_GATEWAY).send(e);
+        }
+    }
+
     update = async (req, res) => {
         try {
             const id = +req.params.id;

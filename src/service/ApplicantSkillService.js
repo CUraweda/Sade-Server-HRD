@@ -13,6 +13,13 @@ class ApplicantSkillService {
 
         return responseHandler.returnSuccess(httpStatus.CREATED, "Applicant skill record created successfully", applicantSkillData);
     };
+    
+    createMany = async (body = []) => {
+        const applicantSkillData = await this.applicantSkillDao.bulkCreate(body);
+        if (!applicantSkillData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Failed to create applicant skill record");
+    
+        return responseHandler.returnSuccess(httpStatus.CREATED, "Applicant skill record created successfully", applicantSkillData);
+    }
 
     update = async (id, body) => {
         const dataExist = await this.applicantSkillDao.findById(id);

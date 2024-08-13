@@ -9,6 +9,10 @@ class ApplicantAppreciationAttachmentDao extends SuperDao {
         super(ApplicantAppreciationAttachment);
     }
 
+    async createManyAttach(appreciation_id, files = []) {
+        return ApplicantAppreciationAttachment.bulkCreate()
+    }
+
     async getCount(filter) {
         let { search } = filter
         if(!search) search = ""      

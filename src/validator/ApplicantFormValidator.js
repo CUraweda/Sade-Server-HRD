@@ -65,7 +65,8 @@ class ApplicantFormValidator {
             }),
             files: Joi.array(Joi.array()),
             files_desc: Joi.array(Joi.object({
-                identifier: Joi.string().required()
+                identifier: Joi.string().required(),
+                identifierIndex: Joi.number().required()
             }))
         });
 

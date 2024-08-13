@@ -89,6 +89,12 @@ class EmployeeAttendanceDao extends SuperDao {
             order: [["id", "DESC"]],
         });
     }
+
+    async getByUID(uid) {
+        return EmployeeAttendance.findOne({
+            where: { uid }
+        })
+    }
 }
 
 module.exports = EmployeeAttendanceDao;

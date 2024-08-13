@@ -1,6 +1,7 @@
 const httpStatus = require("http-status");
 const WorktimeDao = require("../dao/WorktimeDao");
 const responseHandler = require("../helper/responseHandler");
+const moment = require("moment");
 
 class WorktimeService {
     constructor() {
@@ -63,6 +64,18 @@ class WorktimeService {
     showByUID = async (uid) => {
         const worktimeData = await this.worktimeDao.getByUID(uid)
         if (!worktimeData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Worktime Tidak Ditemukan")
+        return responseHandler.returnSuccess(httpStatus.OK, "Data Worktime Ditemukan", worktimeData)
+    }
+
+    showByDivision = async (division_id) => {
+        const worktimeData = await this.worktimeDao.getByDivisionId(division_id)
+        if (!worktimeData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Worktime Tidak Ditemukan")
+        return responseHandler.returnSuccess(httpStatus.OK, "Data Worktime Ditemukan", worktimeData)
+    }
+
+    showByShortestTime = async (division_id) => {
+        const worktimeData = await this.worktimeDao.getShortestTime(division_id)
+        if (worktimeData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Worktime Tidak Ditemukan")
         return responseHandler.returnSuccess(httpStatus.OK, "Data Worktime Ditemukan", worktimeData)
     }
 }

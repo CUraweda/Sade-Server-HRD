@@ -13,6 +13,13 @@ class ApplicantUnformalService {
 
         return responseHandler.returnSuccess(httpStatus.CREATED, "Applicant unformal record created successfully", applicantUnformalData);
     };
+    
+    createMany = async (body) => {
+        const applicantUnformalData = await this.applicantUnformalDao.bulkCreate(body);
+        if (!applicantUnformalData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Failed to create applicant unformal record");
+    
+        return responseHandler.returnSuccess(httpStatus.CREATED, "Applicant unformal record created successfully", applicantUnformalData);
+    }
 
     update = async (id, body) => {
         const dataExist = await this.applicantUnformalDao.findById(id);
