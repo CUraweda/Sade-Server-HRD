@@ -27,26 +27,41 @@ class ApplicantFormService {
     };
 
     createDataAndDetail = async (body) => {
-        const { detail } = body
-        delete body.detail
+        const { details } = body
+        delete body.details
 
         const applicantFormData = await this.applicantFormDao.create({ ...body, status: constant.firstApplicantFormStatus });
         if (!applicantFormData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Failed to create applicant form");
 
-        const applicantDetailData = await this.createDetail(detail)
+        const applicantDetailData = await this.createDetail(details, applicantFormData.id)
         if(!applicantDetailData.response.status) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Gagal membuat data detail");
 
         return responseHandler.returnSuccess(httpStatus.OK, "Berhasil membuat Applicant Form dan Detail", applicantFormData)
     }
 
-    createDetail = async (body) => {
-        const { academic, job, unformal, appreciation, skill } = body
+    createDetail = async (body, form_id) => {
+        let { academic, job, unformal, appreciation, skill } = body
 
-        if (academic && academic.length > 1) await this.applicantAcademicService.createMany(academic).catch(() => { return responseHandler.returnError(httpStatus.BAD_REQUEST, "Gagal membuat detail Applicant Academic") })
-        if (job && job.length > 1) await this.applicantJobService.createMany(job).catch(() => { return responseHandler.returnError(httpStatus.BAD_REQUEST, "Gagal membuat detail Applicant Job") })
-        if (unformal && unformal.length > 1) await this.applicantUnformalService.createMany(unformal).catch(() => { return responseHandler.returnError(httpStatus.BAD_REQUEST, "Gagal membuat detail Applicant Unformal") })
-        if (appreciation && appreciation.length > 1) await this.applicantAppreciationService.createManyWithAttachment(appreciation).catch(() => { return responseHandler.returnError(httpStatus.BAD_REQUEST, "Gagal membuat detail Applicant Appreciation") })
-        if (skill && skill.length > 1) await this.applicantSkillService.createMany(skill).catch(() => { return responseHandler.returnError(httpStatus.BAD_REQUEST, "Gagal membuat detail Applicant Skill"); })
+        if (academic && academic.length > 0){
+            academic = academic.map((academicProp) => ({ form_id, ...academicProp}))
+            await this.applicantAcademicService.createMany(academic).catch(() => { return responseHandler.returnError(httpStatus.BAD_REQUEST, "Gagal membuat detail Applicant Academic") })
+        } 
+        if (job && job.length > 0){
+            job = job.map((jobProp) => ({ form_id, ...jobProp}))
+            await this.applicantJobService.createMany(job).catch(() => { return responseHandler.returnError(httpStatus.BAD_REQUEST, "Gagal membuat detail Applicant Job") })
+        } 
+        if (unformal && unformal.length > 0){
+            unformal = unformal.map((unformalProp) => ({ form_id, ...unformalProp}))
+            await this.applicantUnformalService.createMany(unformal).catch(() => { return responseHandler.returnError(httpStatus.BAD_REQUEST, "Gagal membuat detail Applicant Unformal") })
+        } 
+        if (appreciation && appreciation.length > 0){
+            appreciation = appreciation.map((appreciationProp) => ({ form_id, ...appreciationProp}))
+            await this.applicantAppreciationService.createManyWithAttachment(appreciation).catch(() => { return responseHandler.returnError(httpStatus.BAD_REQUEST, "Gagal membuat detail Applicant Appreciation") })
+        }
+        if (skill && skill.length > 0) {
+            skill = skill.map((skillProp) => ({ form_id, ...skillProp}))
+            await this.applicantSkillService.createMany(skill).catch(() => { return responseHandler.returnError(httpStatus.BAD_REQUEST, "Gagal membuat detail Applicant Skill"); })
+        } 
 
         return responseHandler.returnSuccess(httpStatus.CREATED, "Detail Data Applicant Form Berhasil dibuat")
     }
@@ -82,6 +97,13 @@ class ApplicantFormService {
             totalPage,
         });
     };
+
+    showByVacancy = async (vacancy_id) => {
+        const applicantFormData = await this.applicantFormDao.findByWhere({ vacancy_id })
+        if (!applicantFormData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Applicant form not found");
+    
+        return responseHandler.returnSuccess(httpStatus.OK, "Applicant form found", applicantFormData);
+    }
 
     showOne = async (id) => {
         const applicantFormData = await this.applicantFormDao.findById(id);

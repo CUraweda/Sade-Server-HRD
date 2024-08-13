@@ -25,7 +25,7 @@ class Upload {
     });
   }
 
-  #filterFile(req, file, cb) {
+  filterFile(req, file, cb) { // Make this method public
     if (this.#allowedMimes.includes(file.mimetype)) {
       cb(null, true);
     } else {
@@ -34,24 +34,26 @@ class Upload {
   }
 
   uploadFileSingle(fieldName) {
-    return util.promisify(
-      multer({
-        storage: this.#storage,
-        limits: { fileSize: 5000000 },
-        fileFilter: this.#filterFile,
-      }).single(fieldName)
-    )
-  }
+    console.log(this.#dir)
+    const upload = multer({
+      storage: this.#storage,
+      limits: { fileSize: 5000000 },
+      fileFilter: this.filterFile.bind(this), // Bind the method here
+    }).single(fieldName);
 
+    return util.promisify(upload); // Promisify multer's function directly
+  }
+  
   uploadFileMulti(fieldName) {
-    return util.promisify(
-      multer({
-        storage: this.#storage,
-        limits: { fileSize: 5000000 },
-        fileFilter: this.#filterFile,
-      }).array(fieldName)
-    )
+    console.log(this.#dir)
+    const upload = multer({
+      storage: this.#storage,
+      limits: { fileSize: 5000000 },
+      fileFilter: this.filterFile.bind(this), // Bind the method here
+    }).array(fieldName);
+
+    return util.promisify(upload); // Promisify multer's function directly
   }
 }
 
-module.exports = Upload
+module.exports = Upload;

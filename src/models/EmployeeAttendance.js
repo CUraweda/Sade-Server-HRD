@@ -32,6 +32,7 @@ module.exports = (sequelize, DataTypes) => {
       timestamps: true, // Includes created_at and updated_at columns
       underscored: true, // Maps snake_case columns to camelCase properties
     }
+    
   );
   
   return EmployeeAttendance;

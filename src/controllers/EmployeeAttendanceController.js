@@ -50,8 +50,8 @@ class EmployeeAttendanceController {
     createByToken = async (req, res) => {
         try {
             if(!req.user.employee) return res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Anda tidak terdaftar sebagai Employee")
-            const { division_id } = req.user``.employee
-            if (!division_id) res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Anda belum terdaftar pada divisi apapun, tolong beritahukan admin");
+            const { division_id } = req.user.employee
+            if (!division_id) return res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Anda belum terdaftar pada divisi apapun, tolong beritahukan admin");
             const resData = await this.employeeAttendanceService.createByClosest(division_id, req.user.employee, req.file)
 
             res.status(resData.statusCode).send(resData.response)

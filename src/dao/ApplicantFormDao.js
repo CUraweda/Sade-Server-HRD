@@ -3,6 +3,12 @@ const models = require("../models");
 const { Op } = require("sequelize");
 
 const ApplicantForm = models.applicantform;
+const ApplicantAcademic = models.applicantacademic
+const ApplicantUnformal = models.applicantunformal
+const ApplicantSkill = models.applicantskill
+const ApplicantJob = models.applicantjob
+const ApplicantAppreciation = models.applicantappreciation
+const AppreciationAttachment = models.appreciationattachment
 
 class ApplicantFormDao extends SuperDao {
     constructor() {
@@ -40,6 +46,34 @@ class ApplicantFormDao extends SuperDao {
                     },
                 ],
             },
+            include: [
+                {
+                    model: ApplicantAcademic,
+                    required: false
+                },
+                {
+                    model: ApplicantAppreciation,
+                    required: false,
+                    include: [
+                        {
+                            model: AppreciationAttachment,
+                            required: false
+                        }
+                    ]
+                },
+                {
+                    model: ApplicantJob,
+                    required: false
+                },
+                {
+                    model: ApplicantSkill,
+                    required: false
+                },
+                {
+                    model: ApplicantUnformal,
+                    required: false
+                }
+            ],
             offset: offset,
             limit: limit,
             order: [["id", "DESC"]],
