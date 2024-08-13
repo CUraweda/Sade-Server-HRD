@@ -26,6 +26,12 @@ router.post(
     auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
     jobVacancyController.createOne
 )
+router.post(
+    "/create-detail",
+    jobVacancyValidator.createWithDetailValidator,
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    jobVacancyController.createWithDetail
+)
 
 router.put(
     "/update/:id",
