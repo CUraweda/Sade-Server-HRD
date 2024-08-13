@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
     {
         form_id: DataTypes.INTEGER,
         description: DataTypes.TEXT,
-        level: DataTypes.STRING        
+        level: DataTypes.STRING
     },
     {
       sequelize,

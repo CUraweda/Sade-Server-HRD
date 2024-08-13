@@ -92,8 +92,37 @@ class WorktimeDao extends SuperDao {
         });
     }
 
-    getByUID(uid){
+    async getByUID(uid){
         return Worktime.findOne({ where: { uid } })
+    }
+
+    async getByDivisionId(division_id){
+        return Worktime.findOne({ where: { division_id } })
+    }
+
+    async getShortestTime(division_id){
+        const currentTime = new Date();
+        const worktimes = await this.getByDivisionId(division_id)
+
+        let shortestDifference = null;
+        let closestWorktime = null;
+
+        worktimes.forEach(worktime => {
+            const startTime = new Date(`1970-01-01T${worktime.start_time}Z`);
+            const endTime = new Date(`1970-01-01T${worktime.end_time}Z`);
+
+            const startDiff = Math.abs(currentTime - startTime);
+            const endDiff = Math.abs(currentTime - endTime);
+
+            const minDiff = Math.min(startDiff, endDiff);
+
+            if (shortestDifference === null || minDiff < shortestDifference) {
+                shortestDifference = minDiff;
+                closestWorktime = worktime;
+            }
+        });
+
+        return { shortestDifference, closestWorktime }
     }
 }
 

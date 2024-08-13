@@ -1,9 +1,13 @@
 const httpStatus = require("http-status");
+const constant = require('../config/constant')
 const EmployeeAttendanceService = require("../service/EmployeeAttendanceService");
+const WorktimeService = require("../service/WorktimeService");
+const ApiError = require("../helper/ApiError");
 
 class EmployeeAttendanceController {
     constructor() {
         this.employeeAttendanceService = new EmployeeAttendanceService();
+        this.worktimeService = new WorktimeService()
     }
 
     getAll = async (req, res) => {
@@ -30,9 +34,12 @@ class EmployeeAttendanceController {
     getOne = async (req, res) => {
         try {
             const id = +req.params.id;
-            if (!id) res.status(httpStatus["422_CLASS"]).send("Tolong sertakan ID");
-            const resData = await this.employeeAttendanceService.showOne(id);
+            if (!id){
 
+                return res.status(httpStatus.UNPROCESSABLE_ENTITY).send("ID Diperlukan")
+            } 
+            const resData = await this.employeeAttendanceService.showOne(id);
+            
             res.status(resData.statusCode).send(resData.response);
         } catch (e) {
             console.log(e);
@@ -42,8 +49,12 @@ class EmployeeAttendanceController {
 
     createByToken = async (req, res) => {
         try {
-            const { division_id } = req.user
-            // const resData = await this.employeeAttendanceService
+            if(!req.user.employee) return res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Anda tidak terdaftar sebagai Employee")
+            const { division_id } = req.user``.employee
+            if (!division_id) res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Anda belum terdaftar pada divisi apapun, tolong beritahukan admin");
+            const resData = await this.employeeAttendanceService.createByClosest(division_id, req.user.employee, req.file)
+
+            res.status(resData.statusCode).send(resData.response)
         } catch (e) {
             console.log(e);
             res.status(httpStatus.BAD_GATEWAY).send(e);

@@ -1,13 +1,20 @@
 const express = require("express");
 const ApplicantFormController = require("../controllers/ApplicantFormController");
 const ApplicantFormValidator = require("../validator/ApplicantFormValidator");
+const UploadMiddleware = require("../middlewares/upload");
 
 const router = express.Router();
 const auth = require("../middlewares/auth");
 
 const applicantFormController = new ApplicantFormController();
 const applicantFormValidator = new ApplicantFormValidator();
-
+const uploadMiddleware = new UploadMiddleware('applicantForm', [
+    "application/pdf",
+    "image/jpeg",
+    "image/jpg",
+    "image/png",
+    "image/gif",
+])
 
 router.get(
     "/",
@@ -30,6 +37,9 @@ router.post(
 router.post(
     "/send",
     applicantFormValidator.sendFormValidator,
+    uploadMiddleware.uploadFileMulti("files"),
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    applicantFormController.createOne
 )
 
 router.put(

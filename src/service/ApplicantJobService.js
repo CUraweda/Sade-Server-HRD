@@ -14,6 +14,13 @@ class ApplicantJobService {
         return responseHandler.returnSuccess(httpStatus.CREATED, "Applicant job record created successfully", applicantJobData);
     };
 
+    createMany = async (body = []) => {
+        const applicantJobData = await this.applicantJobDao.bulkCreate(body);
+        if (!applicantJobData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Failed to create applicant job record");
+
+        return responseHandler.returnSuccess(httpStatus.CREATED, "Applicant job record created successfully", applicantJobData);
+    };
+
     update = async (id, body) => {
         const dataExist = await this.applicantJobDao.findById(id);
         if (!dataExist) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Applicant job record not found");

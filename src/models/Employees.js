@@ -36,7 +36,7 @@ module.exports = (sequelize, DataTypes) => {
       employee_no: DataTypes.STRING,
       full_name: DataTypes.STRING,
       nik: DataTypes.STRING,
-    gender: DataTypes.STRING,
+      gender: DataTypes.STRING,
       pob: DataTypes.STRING,
       dob: DataTypes.DATE,
       religion: DataTypes.STRING,
@@ -55,6 +55,7 @@ module.exports = (sequelize, DataTypes) => {
       email: DataTypes.STRING,
       user_id: DataTypes.INTEGER,
       division_id: DataTypes.INTEGER,
+      is_outstation: DataTypes.BOOLEAN
     },
     {
       sequelize,

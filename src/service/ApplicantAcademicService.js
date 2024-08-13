@@ -14,6 +14,13 @@ class ApplicantAcademicService {
         return responseHandler.returnSuccess(httpStatus.CREATED, "Applicant academic record created successfully", applicantAcademicData);
     };
 
+    createMany = async (body = []) => {
+        const applicantAcademicData = await this.applicantAcademicDao.bulkCreate(body)
+        if (!applicantAcademicData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Failed to create applicant academic record");
+
+        return responseHandler.returnSuccess(httpStatus.CREATED, "Applicant academic record created successfully", applicantAcademicData);
+    }
+
     update = async (id, body) => {
         const dataExist = await this.applicantAcademicDao.findById(id);
         if (!dataExist) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Applicant academic record not found");
