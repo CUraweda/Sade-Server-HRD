@@ -6,7 +6,7 @@ class EmployeeFormAnnouncementValidator {
     async createUpdateValidator(req, res, next) {
         const schema = Joi.object({
             employee_id: Joi.number().integer(),
-            approver_id: Joi.number().integer(),
+            announcement_id: Joi.number().integer(),
         });
 
         const options = { abortEarly: false, allowUnknown: true, stripUnknown: true };

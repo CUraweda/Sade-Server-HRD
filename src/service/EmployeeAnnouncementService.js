@@ -1,15 +1,26 @@
 const httpStatus = require("http-status");
 const EmployeeAnnouncementDao = require("../dao/EmployeeAnnouncementDao");
 const responseHandler = require("../helper/responseHandler");
+const FormAnnouncementDao = require("../dao/FormAnnouncementDao");
 
 class EmployeeAnnouncementService {
     constructor() {
         this.employeeAnnouncementDao = new EmployeeAnnouncementDao();
+        this.formAnnouncementDao = new FormAnnouncementDao()
     }
 
     create = async (body) => {
+        const { is_specific, employee_ids } = body 
+        if(is_specific && (!employee_ids || employee_ids?.length < 1)) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Pengumuman Spesifik, namun tidak ada karyawan yang dituju");
         const employeeAnnouncementData = await this.employeeAnnouncementDao.create(body);
         if (!employeeAnnouncementData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Employee Announcement Gagal dibuat");
+        
+        if(is_specific){
+            const datas = []
+            for(let employee_id of employee_ids){ datas.push({ employee_id, announcement_id: employeeAnnouncementData.id }) }
+            const formAnnouncementData = await this.formAnnouncementDao.bulkCreate(datas)
+            if (!formAnnouncementData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Form Announcement Gagal dibuat");
+        }
 
         return responseHandler.returnSuccess(httpStatus.CREATED, "Data Employee Announcement Berhasil dibuat", employeeAnnouncementData);
     };
