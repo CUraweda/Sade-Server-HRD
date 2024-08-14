@@ -5,11 +5,11 @@ const ApiError = require("../helper/ApiError");
 class TrainingAttendanceValidator {
     async createUpdateValidator(req, res, next) {
         const schema = Joi.object({
-            training_id: Joi.number().integer().required(),
-            title: Joi.string().required(),
+            training_id: Joi.number().integer(),
+            title: Joi.string(),
             files: Joi.any(),
             description: Joi.string(),
-            day_id: Joi.number().integer().required()
+            day_id: Joi.number().integer()
         });
 
         const options = { abortEarly: false, allowUnknown: true, stripUnknown: true };

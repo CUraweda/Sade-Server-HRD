@@ -5,9 +5,9 @@ const ApiError = require("../helper/ApiError");
 class JobVacancyDetailValidator {
     async createUpdateValidator(req, res, next) {
         const schema = Joi.object({
-            vacancy_id: Joi.number().required(),
-            title: Joi.string().required(),
-            description: Joi.string().required(),
+            vacancy_id: Joi.number(),
+            title: Joi.string(),
+            description: Joi.string(),
         });
 
         const options = { abortEarly: false, allowUnknown: true, stripUnknown: true };

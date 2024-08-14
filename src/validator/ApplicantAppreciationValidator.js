@@ -5,8 +5,8 @@ const ApiError = require("../helper/ApiError");
 class ApplicantAppreciationValidator {
     async createUpdateValidator(req, res, next) {
         const schema = Joi.object({
-            form_id: Joi.number().required(),
-            date: Joi.date().required()
+            form_id: Joi.number(),
+            date: Joi.date()
         });
 
         const options = { abortEarly: false, allowUnknown: true, stripUnknown: true };

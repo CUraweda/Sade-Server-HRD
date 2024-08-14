@@ -5,7 +5,7 @@ const ApiError = require("../helper/ApiError");
 class BillTypeValidator {
     async createUpdateValidator(req, res, next) {
         const schema = Joi.object({
-            name: Joi.string().required(),
+            name: Joi.string(),
             is_subtraction: Joi.boolean()
         });
 

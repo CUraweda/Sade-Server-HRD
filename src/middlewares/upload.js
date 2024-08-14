@@ -34,7 +34,6 @@ class Upload {
   }
 
   uploadFileSingle(fieldName) {
-    console.log(this.#dir)
     const upload = multer({
       storage: this.#storage,
       limits: { fileSize: 5000000 },
@@ -45,7 +44,6 @@ class Upload {
   }
   
   uploadFileMulti(fieldName) {
-    console.log(this.#dir)
     const upload = multer({
       storage: this.#storage,
       limits: { fileSize: 5000000 },

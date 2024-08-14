@@ -5,9 +5,9 @@ const ApiError = require("../helper/ApiError");
 class FormPositionValidator {
     async createUpdateValidator(req, res, next) {
         const schema = Joi.object({
-            position_id: Joi.number().integer().required(),
-            employee_id: Joi.number().integer().required(),
-            is_active: Joi.boolean().required()
+            position_id: Joi.number().integer(),
+            employee_id: Joi.number().integer(),
+            is_active: Joi.boolean()
         });
 
         const options = { abortEarly: false, allowUnknown: true, stripUnknown: true };

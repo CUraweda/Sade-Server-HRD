@@ -18,9 +18,13 @@ class EmployeeAttendanceService {
         return responseHandler.returnSuccess(httpStatus.CREATED, "Data Employee Attendance Berhasil dibuat", attendanceData);
     };
 
-    createByClosest = async (division_id, employee, file) => {
+    createByClosest = async (employee, file) => {
+        if (!employee) return responseHandler.returnError(httpStatus.UNPROCESSABLE_ENTITY, "Anda tidak terdaftar sebagai karyawan")
+        const { division_id } = employee
+        if (!division_id) return responseHandler.returnError(httpStatus.UNPROCESSABLE_ENTITY, "Anda tidak terdaftar pada divisi apapun")
+        
         const currentTime = new Date()
-        const { closestWorktime } = await this.worktimeDao.getShortestTime(division_id)
+        const { closestWorktime } = await this.worktimeDao.getShortestTime(employee.division_id)
 
         const uid = this.formatUID(currentTime, closestWorktime.id, employee_id)
         const checkAlreadyExist = await this.employeeAttendanceDao.getByUID(uid)
