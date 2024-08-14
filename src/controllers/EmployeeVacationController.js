@@ -42,14 +42,28 @@ class EmployeeVacationController {
 
     createOne = async (req, res) => {
         try {
+            if(req.file) req.body.file_path = req.file.path
             const resData = await this.employeeVacationService.create(req.body);
-
+            
             res.status(resData.statusCode).send(resData.response);
         } catch (e) {
             console.log(e);
             res.status(httpStatus.BAD_GATEWAY).send(e);
         }
     };
+    
+    createRequest = async (req, res) => {
+        try{
+            const { employee } = req.user
+            if(req.file) req.body.file_path = req.file.path
+            const resData = await this.employeeVacationService.createRequestOne(employee, req.body)
+            
+            res.status(resData.statusCode).send(resData.response);
+        }catch(e){
+            console.log(e);
+            res.status(httpStatus.BAD_GATEWAY).send(e);
+        }
+    }
 
     update = async (req, res) => {
         try {
