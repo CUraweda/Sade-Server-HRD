@@ -5,22 +5,22 @@ const ApiError = require("../helper/ApiError");
 class JobVacancyValidator {
     async createUpdateValidator(req, res, next) {
         const schema = Joi.object({
-            title: Joi.string().required(),
-            sub_title: Joi.string().required(),
-            min_academic: Joi.string().required(),
-            location: Joi.string().required(),
-            longitude: Joi.string().required(),
-            latitude: Joi.string().required(),
-            start_date: Joi.date().required(),
-            end_date: Joi.date().required(),
-            max_applicant: Joi.number().required(),
-            applicant_count: Joi.number().required(),
-            notes: Joi.string().required(),
-            status: Joi.string().required(),
-            role: Joi.string().required(),
-            division_id: Joi.number().required(),
-            is_fulltime: Joi.boolean().required(),
-            is_open: Joi.boolean().required()
+            title: Joi.string(),
+            sub_title: Joi.string(),
+            min_academic: Joi.string(),
+            location: Joi.string(),
+            longitude: Joi.string(),
+            latitude: Joi.string(),
+            start_date: Joi.date(),
+            end_date: Joi.date(),
+            max_applicant: Joi.number(),
+            applicant_count: Joi.number(),
+            notes: Joi.string(),
+            status: Joi.string(),
+            role: Joi.string(),
+            division_id: Joi.number(),
+            is_fulltime: Joi.boolean(),
+            is_open: Joi.boolean()
         });
 
         const options = { abortEarly: false, allowUnknown: true, stripUnknown: true };
@@ -37,23 +37,23 @@ class JobVacancyValidator {
 
     async createWithDetailValidator(req, res, next) {
         const schema = Joi.object({
-            title: Joi.string().required(),
-            sub_title: Joi.string().required(),
-            min_academic: Joi.string().required(),
-            location: Joi.string().required(),
-            longitude: Joi.string().required(),
-            latitude: Joi.string().required(),
-            start_date: Joi.date().required(),
-            end_date: Joi.date().required(),
-            max_applicant: Joi.number().required(),
-            applicant_count: Joi.number().required(),
-            notes: Joi.string().required(),
-            status: Joi.string().required(),
-            role: Joi.string().required(),
-            division_id: Joi.number().required(),
-            is_fulltime: Joi.boolean().required(),
-            is_open: Joi.boolean().required(),
-            details: Joi.array().required()
+            title: Joi.string(),
+            sub_title: Joi.string(),
+            min_academic: Joi.string(),
+            location: Joi.string(),
+            longitude: Joi.string(),
+            latitude: Joi.string(),
+            start_date: Joi.date(),
+            end_date: Joi.date(),
+            max_applicant: Joi.number(),
+            applicant_count: Joi.number(),
+            notes: Joi.string(),
+            status: Joi.string(),
+            role: Joi.string(),
+            division_id: Joi.number(),
+            is_fulltime: Joi.boolean(),
+            is_open: Joi.boolean(),
+            details: Joi.array()
         });
 
         const options = { abortEarly: false, allowUnknown: true, stripUnknown: true };

@@ -5,9 +5,9 @@ const ApiError = require("../helper/ApiError");
 class TrainingSuggestionValidator {
     async createUpdateValidator(req, res, next) {
         const schema = Joi.object({
-            employee_id: Joi.number().integer().required(),
-            approver_id: Joi.number().integer().required(),
-            title: Joi.string().required(),
+            employee_id: Joi.number().integer(),
+            approver_id: Joi.number().integer(),
+            title: Joi.string(),
             notes: Joi.string(),
             is_approved: Joi.boolean()
         });

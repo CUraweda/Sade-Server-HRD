@@ -5,10 +5,10 @@ const ApiError = require("../helper/ApiError");
 class EmployeeBillValidator {
     async createUpdateValidator(req, res, next) {
         const schema = Joi.object({
-            account_id: Joi.number().integer().required(),
-            type_id: Joi.number().integer().required(),
-            description: Joi.string().required(),
-            amount: Joi.number().precision(2).required()
+            account_id: Joi.number().integer(),
+            type_id: Joi.number().integer(),
+            description: Joi.string(),
+            amount: Joi.number().precision(2)
         });
 
         const options = { abortEarly: false, allowUnknown: true, stripUnknown: true };

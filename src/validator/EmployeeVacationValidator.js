@@ -5,14 +5,14 @@ const ApiError = require("../helper/ApiError");
 class EmployeeVacationValidator {
     async createUpdateValidator(req, res, next) {
         const schema = Joi.object({
-            employee_id: Joi.number().integer().required(),
-            approver_id: Joi.number().integer().required(),
-            type: Joi.string().required(),
-            status: Joi.string().required(),
+            employee_id: Joi.number().integer(),
+            approver_id: Joi.number().integer(),
+            type: Joi.string(),
+            status: Joi.string(),
             description: Joi.string().optional(),
-            is_approved: Joi.boolean().required(),
-            start_date: Joi.date().required(),
-            end_date: Joi.date().required(),
+            is_approved: Joi.boolean(),
+            start_date: Joi.date(),
+            end_date: Joi.date(),
         });
 
         const options = { abortEarly: false, allowUnknown: true, stripUnknown: true };

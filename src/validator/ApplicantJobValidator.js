@@ -5,13 +5,13 @@ const ApiError = require("../helper/ApiError");
 class ApplicantJobValidator {
     async createUpdateValidator(req, res, next) {
         const schema = Joi.object({
-            form_id: Joi.number().required(),
-            position: Joi.string().required(),
-            city: Joi.string().required(),
-            company: Joi.string().required(),
-            start_date: Joi.date().required(),
+            form_id: Joi.number(),
+            position: Joi.string(),
+            city: Joi.string(),
+            company: Joi.string(),
+            start_date: Joi.date(),
             end_date: Joi.date().optional(),
-            description: Joi.string().required()
+            description: Joi.string()
         });
 
         const options = { abortEarly: false, allowUnknown: true, stripUnknown: true };

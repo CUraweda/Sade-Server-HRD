@@ -5,10 +5,10 @@ const ApiError = require("../helper/ApiError");
 class EmployeeJobdeskValidator {
     async createUpdateValidator(req, res, next) {
         const schema = Joi.object({
-            employee_id: Joi.number().integer().required(),
-            name: Joi.string().required(),
+            employee_id: Joi.number().integer(),
+            name: Joi.string(),
             description: Joi.string().optional(),
-            due_date: Joi.date().required(),
+            due_date: Joi.date(),
             priority: Joi.number().integer().optional(),
             priority_label: Joi.string().optional(),
         });

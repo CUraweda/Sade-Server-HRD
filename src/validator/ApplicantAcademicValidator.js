@@ -5,13 +5,13 @@ const ApiError = require("../helper/ApiError");
 class ApplicantAcademicValidator {
     async createUpdateValidator(req, res, next) {
         const schema = Joi.object({
-            form_id: Joi.number().required(),
-            degree: Joi.string().required(),
-            city: Joi.string().required(),
-            institution: Joi.string().required(),
+            form_id: Joi.number(),
+            degree: Joi.string(),
+            city: Joi.string(),
+            institution: Joi.string(),
             description: Joi.string().optional(),
-            is_kuliah: Joi.boolean().required(),
-            start_date: Joi.date().required(),
+            is_kuliah: Joi.boolean(),
+            start_date: Joi.date(),
             end_date: Joi.date().optional()
         });
 
