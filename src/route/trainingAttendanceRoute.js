@@ -37,7 +37,7 @@ router.post(
 router.post(
     "/attend-auto",
     uploadMiddleware.uploadFileMulti('files'),
-    // trainingAttendanceValidator.attendCreateValidator,
+    trainingAttendanceValidator.attendCreateValidator,
     auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
     trainingAttendanceController.createByToken
 )
