@@ -10,9 +10,20 @@ class EmployeeVacationService {
     create = async (body) => {
         const employeeVacationData = await this.employeeVacationDao.create(body);
         if (!employeeVacationData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Employee Vacation Gagal dibuat");
-
+        
         return responseHandler.returnSuccess(httpStatus.CREATED, "Data Employee Vacation Berhasil dibuat", employeeVacationData);
     };
+    
+    createRequestOne = async (employee, body) => {
+        if(!employee) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Tidak ditemukan data employee");
+        const employeeVacationData = await this.employeeVacationDao.create({
+            ...body,
+            employee_id: employee.id
+        });
+        if (!employeeVacationData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Employee Vacation Gagal dibuat");
+        
+        return responseHandler.returnSuccess(httpStatus.CREATED, "Data Employee Vacation Berhasil dibuat", employeeVacationData);
+    }
 
     update = async (id, body) => {
         const dataExist = await this.employeeVacationDao.findById(id);

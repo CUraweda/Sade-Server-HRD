@@ -37,6 +37,22 @@ class TrainingDao extends SuperDao {
             order: [["id", "DESC"]],
         });
     }
+
+    async getClosestActive(employee_id, currentTime){
+        return Training.findAll({
+            where: {
+                employee_id,
+                [Op.and]: [
+                    {
+                        start_date: { [Op.lte]: currentTime },
+                        end_date: { [Op.gte]: currentTime }
+                    }
+                ],
+                is_active: true
+            }
+        })
+    }
+
 }
 
 module.exports = TrainingDao;

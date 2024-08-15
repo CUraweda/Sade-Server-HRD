@@ -20,13 +20,14 @@ class EmployeeAttendanceService {
 
     createByClosest = async (employee, file) => {
         if (!employee) return responseHandler.returnError(httpStatus.UNPROCESSABLE_ENTITY, "Anda tidak terdaftar sebagai karyawan")
-        const { division_id } = employee
+        const { division_id, is_outstation } = employee
         if (!division_id) return responseHandler.returnError(httpStatus.UNPROCESSABLE_ENTITY, "Anda tidak terdaftar pada divisi apapun")
+        if (is_outstation && !file) return responseHandler.returnError(httpStatus.UNPROCESSABLE_ENTITY, "Anda sedang Dinas Luar, mohon sertakan gambar")
         
         const currentTime = new Date()
         const { closestWorktime } = await this.worktimeDao.getShortestTime(employee.division_id)
 
-        const uid = this.formatUID(currentTime, closestWorktime.id, employee_id)
+        const uid = this.formatUID(currentTime, closestWorktime.id, employee.id)
         const checkAlreadyExist = await this.employeeAttendanceDao.getByUID(uid)
         if (checkAlreadyExist) return responseHandler.returnSuccess(httpStatus.OK, "Data Employee Attendance Hari Ini sudah dibuat")
 
@@ -88,12 +89,13 @@ class EmployeeAttendanceService {
         return responseHandler.returnSuccess(httpStatus.OK, "Data Employee Attendance Ditemukan", attendanceData);
     };
 
-    formatUID = async (currentDate, worktime_id, employee_id) => {
+    formatUID = (currentDate, worktime_id, employee_id) => {
         const date = new Date(currentDate).toISOString().split('T')[0]
         return `${date}|${worktime_id}|${employee_id}`
     }
 
-    formatStatus = async (worktime) => {
+    formatStatus = (worktime) => {
+        const currentTime = new Date()
         const startTime = new Date(`1970-01-01T${worktime.start_time}Z`);
         const endTime = new Date(`1970-01-01T${worktime.end_time}Z`);
         let status;
@@ -112,7 +114,7 @@ class EmployeeAttendanceService {
                 status = null;
         }
 
-        return { status, shortestDifference, closestWorktime };
+        return { status };
     }
 }
 

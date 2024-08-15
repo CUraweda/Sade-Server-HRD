@@ -4,9 +4,17 @@ const EmployeeVacationValidator = require("../validator/EmployeeVacationValidato
 
 const router = express.Router();
 const auth = require("../middlewares/auth");
+const Upload = require("../middlewares/upload");
 
 const employeeVacationController = new EmployeeVacationController();
 const employeeVacationValidator = new EmployeeVacationValidator();
+const uplodMiddleware = new Upload('/vacation', [
+    "application/pdf",
+    "image/jpeg",
+    "image/jpg",
+    "image/png",
+    "image/gif",
+])
 
 
 router.get(
@@ -22,9 +30,17 @@ router.get(
 
 router.post(
     "/create",
+    uplodMiddleware.uploadFileSingle("file"),
     employeeVacationValidator.createUpdateValidator,
     auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
     employeeVacationController.createOne
+)
+router.post(
+    "/request",
+    uplodMiddleware.uploadFileSingle("file"),
+    employeeVacationValidator.requestVacationValidator,
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    employeeVacationController.createRequest
 )
 
 router.put(

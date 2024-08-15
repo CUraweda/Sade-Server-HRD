@@ -23,6 +23,7 @@ module.exports = (sequelize, DataTypes) => {
             status: DataTypes.STRING,
             description: DataTypes.TEXT,
             is_approved: DataTypes.BOOLEAN,
+            file_path: DataTypes.STRING,
             start_date: DataTypes.DATE,
             end_date: DataTypes.DATE
         },

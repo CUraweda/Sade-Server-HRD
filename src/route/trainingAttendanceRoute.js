@@ -4,10 +4,17 @@ const TrainingAttendanceValidator = require("../validator/TrainingAttendanceVali
 
 const router = express.Router();
 const auth = require("../middlewares/auth");
+const Upload = require("../middlewares/upload");
 
 const trainingAttendanceController = new TrainingAttendanceController();
 const trainingAttendanceValidator = new TrainingAttendanceValidator();
-
+const uploadMiddleware = new Upload("attendance", [
+    "application/pdf",
+    "image/jpeg",
+    "image/jpg",
+    "image/png",
+    "image/gif",
+])
 
 router.get(
     "/",
@@ -21,11 +28,19 @@ router.get(
 )
 
 router.post(
-    "/absen",
+    "/attend-specific/:id",
+    uploadMiddleware.uploadFileSingle('file'),
+    trainingAttendanceValidator.attendCreateValidator,
     auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
     trainingAttendanceController.createByToken
 )
-
+router.post(
+    "/attend-auto",
+    uploadMiddleware.uploadFileMulti('files'),
+    trainingAttendanceValidator.attendCreateValidator,
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    trainingAttendanceController.createByToken
+)
 router.post(
     "/create",
     trainingAttendanceValidator.createUpdateValidator,

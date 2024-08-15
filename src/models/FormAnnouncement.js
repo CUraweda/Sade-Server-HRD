@@ -11,14 +11,14 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // Define associations here
       this.belongsTo(models.employees, { foreignKey: 'employee_id' });
-      this.belongsTo(models.employeeannouncement, { foreignKey: 'approver_id' });
+      this.belongsTo(models.employeeannouncement, { foreignKey: 'announcement_id' });
     }
   }
-  
+
   FormAnnouncementDao.init(
     {
-        employee_id: DataTypes.INTEGER,
-        approver_id: DataTypes.INTEGER        
+      employee_id: DataTypes.INTEGER,
+      announcement_id: DataTypes.INTEGER
     },
     {
       sequelize,
@@ -28,6 +28,6 @@ module.exports = (sequelize, DataTypes) => {
       underscored: true, // Maps snake_case columns to camelCase properties
     }
   );
-  
+
   return FormAnnouncementDao;
 };

@@ -97,7 +97,7 @@ class WorktimeDao extends SuperDao {
     }
 
     async getByDivisionId(division_id){
-        return Worktime.findOne({ where: { division_id } })
+        return Worktime.findAll({ where: { division_id } })
     }
 
     async getShortestTime(division_id){

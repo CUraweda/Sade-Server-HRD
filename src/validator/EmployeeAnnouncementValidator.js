@@ -7,7 +7,8 @@ class EmployeeAnnouncementValidator {
         const schema = Joi.object({
             plan_date: Joi.date(),
             notes: Joi.string(),
-            is_specific: Joi.boolean()
+            is_specific: Joi.boolean().required(),
+            employee_ids: Joi.array()
         });
 
         const options = { abortEarly: false, allowUnknown: true, stripUnknown: true };

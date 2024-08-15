@@ -40,6 +40,7 @@ module.exports = (sequelize, DataTypes) => {
         applicant_question: DataTypes.TEXT,
         status: DataTypes.STRING,
         is_passed: DataTypes.BOOLEAN,
+        is_passed_interview: DataTypes.BOOLEAN,
         file_path: DataTypes.STRING        
     },
     {

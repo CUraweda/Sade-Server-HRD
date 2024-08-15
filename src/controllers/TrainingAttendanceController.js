@@ -5,12 +5,12 @@ class TrainingAttendanceController {
     constructor() {
         this.trainingAttendanceService = new TrainingAttendanceService();
     }
-    
+
     getAll = async (req, res) => {
         try {
             const page = +req.query.page || 0;
             const limit = +req.query.limit || 10;
-            const { search } = req.query;
+            const { search } = req.query || "";
 
             const offset = limit * page;
             const resData = await this.trainingAttendanceService.showPage(
@@ -39,11 +39,18 @@ class TrainingAttendanceController {
             res.status(httpStatus.BAD_GATEWAY).send(e);
         }
     };
-    
+
     createByToken = async (req, res) => {
-        try{
-            console.log(req.user)
-        }catch(e){
+        try {
+            const { employee } = req.user, { id } = req.params
+            let resData
+            if (id) {
+                req.body.training_id = +id
+                resData = await this.trainingAttendanceService.createByToken(employee, req.body, req.file)
+            } else resData = await this.trainingAttendanceService.createByTokenBulk(employee, req.body, req.files)
+            
+            res.status(resData.statusCode).send(resData.response);
+        } catch (e) {
             console.log(e);
             res.status(httpStatus.BAD_GATEWAY).send(e);
         }
