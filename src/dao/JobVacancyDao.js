@@ -6,6 +6,7 @@ const JobVacancy = models.jobvacancy;
 const JobVacancyDetail = models.vacancydetail
 const ApplicantForm = models.applicantform
 const User = models.user
+const Division = models.division
 
 class JobVacancyDao extends SuperDao {
     constructor() {
@@ -46,6 +47,10 @@ class JobVacancyDao extends SuperDao {
             include: [
                 {
                     model: JobVacancyDetail,
+                    required: false
+                },
+                {
+                    model: Division,
                     required: false
                 },
                 {

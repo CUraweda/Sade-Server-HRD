@@ -2,24 +2,24 @@ const SuperDao = require("./SuperDao");
 const models = require("../models");
 const { Op } = require("sequelize");
 
-const JobVacancyDetail = models.vacancydetail;
+const ApplicantInterview = models.applicantinterview;
 
-class JobVacancyDetailDao extends SuperDao {
+class ApplicantInterviewDao extends SuperDao {
     constructor() {
-        super(JobVacancyDetail);
+        super(ApplicantInterview);
     }
 
     async getCount(filter) {
         let { search } = filter
-        if (!search) search = ""
-        return JobVacancyDetail.count({
+        if(!search) search = ""        
+        return ApplicantInterview.count({
             where: {
                 [Op.or]: [
                     {
-                        title: { [Op.like]: "%" + search + "%" },
+                        degree: { [Op.like]: "%" + search + "%" },
                     },
                     {
-                        description: { [Op.like]: "%" + search + "%" },
+                        city: { [Op.like]: "%" + search + "%" },
                     },
                 ],
             },
@@ -28,15 +28,15 @@ class JobVacancyDetailDao extends SuperDao {
 
     async getPage(offset, limit, filter) {
         let { search } = filter
-        if (!search) search = ""
-        return JobVacancyDetail.findAll({
+        if(!search) search = ""        
+        return ApplicantInterview.findAll({
             where: {
                 [Op.or]: [
                     {
-                        title: { [Op.like]: "%" + search + "%" },
+                        degree: { [Op.like]: "%" + search + "%" },
                     },
                     {
-                        description: { [Op.like]: "%" + search + "%" },
+                        city: { [Op.like]: "%" + search + "%" },
                     },
                 ],
             },
@@ -45,12 +45,6 @@ class JobVacancyDetailDao extends SuperDao {
             order: [["id", "DESC"]],
         });
     }
-
-    async getByVacancyId(vacancy_id) {
-        return JobVacancyDetail.findAll({
-            where: { vacancy_id }
-        })
-    }
 }
 
-module.exports = JobVacancyDetailDao;
+module.exports = ApplicantInterviewDao;
