@@ -14,8 +14,9 @@ class EmployeeAttendanceDao extends SuperDao {
     }
 
     async getCount(filter) {
-         let { search } = filter
+         let { search, outstation } = filter
         if(!search) search = ""
+
         return EmployeeAttendance.count({
             where: {
                 [Op.or]: [
@@ -38,12 +39,13 @@ class EmployeeAttendanceDao extends SuperDao {
                         is_outstation: { [Op.like]: "%" + search + "%" },
                     },
                 ],
+                ...(outstation && { is_outstation: outstation != "1" ? false : true })
             },
         });
     }
 
     async getPage(offset, limit, filter) {
-         let { search } = filter
+         let { search, outstation } = filter
         if(!search) search = ""
         return EmployeeAttendance.findAll({
             where: {
@@ -67,6 +69,8 @@ class EmployeeAttendanceDao extends SuperDao {
                         is_outstation: { [Op.like]: "%" + search + "%" },
                     },
                 ],
+                ...(outstation && { is_outstation: outstation != "1" ? false : true })
+
             },
             include: [
                 {

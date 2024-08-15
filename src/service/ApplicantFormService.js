@@ -26,6 +26,10 @@ class ApplicantFormService {
         return responseHandler.returnSuccess(httpStatus.CREATED, "Applicant form created successfully", applicantFormData);
     };
 
+    createInterview = async (body, id) => {
+        // const 
+    }
+
     createDataAndDetail = async (body) => {
         const { details } = body
         delete body.details

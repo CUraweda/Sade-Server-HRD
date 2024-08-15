@@ -92,6 +92,16 @@ class ApplicantFormController {
         }
     }
 
+    evaluateInterview = async (req, res) => {
+        try{
+            const id = +req.params.id
+            const resData = await this.applicantFormService.createInterview(req.body, id)
+        }catch(e){
+            console.log(e);
+            res.status(httpStatus.BAD_GATEWAY).send({ error: e.message });
+        }
+    }
+
     update = async (req, res) => {
         try {
             const id = +req.params.id;
