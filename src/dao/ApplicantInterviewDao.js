@@ -16,10 +16,10 @@ class ApplicantInterviewDao extends SuperDao {
             where: {
                 [Op.or]: [
                     {
-                        degree: { [Op.like]: "%" + search + "%" },
+                        plan_date: { [Op.like]: "%" + search + "%" },
                     },
                     {
-                        city: { [Op.like]: "%" + search + "%" },
+                        outcome: { [Op.like]: "%" + search + "%" },
                     },
                 ],
             },
@@ -33,10 +33,10 @@ class ApplicantInterviewDao extends SuperDao {
             where: {
                 [Op.or]: [
                     {
-                        degree: { [Op.like]: "%" + search + "%" },
+                        plan_date: { [Op.like]: "%" + search + "%" },
                     },
                     {
-                        city: { [Op.like]: "%" + search + "%" },
+                        outcome: { [Op.like]: "%" + search + "%" },
                     },
                 ],
             },

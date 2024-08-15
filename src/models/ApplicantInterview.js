@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       tableName: "tbl_applicant_interview",
-      modelName: "applicantInterview",
+      modelName: "applicantinterview",
       underscored: true,
     }
   );
