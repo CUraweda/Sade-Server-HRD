@@ -3,6 +3,8 @@ const models = require("../models");
 const { Op } = require("sequelize");
 
 const FormAnnouncement = models.formannouncement;
+const Employee = models.employees
+const EmployeeAnnouncement = models.employeeannouncement
 
 class FormAnnouncementDao extends SuperDao {
     constructor() {
@@ -10,8 +12,8 @@ class FormAnnouncementDao extends SuperDao {
     }
 
     async getCount(filter) {
-         let { search } = filter
-        if(!search) search = ""
+        let { search } = filter
+        if (!search) search = ""
         return FormAnnouncement.count({
             where: {
                 [Op.or]: [
@@ -19,7 +21,7 @@ class FormAnnouncementDao extends SuperDao {
                         employee_id: { [Op.like]: "%" + search + "%" },
                     },
                     {
-                        approver_id: { [Op.like]: "%" + search + "%" },
+                        announcement_id: { [Op.like]: "%" + search + "%" },
                     },
                 ],
             },
@@ -27,8 +29,8 @@ class FormAnnouncementDao extends SuperDao {
     }
 
     async getPage(offset, limit, filter) {
-         let { search } = filter
-        if(!search) search = ""
+        let { search } = filter
+        if (!search) search = ""
         return FormAnnouncement.findAll({
             where: {
                 [Op.or]: [
@@ -36,10 +38,20 @@ class FormAnnouncementDao extends SuperDao {
                         employee_id: { [Op.like]: "%" + search + "%" },
                     },
                     {
-                        approver_id: { [Op.like]: "%" + search + "%" },
+                        announcement_id: { [Op.like]: "%" + search + "%" },
                     },
                 ],
             },
+            include: [
+                {
+                    model: Employee,
+                    required: false
+                },
+                {
+                    model: EmployeeAnnouncement,
+                    required: false
+                },
+            ],
             offset: offset,
             limit: limit,
             order: [["id", "DESC"]],

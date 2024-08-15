@@ -1,9 +1,9 @@
 const httpStatus = require("http-status");
-const EmployeeVacationService = require("../service/EmployeeVacationService");
+const ApplicantInterviewService = require("../service/ApplicantInterviewService");
 
-class EmployeeVacationController {
+class ApplicantInterviewController {
     constructor() {
-        this.employeeVacationService = new EmployeeVacationService();
+        this.applicantInterviewService = new ApplicantInterviewService();
     }
 
     getAll = async (req, res) => {
@@ -13,12 +13,7 @@ class EmployeeVacationController {
             const { search } = req.query;
 
             const offset = limit * page;
-            const resData = await this.employeeVacationService.showPage(
-                page,
-                limit,
-                offset,
-                { search }
-            );
+            const resData = await this.applicantInterviewService.showPage(page, limit, offset, { search });
 
             res.status(resData.statusCode).send(resData.response);
         } catch (e) {
@@ -30,8 +25,8 @@ class EmployeeVacationController {
     getOne = async (req, res) => {
         try {
             const id = +req.params.id;
-            if (!id) res.status(httpStatus["422_CLASS"]).send("Tolong sertakan ID");
-            const resData = await this.employeeVacationService.showOne(id);
+            if (!id) res.status(httpStatus["422_CLASS"]).send("Please provide an ID");
+            const resData = await this.applicantInterviewService.showOne(id);
 
             res.status(resData.statusCode).send(resData.response);
         } catch (e) {
@@ -42,34 +37,20 @@ class EmployeeVacationController {
 
     createOne = async (req, res) => {
         try {
-            if(req.file) req.body.file_path = req.file.path
-            const resData = await this.employeeVacationService.create(req.body);
-            
+            const resData = await this.applicantInterviewService.create(req.body);
+
             res.status(resData.statusCode).send(resData.response);
         } catch (e) {
             console.log(e);
             res.status(httpStatus.BAD_GATEWAY).send(e);
         }
     };
-    
-    createRequest = async (req, res) => {
-        try{
-            const { employee } = req.user
-            if(req.file) req.body.file_path = req.file.path
-            const resData = await this.employeeVacationService.createRequestOne(employee, req.body)
-            
-            res.status(resData.statusCode).send(resData.response);
-        }catch(e){
-            console.log(e);
-            res.status(httpStatus.BAD_GATEWAY).send(e);
-        }
-    }
 
     update = async (req, res) => {
         try {
             const id = +req.params.id;
-            if (!id) res.status(httpStatus["422_CLASS"]).send("Tolong sertakan ID");
-            const resData = await this.employeeVacationService.update(id, req.body);
+            if (!id) res.status(httpStatus["422_CLASS"]).send("Please provide an ID");
+            const resData = await this.applicantInterviewService.update(id, req.body);
 
             res.status(resData.statusCode).send(resData.response);
         } catch (e) {
@@ -81,8 +62,8 @@ class EmployeeVacationController {
     delete = async (req, res) => {
         try {
             const id = +req.params.id;
-            if (!id) res.status(httpStatus["422_CLASS"]).send("Tolong sertakan ID");
-            const resData = await this.employeeVacationService.delete(id);
+            if (!id) res.status(httpStatus["422_CLASS"]).send("Please provide an ID");
+            const resData = await this.applicantInterviewService.delete(id);
 
             res.status(resData.statusCode).send(resData.response);
         } catch (e) {
@@ -92,4 +73,4 @@ class EmployeeVacationController {
     };
 }
 
-module.exports = EmployeeVacationController;
+module.exports = ApplicantInterviewController;

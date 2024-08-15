@@ -9,6 +9,7 @@ const ApplicantSkill = models.applicantskill
 const ApplicantJob = models.applicantjob
 const ApplicantAppreciation = models.applicantappreciation
 const AppreciationAttachment = models.appreciationattachment
+const User = models.user
 
 class ApplicantFormDao extends SuperDao {
     constructor() {
@@ -78,6 +79,18 @@ class ApplicantFormDao extends SuperDao {
             limit: limit,
             order: [["id", "DESC"]],
         });
+    }
+
+    async getByVacancy(vacancy_id){
+        return ApplicantForm.findAll({
+            where: { vacancy_id },
+            include: [
+                {
+                    model: User,
+                    required: false
+                }
+            ]
+        })
     }
 }
 

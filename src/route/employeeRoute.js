@@ -21,7 +21,12 @@ router.put(
   employeeValidator.employeeCreateUpdateValidator,
   employeeController.update
 );
-
+router.put(
+  "/outstation/:id",
+  auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+  employeeValidator.outstationEmployeeValidator,
+  employeeController.update
+)
 router.put(
   '/attach/:id',
   auth([1,5]),

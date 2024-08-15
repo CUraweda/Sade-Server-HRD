@@ -99,7 +99,7 @@ class ApplicantFormService {
     };
 
     showByVacancy = async (vacancy_id) => {
-        const applicantFormData = await this.applicantFormDao.findByWhere({ vacancy_id })
+        const applicantFormData = await this.applicantFormDao.getByVacancy(vacancy_id)
         if (!applicantFormData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Applicant form not found");
     
         return responseHandler.returnSuccess(httpStatus.OK, "Applicant form found", applicantFormData);
