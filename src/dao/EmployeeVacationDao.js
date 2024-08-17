@@ -11,7 +11,7 @@ class EmployeeVacationDao extends SuperDao {
     }
 
     async getCount(filter) {
-        let { search } = filter
+        let { search, type, status, date, division_id } = filter
         if (!search) search = ""
         return EmployeeVacation.count({
             where: {
@@ -32,12 +32,41 @@ class EmployeeVacationDao extends SuperDao {
                         description: { [Op.like]: "%" + search + "%" },
                     },
                 ],
+                ...(date && {
+                    [Op.or]: [
+                        {
+                            start_date: {
+                                [Op.startsWith]: date
+                            }
+                        },
+                        {
+                            end_date: {
+                                [Op.startsWith]: date
+                            }
+                        },
+                    ]
+                }),
+                ...(division_id && { "$employee.division_id$": division_id }),
+                ...(type && { type }),
+                ...(status && { status })
             },
+            include: [
+                {
+                    model: Employees,
+                    as: "employee",
+                    required: false,
+                },
+                {
+                    model: Employees,
+                    as: "approver",
+                    required: false,
+                },
+            ]
         });
     }
 
     async getPage(offset, limit, filter) {
-        let { search } = filter
+        let { search, type, status, date, division_id } = filter
         if (!search) search = ""
         return EmployeeVacation.findAll({
             where: {
@@ -58,6 +87,23 @@ class EmployeeVacationDao extends SuperDao {
                         description: { [Op.like]: "%" + search + "%" },
                     },
                 ],
+                ...(date && {
+                    [Op.or]: [
+                        {
+                            start_date: {
+                                [Op.startsWith]: date
+                            }
+                        },
+                        {
+                            end_date: {
+                                [Op.startsWith]: date
+                            }
+                        },
+                    ]
+                }),
+                ...(division_id && { "$employee.division_id$": division_id }),
+                ...(type && { type }),
+                ...(status && { status })
             },
             include: [
                 {

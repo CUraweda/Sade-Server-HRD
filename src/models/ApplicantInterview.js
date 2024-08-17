@@ -20,6 +20,7 @@ module.exports = (sequelize, DataTypes) => {
       plan_date: DataTypes.DATE,
       portal: DataTypes.STRING,
       is_finish: DataTypes.BOOLEAN,
+      uid: DataTypes.STRING,
       outcome: DataTypes.ENUM("LULUS", "TIDAK LULUS"),
     },
     {

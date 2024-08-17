@@ -27,22 +27,22 @@ class ApplicantFormController {
             const id = +req.params.id;
             if (!id) res.status(httpStatus["422_CLASS"]).send("Please provide an ID");
             const resData = await this.applicantFormService.showOne(id);
-            
+
             res.status(resData.statusCode).send(resData.response);
         } catch (e) {
             console.log(e);
             res.status(httpStatus.BAD_GATEWAY).send(e);
         }
     };
-    
+
     getByVacancy = async (req, res) => {
-        try{
+        try {
             const id = +req.params.id;
             if (!id) res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Tolong Sertakan ID");
             const resData = await this.applicantFormService.showByVacancy(id)
 
             res.status(resData.statusCode).send(resData.response);
-        }catch(e){
+        } catch (e) {
             console.log(e);
             res.status(httpStatus.BAD_GATEWAY).send(e);
         }
@@ -74,7 +74,7 @@ class ApplicantFormController {
                         case "appreciation":
                             const { appreciation } = details
                             if (!appreciation || !appreciation[identifierIndex]) continue
-                            if(!appreciation[identifierIndex].files) appreciation[identifierIndex].files = []
+                            if (!appreciation[identifierIndex].files) appreciation[identifierIndex].files = []
                             appreciation[identifierIndex].files.push(fileData)
                             break;
                         default:
@@ -93,9 +93,24 @@ class ApplicantFormController {
     }
 
     evaluateInterview = async (req, res) => {
+        try {
+            const id = +req.params.id
+            const { condition } = req.params
+            const { employee } = req.user
+            const resData = await this.applicantFormService.createInterview(req.body, id, condition, employee)
+
+            res.status(resData.statusCode).send(resData.response);
+        } catch (e) {
+            console.log(e);
+            res.status(httpStatus.BAD_GATEWAY).send({ error: e.message });
+        }
+    }
+
+    evaluateSecond = async (req, res) => {
         try{
             const id = +req.params.id
-            const resData = await this.applicantFormService.createInterview(req.body, id)
+            const { condition } = req.params
+            const resData = await this.applicantFormService.createSecondEvalution()
         }catch(e){
             console.log(e);
             res.status(httpStatus.BAD_GATEWAY).send({ error: e.message });
