@@ -11,39 +11,24 @@ class ApplicantInterviewDao extends SuperDao {
 
     async getCount(filter) {
         let { search } = filter
-        if(!search) search = ""        
+        if(!search) search = ""
+        console.log(search)
         return ApplicantInterview.count({
-            where: {
-                [Op.or]: [
-                    {
-                        plan_date: { [Op.like]: "%" + search + "%" },
-                    },
-                    {
-                        outcome: { [Op.like]: "%" + search + "%" },
-                    },
-                ],
-            },
         });
     }
 
     async getPage(offset, limit, filter) {
         let { search } = filter
-        if(!search) search = ""        
+        if(!search) search = ""
         return ApplicantInterview.findAll({
-            where: {
-                [Op.or]: [
-                    {
-                        plan_date: { [Op.like]: "%" + search + "%" },
-                    },
-                    {
-                        outcome: { [Op.like]: "%" + search + "%" },
-                    },
-                ],
-            },
             offset: offset,
             limit: limit,
             order: [["id", "DESC"]],
         });
+    }
+
+    async getByUID(uid){
+        return ApplicantInterview.findOne({ where: { uid } })
     }
 }
 

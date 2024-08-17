@@ -14,7 +14,7 @@ class EmployeeAttendanceDao extends SuperDao {
     }
 
     async getCount(filter) {
-         let { search, outstation } = filter
+         let { search, outstation, type, status, division_id, date } = filter
         if(!search) search = ""
 
         return EmployeeAttendance.count({
@@ -39,13 +39,33 @@ class EmployeeAttendanceDao extends SuperDao {
                         is_outstation: { [Op.like]: "%" + search + "%" },
                     },
                 ],
+                ...(date && { created_at: { [Op.startsWith]: date } }),
+                ...(division_id && { "$worktime.division_id$": division_id }),
+                ...(type && { "$worktime.type$": { [Op.like]: `%${type}%` } }),
+                ...(status && { status }),
                 ...(outstation && { is_outstation: outstation != "1" ? false : true })
             },
+            include: [
+                {
+                    model: Worktime,
+                    required: false
+                },
+                {
+                    model: Employee,
+                    required: false,
+                    include: [
+                        {
+                            model: Division,
+                            required: false
+                        }
+                    ]
+                },
+            ]
         });
     }
 
     async getPage(offset, limit, filter) {
-         let { search, outstation } = filter
+         let { search, outstation, type, status, division_id, date } = filter
         if(!search) search = ""
         return EmployeeAttendance.findAll({
             where: {
@@ -69,6 +89,10 @@ class EmployeeAttendanceDao extends SuperDao {
                         is_outstation: { [Op.like]: "%" + search + "%" },
                     },
                 ],
+                ...(date && { created_at: { [Op.startsWith]: date } }),
+                ...(division_id && { "$worktime.division_id$": division_id }),
+                ...(type && { "$worktime.type$": { [Op.like]: `%${type}%` } }),
+                ...(status && { status }),
                 ...(outstation && { is_outstation: outstation != "1" ? false : true })
 
             },
