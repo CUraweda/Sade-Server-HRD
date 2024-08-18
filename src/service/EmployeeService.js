@@ -69,6 +69,15 @@ class EmployeeService {
     return responseHandler.returnSuccess(httpStatus.OK, message, dt);
   };
 
+  showByUser = async (data) => {
+    if (!data.employee) return responseHandler.returnError(httpStatus.UNPROCESSABLE_ENTITY, "Anda tidak termasuk kedalam Karyawan")
+    const { id } = data.employee
+    const employeeData = await this.employeeDao.getMe(id)
+    if(!employeeData) return responseHandler.returnError(httpStatus.UNPROCESSABLE_ENTITY, "Anda tidak termasuk kedalam Karyawan")
+
+    return responseHandler.returnSuccess(httpStatus.OK, "Data Me berhasil  didapatkan", employeeData)
+  }
+
   showEmployeeIsGuru = async (isGuru) => {
     const message = "Employee successfully retrieved!";
 

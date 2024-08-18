@@ -55,6 +55,17 @@ class EmployeeController {
       res.status(httpStatus.BAD_GATEWAY).send(e);
     }
   };
+  
+  showMe = async (req, res) => {
+    try{
+      const resData = await this.employeeService.showByUser(req.user)
+      
+      res.status(resData.statusCode).send(resData.response);
+    }catch(e){
+      console.log(e)
+      res.status(httpStatus.BAD_GATEWAY).send(e);
+    }
+  }
 
   showAll = async (req, res) => {
     try {

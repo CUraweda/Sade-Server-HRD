@@ -82,6 +82,9 @@ class EmployeeAttendanceService {
         return responseHandler.returnSuccess(httpStatus.OK, "Data Employee Attendance Ditemukan", attendanceData);
     }
 
+    showRekapEID = async (id) => {
+        
+    }
     showOne = async (id) => {
         const attendanceData = await this.employeeAttendanceDao.findById(id);
         if (!attendanceData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Employee Attendance Tidak ditemukan");

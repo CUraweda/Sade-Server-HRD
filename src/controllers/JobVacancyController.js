@@ -56,6 +56,18 @@ class JobVacancyController {
             res.status(httpStatus.BAD_GATEWAY).send(e);
         }
     }
+    
+    closeVacancy = async (req, res) => {
+        try{
+            const { id } = req.params
+            const resData = await this.jobVacancyService.createWithDetail(req.body)
+            
+            res.status(resData.statusCode).send(resData.response);
+        }catch(e){
+            console.log(e);
+            res.status(httpStatus.BAD_GATEWAY).send(e);
+        }    
+    }
 
     update = async (req, res) => {
         try {

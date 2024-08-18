@@ -26,6 +26,12 @@ router.post(
     auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
     trainingSuggestionController.createOne
 )
+router.post(
+    "/request",
+    trainingSuggestionValidator.requestValidator,
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    trainingSuggestionController.createRequest
+)
 
 router.put(
     "/update/:id",
