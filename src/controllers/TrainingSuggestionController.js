@@ -51,6 +51,17 @@ class TrainingSuggestionController {
         }
     };
 
+    createRequest = async (req, res) => {
+        try {
+            const resData = await this.trainingSuggestionService.createByUser(req.user, req.body);
+
+            res.status(resData.statusCode).send(resData.response);
+        } catch (e) {
+            console.log(e);
+            res.status(httpStatus.BAD_GATEWAY).send(e);
+        }
+    }
+
     update = async (req, res) => {
         try {
             const id = +req.params.id;

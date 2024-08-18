@@ -22,6 +22,11 @@ router.get(
     employeeAttendanceController.getAll
 )
 router.get(
+    "/rekap-employee/:id",
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    employeeAttendanceController.getAll
+)
+router.get(
     "/:id",
     auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
     employeeAttendanceController.getOne

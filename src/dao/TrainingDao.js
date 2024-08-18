@@ -10,7 +10,7 @@ class TrainingDao extends SuperDao {
     }
 
     async getCount(filter) {
-         let { search } = filter
+         let { search, status, employee_id } = filter
         if(!search) search = ""
         return Training.count({
             where: {
@@ -18,12 +18,14 @@ class TrainingDao extends SuperDao {
                     { title: { [Op.like]: "%" + search + "%" } },
                     { purpose: { [Op.like]: "%" + search + "%" } },
                 ],
+                ...(employee_id && { employee_id }),
+                ...(status && { status: { [Op.like]: `%${status}%` } })
             },
         });
     }
 
     async getPage(offset, limit, filter) {
-         let { search } = filter
+         let { search, status, employee_id} = filter
         if(!search) search = ""
         return Training.findAll({
             where: {
@@ -31,6 +33,8 @@ class TrainingDao extends SuperDao {
                     { title: { [Op.like]: "%" + search + "%" } },
                     { purpose: { [Op.like]: "%" + search + "%" } },
                 ],
+                ...(employee_id && { employee_id }),
+                ...(status && { status: { [Op.like]: `%${status}%` } })
             },
             offset: offset,
             limit: limit,

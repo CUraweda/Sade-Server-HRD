@@ -12,6 +12,7 @@ class EmployeeJobdeskController {
             const limit = +req.query.limit || 10;
             const { search } = req.query;
 
+
             const offset = limit * page;
             const resData = await this.employeeJobdeskService.showPage(
                 page,
@@ -42,6 +43,7 @@ class EmployeeJobdeskController {
 
     createOne = async (req, res) => {
         try {
+            console.log(req.body)
             const resData = await this.employeeJobdeskService.create(req.body);
 
             res.status(resData.statusCode).send(resData.response);
