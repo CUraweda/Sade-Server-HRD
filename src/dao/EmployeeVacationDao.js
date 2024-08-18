@@ -3,6 +3,7 @@ const models = require("../models");
 const { Op } = require("sequelize");
 
 const EmployeeVacation = models.employeevacation;
+const Employees = models.employees
 
 class EmployeeVacationDao extends SuperDao {
     constructor() {
@@ -10,8 +11,8 @@ class EmployeeVacationDao extends SuperDao {
     }
 
     async getCount(filter) {
-         let { search } = filter
-        if(!search) search = ""
+        let { search, type, status, date, division_id } = filter
+        if (!search) search = ""
         return EmployeeVacation.count({
             where: {
                 [Op.or]: [
@@ -31,13 +32,42 @@ class EmployeeVacationDao extends SuperDao {
                         description: { [Op.like]: "%" + search + "%" },
                     },
                 ],
+                ...(date && {
+                    [Op.or]: [
+                        {
+                            start_date: {
+                                [Op.startsWith]: date
+                            }
+                        },
+                        {
+                            end_date: {
+                                [Op.startsWith]: date
+                            }
+                        },
+                    ]
+                }),
+                ...(division_id && { "$employee.division_id$": division_id }),
+                ...(type && { type }),
+                ...(status && { status })
             },
+            include: [
+                {
+                    model: Employees,
+                    as: "employee",
+                    required: false,
+                },
+                {
+                    model: Employees,
+                    as: "approver",
+                    required: false,
+                },
+            ]
         });
     }
 
     async getPage(offset, limit, filter) {
-         let { search } = filter
-        if(!search) search = ""
+        let { search, type, status, date, division_id } = filter
+        if (!search) search = ""
         return EmployeeVacation.findAll({
             where: {
                 [Op.or]: [
@@ -57,7 +87,36 @@ class EmployeeVacationDao extends SuperDao {
                         description: { [Op.like]: "%" + search + "%" },
                     },
                 ],
+                ...(date && {
+                    [Op.or]: [
+                        {
+                            start_date: {
+                                [Op.startsWith]: date
+                            }
+                        },
+                        {
+                            end_date: {
+                                [Op.startsWith]: date
+                            }
+                        },
+                    ]
+                }),
+                ...(division_id && { "$employee.division_id$": division_id }),
+                ...(type && { type }),
+                ...(status && { status })
             },
+            include: [
+                {
+                    model: Employees,
+                    as: "employee",
+                    required: false,
+                },
+                {
+                    model: Employees,
+                    as: "approver",
+                    required: false,
+                },
+            ],
             offset: offset,
             limit: limit,
             order: [["id", "DESC"]],

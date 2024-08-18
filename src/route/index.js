@@ -24,6 +24,7 @@ const trainingSuggestionRoute = require("./trainingSuggestionRoute");
 const formAnnouncementRoute = require('./formAnnouncementRoute')
 const worktimeRoute = require('./worktimeRoute')
 const employeeVacationRoute = require('./employeeVacationRoute')
+const applicantInterviewRoute = require('./applicantInterviewRoute')
 const router = express.Router();
 
 
@@ -32,6 +33,10 @@ const defaultRoutes = [
   {
     path: "/applicant-academic",
     route: applicantAcademicRoute
+  },
+  {
+    path: '/applicant-interview',
+    route: applicantInterviewRoute
   },
   {
     path: "/applicant-appreciation",

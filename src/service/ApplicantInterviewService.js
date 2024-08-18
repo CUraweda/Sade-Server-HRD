@@ -9,33 +9,33 @@ class ApplicantInterviewService {
 
     create = async (body) => {
         const applicantInterviewData = await this.applicantInterviewDao.create(body);
-        if (!applicantInterviewData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Failed to create applicant academic record");
+        if (!applicantInterviewData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Failed to create applicant Interview record");
 
-        return responseHandler.returnSuccess(httpStatus.CREATED, "Applicant academic record created successfully", applicantInterviewData);
+        return responseHandler.returnSuccess(httpStatus.CREATED, "Applicant Interview record created successfully", applicantInterviewData);
     };
 
     createMany = async (body = []) => {
         const applicantInterviewData = await this.applicantInterviewDao.bulkCreate(body)
-        if (!applicantInterviewData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Failed to create applicant academic record");
+        if (!applicantInterviewData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Failed to create applicant Interview record");
 
-        return responseHandler.returnSuccess(httpStatus.CREATED, "Applicant academic record created successfully", applicantInterviewData);
+        return responseHandler.returnSuccess(httpStatus.CREATED, "Applicant Interview record created successfully", applicantInterviewData);
     }
 
     update = async (id, body) => {
         const dataExist = await this.applicantInterviewDao.findById(id);
-        if (!dataExist) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Applicant academic record not found");
+        if (!dataExist) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Applicant Interview record not found");
 
         const applicantInterviewData = await this.applicantInterviewDao.updateWhere(body, { id });
-        if (!applicantInterviewData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Failed to update applicant academic record");
+        if (!applicantInterviewData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Failed to update applicant Interview record");
 
-        return responseHandler.returnSuccess(httpStatus.OK, "Applicant academic record updated successfully", {});
+        return responseHandler.returnSuccess(httpStatus.OK, "Applicant Interview record updated successfully", {});
     };
 
     delete = async (id) => {
         const applicantInterviewData = await this.applicantInterviewDao.deleteByWhere({ id });
-        if (!applicantInterviewData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Failed to delete applicant academic record");
+        if (!applicantInterviewData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Failed to delete applicant Interview record");
 
-        return responseHandler.returnSuccess(httpStatus.OK, "Applicant academic record deleted successfully", {});
+        return responseHandler.returnSuccess(httpStatus.OK, "Applicant Interview record deleted successfully", {});
     };
 
     showPage = async (page, limit, offset, filter) => {
@@ -44,7 +44,7 @@ class ApplicantInterviewService {
 
         const result = await this.applicantInterviewDao.getPage(offset, limit, filter);
 
-        return responseHandler.returnSuccess(httpStatus.OK, "Applicant academic records retrieved successfully", {
+        return responseHandler.returnSuccess(httpStatus.OK, "Applicant Interview records retrieved successfully", {
             result,
             page,
             limit,
@@ -55,9 +55,9 @@ class ApplicantInterviewService {
 
     showOne = async (id) => {
         const applicantInterviewData = await this.applicantInterviewDao.findById(id);
-        if (!applicantInterviewData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Applicant academic record not found");
+        if (!applicantInterviewData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Applicant Interview record not found");
 
-        return responseHandler.returnSuccess(httpStatus.OK, "Applicant academic record found", applicantInterviewData);
+        return responseHandler.returnSuccess(httpStatus.OK, "Applicant Interview record found", applicantInterviewData);
     };
 }
 
