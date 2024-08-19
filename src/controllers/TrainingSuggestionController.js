@@ -10,14 +10,14 @@ class TrainingSuggestionController {
         try {
             const page = +req.query.page || 0;
             const limit = +req.query.limit || 10;
-            const { search } = req.query;
+            const { search, employee_id } = req.query;
 
             const offset = limit * page;
             const resData = await this.trainingSuggestionService.showPage(
                 page,
                 limit,
                 offset,
-                { search }
+                { search, employee_id }
             );
 
             res.status(resData.statusCode).send(resData.response);

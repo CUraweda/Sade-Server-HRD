@@ -3,6 +3,7 @@ const models = require("../models");
 const { Op } = require("sequelize");
 
 const TrainingAttendance = models.trainingattendance;
+const Training = models.training
 
 class TrainingAttendanceDao extends SuperDao {
     constructor() {
@@ -10,7 +11,7 @@ class TrainingAttendanceDao extends SuperDao {
     }
 
     async getCount(filter) {
-         let { search } = filter
+         let { search, employee_id } = filter
         if(!search) search = ""
         return TrainingAttendance.count({
             where: {
@@ -22,12 +23,18 @@ class TrainingAttendanceDao extends SuperDao {
                         description: { [Op.like]: "%" + search + "%" },
                     },
                 ],
+                ...(employee_id && { "$training.employee_id$": employee_id })
             },
+            include: [
+                {
+                    model: Training
+                }
+            ]
         });
     }
 
     async getPage(offset, limit, filter) {
-         let { search } = filter
+         let { search, employee_id } = filter
         if(!search) search = ""
         return TrainingAttendance.findAll({
             where: {
@@ -39,7 +46,13 @@ class TrainingAttendanceDao extends SuperDao {
                         description: { [Op.like]: "%" + search + "%" },
                     },
                 ],
+                ...(employee_id && { "$training.employee_id$": employee_id })
             },
+            include: [
+                {
+                    model: Training
+                }
+            ],
             offset: offset,
             limit: limit,
             order: [["id", "DESC"]],
