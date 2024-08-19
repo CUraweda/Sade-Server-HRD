@@ -23,7 +23,9 @@ class ApplicantFormValidator {
             applicant_reason: Joi.string(),
             applicant_question: Joi.string(),
             status: Joi.string(),
+            employee_id: Joi.number().integer(),
             is_passed: Joi.boolean(),
+            is_passed_interview: Joi.boolean(),
             file_path: Joi.string()
         });
 
