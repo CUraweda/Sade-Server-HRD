@@ -1,6 +1,7 @@
 const httpStatus = require("http-status");
 const constant = require('../config/constant')
 const EmployeeAttendanceDao = require("../dao/EmployeeAttendanceDao");
+const EmployeeVacationDao = require("../dao/EmployeeVacationDao");
 const responseHandler = require("../helper/responseHandler");
 const WorktimeDao = require("../dao/WorktimeDao");
 
@@ -8,7 +9,7 @@ class EmployeeAttendanceService {
     constructor() {
         this.employeeAttendanceDao = new EmployeeAttendanceDao();
         this.worktimeDao = new WorktimeDao()
-        this.emp
+        this.employeeVacationDao = new EmployeeVacationDao()
     }
 
     create = async (body) => {
@@ -78,13 +79,27 @@ class EmployeeAttendanceService {
     showByUID = async (uid) => {
         const attendanceData = await this.employeeAttendanceDao.findOneByWhere({ uid });
         if (!attendanceData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Employee Attendance Tidak ditemukan");
-
+        
         return responseHandler.returnSuccess(httpStatus.OK, "Data Employee Attendance Ditemukan", attendanceData);
     }
-
-    showRekapEID = async (id) => {
+    
+    showRekapMonthEID = async (employee_id) => {
+        const currentDate = new Date()
+        const currentMonth = currentDate.getMonth().toString().padStart(2, "0")
+        const currentYear = currentDate.getFullYear()
+        const startDate = `01-${currentMonth}-${currentYear}T00:00:00.000Z`
+        const attendanceData = await this.employeeAttendanceDao.countAttendanceStartEnd(employee_id, startDate, currentDate.toISOString())
+        if (!attendanceData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Employee Attendance Tidak ditemukan");
         
+        const vacationData = await this.employeeVacationDao.getRekapByStartEnd(startDate, currentDate.toISOString(), { employee_id, type: ["CUTI", "IZIN"] })
+        if (!vacationData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Vacation Tidak ditemukan");
+
+        let counter = { IZIN: 0, CUTI: 0 }
+        vacationData.map((vacation) => { counter[vacation.type]++ })
+
+        return responseHandler.returnSuccess(httpStatus.OK, "Rekap Monthly berhasil didapatkan", { HADIR: attendanceData, ...counter })
     }
+
     showOne = async (id) => {
         const attendanceData = await this.employeeAttendanceDao.findById(id);
         if (!attendanceData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Employee Attendance Tidak ditemukan");

@@ -1,5 +1,6 @@
 const httpStatus = require("http-status");
 const EmployeeService = require("../service/EmployeeService");
+const { returnError } = require("../helper/responseHandler");
 
 class EmployeeController {
   constructor() {
@@ -42,7 +43,7 @@ class EmployeeController {
       res.status(httpStatus.BAD_GATEWAY).send(e);
     }
   };
-
+  
   showAllIsGuru = async (req, res) => {
     try {
       var isGuru = req.query.is_initial || "";

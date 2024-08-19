@@ -124,6 +124,17 @@ class EmployeeVacationDao extends SuperDao {
             order: [["id", "DESC"]],
         });
     }
+
+    async getRekapByStartEnd(start_date, end_date, filter) {
+        const { employee_id, type } = filter
+        return EmployeeVacation.findAll({
+            where: { 
+                start_date: { [Op.between]: [start_date, end_date] },
+                ...(employee_id && { employee_id }),
+                ...(type && { type: { [Op.in]: type } })
+             }
+        })
+    }
 }
 
 module.exports = EmployeeVacationDao;

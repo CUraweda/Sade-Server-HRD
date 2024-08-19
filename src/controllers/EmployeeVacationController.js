@@ -42,32 +42,58 @@ class EmployeeVacationController {
 
     createOne = async (req, res) => {
         try {
-            if(req.file) req.body.file_path = req.file.path
+            if (req.file) req.body.file_path = req.file.path
             const resData = await this.employeeVacationService.create(req.body);
-            
+
             res.status(resData.statusCode).send(resData.response);
         } catch (e) {
             console.log(e);
             res.status(httpStatus.BAD_GATEWAY).send(e);
         }
     };
-    
+
     createRequest = async (req, res) => {
-        try{
+        try {
             const { employee } = req.user
-            if(req.file) req.body.file_path = req.file.path
+            if (req.file) req.body.file_path = req.file.path
             const resData = await this.employeeVacationService.createRequestOne(employee, req.body)
-            
+
             res.status(resData.statusCode).send(resData.response);
-        }catch(e){
+        } catch (e) {
             console.log(e);
             res.status(httpStatus.BAD_GATEWAY).send(e);
         }
     }
 
+    changeStatus = async (req, res) => {
+        try {
+            const id = +req.params.id;
+            const condition = req.params.condition
+            const resData = await this.employeeVacationService.changeStatus(id, condition, req.user);
+    
+            res.status(resData.statusCode).send(resData.response);
+        } catch (e) {
+            console.log(e);
+            res.status(httpStatus.BAD_GATEWAY).send({ error: e.message });
+        }
+    }
+
+    changeData = async (req, res) => {
+        try {
+            const id = +req.params.id;
+            if (req.file) req.body.file_path = req.file.path
+            const resData = await this.employeeVacationService.change(id, req.body);
+
+            res.status(resData.statusCode).send(resData.response);
+        } catch (e) {
+            console.log(e);
+            res.status(httpStatus.BAD_GATEWAY).send({ error: e.message });
+        }
+    }
     update = async (req, res) => {
         try {
             const id = +req.params.id;
+            if (req.file) req.body.file_path = req.file.path
             if (!id) res.status(httpStatus["422_CLASS"]).send("Tolong sertakan ID");
             const resData = await this.employeeVacationService.update(id, req.body);
 
@@ -77,6 +103,19 @@ class EmployeeVacationController {
             res.status(httpStatus.BAD_GATEWAY).send({ error: e.message });
         }
     };
+    
+    removeData = async (req, res) => {
+        try{
+            const id = +req.params.id;
+            if (!id) res.status(httpStatus["422_CLASS"]).send("Tolong sertakan ID");
+            const resData = await this.employeeVacationService.removeData(id);
+        
+            res.status(resData.statusCode).send(resData.response);
+        }catch(e){
+            console.log(e);
+            res.status(httpStatus.BAD_GATEWAY).send({ error: e.message });
+        }
+    }
 
     delete = async (req, res) => {
         try {

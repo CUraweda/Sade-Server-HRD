@@ -25,6 +25,35 @@ class EmployeeVacationService {
         return responseHandler.returnSuccess(httpStatus.CREATED, "Data Employee Vacation Berhasil dibuat", employeeVacationData);
     }
 
+    changeStatus = async (id, condition, essential) => {
+        const { employee } = essential
+        if (!employee) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Anda tidak termasuk sebagai Karyawan");
+        const dataExist = await this.employeeVacationDao.findById(id);
+        if (!dataExist) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Employee Vacation Tidak Ada");
+
+        const body = condition.toLowerCase() === "accept" ? {
+            is_approved: true,
+            approver_id: employee.id,
+            status: "Diterima"
+        } : { is_approved: false, status: "Ditolak" }
+
+        const employeeVacationData = await this.employeeVacationDao.updateWhere(body, { id });
+        if (!employeeVacationData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Employee Vacation Gagal diperbaharui");
+
+        return responseHandler.returnSuccess(httpStatus.CREATED, "Data Employee Vacation Berhasil diperbaharui", {});
+    }
+
+    change = async (id, body) => {
+        const dataExist = await this.employeeVacationDao.findById(id);
+        if (!dataExist) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Employee Vacation Tidak Ada");
+        if (dataExist.is_approved) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Employee Vacation Tidak bisa dirubah");
+        
+        const employeeVacationData = await this.employeeVacationDao.updateWhere(body, { id });
+        if (!employeeVacationData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Employee Vacation Gagal diperbaharui");
+    
+        return responseHandler.returnSuccess(httpStatus.CREATED, "Data Employee Vacation Berhasil diperbaharui", {});
+    }
+
     update = async (id, body) => {
         const dataExist = await this.employeeVacationDao.findById(id);
         if (!dataExist) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Employee Vacation Tidak Ada");
@@ -34,6 +63,17 @@ class EmployeeVacationService {
 
         return responseHandler.returnSuccess(httpStatus.CREATED, "Data Employee Vacation Berhasil diperbaharui", {});
     };
+    
+    removeData = async (id) => {
+        const dataExist = await this.employeeVacationDao.findById(id);
+        if (!dataExist) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Employee Vacation Tidak Ada");
+        if (dataExist.is_approved) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Employee Vacation Tidak bisa dihapus");
+
+        const employeeVacationData = await this.employeeVacationDao.deleteByWhere({ id });
+        if (!employeeVacationData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Employee Vacation Gagal dihapus");
+    
+        return responseHandler.returnSuccess(httpStatus.CREATED, "Data Employee Vacation Berhasil dihapus", {});
+    }
 
     delete = async (id) => {
         const employeeVacationData = await this.employeeVacationDao.deleteByWhere({ id });

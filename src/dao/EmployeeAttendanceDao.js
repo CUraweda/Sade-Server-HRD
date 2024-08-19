@@ -120,6 +120,17 @@ class EmployeeAttendanceDao extends SuperDao {
         });
     }
 
+    async countAttendanceStartEnd(employee_id, start_date, end_date){
+        return EmployeeAttendance.count({
+            where: {
+                employee_id,
+                created_at: {
+                    [Op.between]: [start_date, end_date]
+                }
+            }
+        })
+    }
+
     async getByUID(uid) {
         return EmployeeAttendance.findOne({
             where: { uid }
