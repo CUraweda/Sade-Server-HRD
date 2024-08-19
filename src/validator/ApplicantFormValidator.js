@@ -82,7 +82,7 @@ class ApplicantFormValidator {
         }
     }
 
-    async evaluateInterviewValidator(req, res, next){
+    async evaluateFirstValidator(req, res, next){
         const schema = Joi.object({
             plan_date: Joi.date(),
             portal: Joi.string()
@@ -100,7 +100,7 @@ class ApplicantFormValidator {
         }
     }
 
-    async evaluateInterviewValidator(req, res, next){
+    async evaluateSecondValidator(req, res, next){
         const schema = Joi.object({});
 
         const options = { abortEarly: false, allowUnknown: true, stripUnknown: true };

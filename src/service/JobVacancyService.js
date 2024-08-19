@@ -2,6 +2,7 @@ const httpStatus = require("http-status");
 const JobVacancyDao = require("../dao/JobVacancyDao");
 const responseHandler = require("../helper/responseHandler");
 const JobVacancyDetailDao = require("../dao/JobVacancyDetailDao");
+const constant = require("../config/constant");
 
 class JobVacancyService {
     constructor() {
@@ -34,6 +35,18 @@ class JobVacancyService {
         return responseHandler.returnSuccess(httpStatus.OK, "Berhasil membuat Job Vacancy beserta detail")
     }
 
+    updateClose = async (id, body) => {
+        const dataExist = await this.jobVacancyDao.findById(id);
+        if (!dataExist) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Job vacancy not found");
+
+        body.status = body.status || constant.closeVacancy
+        body.is_open = false
+
+        const jobVacancyData = await this.jobVacancyDao.updateWhere(body, { id });
+        if (!jobVacancyData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Failed to update job vacancy");
+    
+        return responseHandler.returnSuccess(httpStatus.OK, "Job vacancy updated successfully", {});
+    }
     update = async (id, body) => {
         const dataExist = await this.jobVacancyDao.findById(id);
         if (!dataExist) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Job vacancy not found");

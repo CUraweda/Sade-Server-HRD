@@ -14,6 +14,11 @@ router.post(
   employeeValidator.employeeCreateUpdateValidator,
   employeeController.create
 );
+router.post(
+  "/import",
+  auth([1, 5]),
+  employeeController.importExcel
+);
 
 router.put(
   "/update/:id",
@@ -29,7 +34,7 @@ router.put(
 )
 router.put(
   '/attach/:id',
-  auth([1,5]),
+  auth([1, 5]),
   employeeValidator.attachEmployeeValidator,
   employeeController.update
 )
@@ -39,17 +44,23 @@ router.get(
   auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
   employeeController.show
 );
-
 router.get(
   "/show-by-status",
   auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
   employeeController.showAllIsGuru
 );
-
-router.get("/", auth([1, 2, 3, 4, 5, 6]), employeeController.showAll);
+router.get(
+  "/me",
+  auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+  employeeController.showMe
+)
+router.get(
+  "/",
+  auth([1, 2, 3, 4, 5, 6]),
+  employeeController.showAll
+);
 
 router.delete("/delete/:id", auth([1, 5]), employeeController.delete);
 
-router.post("/import", auth([1, 5]), employeeController.importExcel);
 
 module.exports = router;

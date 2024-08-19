@@ -40,15 +40,15 @@ router.post(
 )
 router.post(
     "/first-evaluate/:condition/:id",
-    applicantFormValidator.evaluateInterviewValidator,
+    applicantFormValidator.evaluateFirstValidator,
     auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
-    applicantFormController.evaluateInterview
+    applicantFormController.evaluateFirst
 )
 router.post(
     "/second-evaluate/:condition/:id",
-    applicantFormValidator.evaluateInterviewValidator,
+    applicantFormValidator.evaluateSecondValidator,
     auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
-    applicantFormController.evaluateInterview
+    applicantFormController.evaluateSecond
 )
 
 router.post(

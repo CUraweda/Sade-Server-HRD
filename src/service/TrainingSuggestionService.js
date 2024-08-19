@@ -14,6 +14,16 @@ class TrainingSuggestionService {
         return responseHandler.returnSuccess(httpStatus.CREATED, "Data Training Suggestion Berhasil dibuat", trainingSuggestionData);
     };
 
+    createByUser = async (user, body) => {
+        if (!user.employee) return responseHandler.returnError(httpStatus.UNPROCESSABLE_ENTITY, "Anda bukan termasuk karyawan");
+        body.employee_id = user.employee.id
+
+        const trainingSuggestionData = await this.trainingSuggestionDao.create(body);
+        if (!trainingSuggestionData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Training Suggestion Gagal dibuat");
+        
+        return responseHandler.returnSuccess(httpStatus.CREATED, "Data Training Suggestion Berhasil dibuat", trainingSuggestionData);
+    }
+
     update = async (id, body) => {
         const dataExist = await this.trainingSuggestionDao.findById(id);
         if (!dataExist) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Training Suggestion Tidak Ada");

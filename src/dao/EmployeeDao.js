@@ -4,6 +4,7 @@ const { Op } = require("sequelize");
 
 const Employees = models.employees;
 const User = models.user
+const EmployeeAttendance = models.employeeattendance
 
 class EmployeesDao extends SuperDao {
   constructor() {
@@ -229,6 +230,18 @@ class EmployeesDao extends SuperDao {
       limit: limit,
       order: [["id", "DESC"]],
     });
+  }
+
+  getMe(id){
+    return Employees.findOne({
+      where: { id },
+      include: [
+        {
+          model: EmployeeAttendance,
+          required: false
+        }
+      ]
+    })
   }
 }
 module.exports = EmployeesDao;

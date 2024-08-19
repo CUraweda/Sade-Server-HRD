@@ -34,7 +34,7 @@ class ApplicantFormService {
         condition = condition.toLowerCase()
         const applicantExist = await this.applicantFormDao.findById(id)
         if (!applicantExist) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Tidak ada data pada ID");
-        if (applicantExist.is_passed_interview || !applicantExist.is_passed_interview) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Applicant Sudah Pernah melewati Seleksi Pertama");
+        if (applicantExist.is_passed_interview || applicantExist.is_passed_interview === false) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Applicant Sudah Pernah melewati Seleksi Pertama");
 
         if (condition === "lulus") {
             const uid = `${id}-${employee.id}`
@@ -48,21 +48,26 @@ class ApplicantFormService {
             status: constant.applicantFirstEvaluation.fail
         } : { is_passed_interview: true, status: constant.applicantFirstEvaluation.success }
         const applicantFormData = await this.applicantFormDao.updateById(payloadData, id);
-        if (!applicantFormData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Failed to create applicant form");
-
+        if (!applicantFormData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Gagal mengupdate Applicant Form");
+        
         return responseHandler.returnSuccess(httpStatus.CREATED, "Seleksi berhasil dicatat", {});
     }
-
+    
     createSecondEvalution = async (id, condition) => {
         if (!condition) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Kondisi Lulus atau Tidak Lulus tidak dispesifikan");
         condition = condition.toLowerCase()
         const applicationExist = await this.applicantFormDao.findById(id)
         if (!applicationExist) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Tidak ada data pada ID");
-        if (applicationExist.is_passed || !applicationExist.is_passed) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Applicant Sudah Pernah melewati Seleksi Pertama");
-
+        if (applicationExist.is_passed || applicationExist.is_passed === false) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Applicant Sudah Pernah melewati Seleksi Kedua");
+        
         const payloadData = condition != "lulus" ? {
-            is_passed: false
-        }: {  }
+            is_passed: false,
+            status: constant.applicantSecondEvaluation.fail
+        }: { is_passed: true, status: constant.applicantSecondEvaluation.success }
+        const applicantFormData = await this.applicantFormDao.updateById(payloadData, id);
+        if (!applicantFormData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Gagal mengupdate Applicant Form");
+
+        return responseHandler.returnSuccess(httpStatus.CREATED, "Seleksi berhasil dicatat", {});
     }
 
     createDataAndDetail = async (body) => {

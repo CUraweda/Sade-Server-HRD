@@ -10,10 +10,11 @@ class TrainingController {
         try {
             const page = +req.query.page || 0;
             const limit = +req.query.limit || 10;
-            const { search } = req.query;
+            let { search, status, by_token, employee_id } = req.query;
 
             const offset = limit * page;
-            const resData = await this.trainingService.showPage(page, limit, offset, { search });
+            if(by_token && by_token != "0") employee_id = req.user.employee.id
+            const resData = await this.trainingService.showPage(page, limit, offset, { search, status, employee_id });
 
             res.status(resData.statusCode).send(resData.response);
         } catch (e) {

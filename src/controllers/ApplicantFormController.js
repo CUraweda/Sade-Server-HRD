@@ -92,7 +92,7 @@ class ApplicantFormController {
         }
     }
 
-    evaluateInterview = async (req, res) => {
+    evaluateFirst = async (req, res) => {
         try {
             const id = +req.params.id
             const { condition } = req.params
@@ -110,7 +110,9 @@ class ApplicantFormController {
         try{
             const id = +req.params.id
             const { condition } = req.params
-            const resData = await this.applicantFormService.createSecondEvalution()
+            const resData = await this.applicantFormService.createSecondEvalution(id, condition)
+
+            res.status(resData.statusCode).send(resData.response);
         }catch(e){
             console.log(e);
             res.status(httpStatus.BAD_GATEWAY).send({ error: e.message });
