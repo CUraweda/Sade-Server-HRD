@@ -43,6 +43,7 @@ router.post(
 )
 router.post(
     "/create",
+    uploadMiddleware.uploadFileSingle('file'),
     trainingAttendanceValidator.createUpdateValidator,
     auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
     trainingAttendanceController.createOne

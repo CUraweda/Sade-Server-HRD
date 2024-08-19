@@ -11,7 +11,7 @@ class EmployeeVacationDao extends SuperDao {
     }
 
     async getCount(filter) {
-        let { search, type, status, date, division_id } = filter
+        let { search, type, status, date, division_id, employee_id } = filter
         if (!search) search = ""
         return EmployeeVacation.count({
             where: {
@@ -46,6 +46,7 @@ class EmployeeVacationDao extends SuperDao {
                         },
                     ]
                 }),
+                ...(employee_id && { employee_id }),
                 ...(division_id && { "$employee.division_id$": division_id }),
                 ...(type && { type }),
                 ...(status && { status })
@@ -66,7 +67,7 @@ class EmployeeVacationDao extends SuperDao {
     }
 
     async getPage(offset, limit, filter) {
-        let { search, type, status, date, division_id } = filter
+        let { search, type, status, date, division_id, employee_id } = filter
         if (!search) search = ""
         return EmployeeVacation.findAll({
             where: {
@@ -101,6 +102,7 @@ class EmployeeVacationDao extends SuperDao {
                         },
                     ]
                 }),
+                ...(employee_id && { employee_id }),
                 ...(division_id && { "$employee.division_id$": division_id }),
                 ...(type && { type }),
                 ...(status && { status })

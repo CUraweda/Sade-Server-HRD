@@ -9,7 +9,6 @@ class TrainingAttendanceValidator {
             training_id: Joi.number().integer(),
             title: Joi.string(),
             description: Joi.string(),
-            day_id: Joi.number().integer()
         });
 
         const options = { abortEarly: false, allowUnknown: true, stripUnknown: true };
