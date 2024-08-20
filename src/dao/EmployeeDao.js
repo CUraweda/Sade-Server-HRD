@@ -1,11 +1,12 @@
 const SuperDao = require("./SuperDao");
 const models = require("../models");
 const { Op } = require("sequelize");
+const sequelize = require("sequelize")
 
 const Employees = models.employees;
 const User = models.user
 const EmployeeAttendance = models.employeeattendance
-
+const EmployeeVacation = models.employeevacation
 class EmployeesDao extends SuperDao {
   constructor() {
     super(Employees);
@@ -87,7 +88,7 @@ class EmployeesDao extends SuperDao {
             work_start_date: {
               [Op.like]: "%" + search + "%",
             },
-        },
+          },
           {
             occupation: {
               [Op.like]: "%" + search + "%",
@@ -232,7 +233,7 @@ class EmployeesDao extends SuperDao {
     });
   }
 
-  getMe(id){
+  getMe(id) {
     return Employees.findOne({
       where: { id },
       include: [
@@ -243,5 +244,6 @@ class EmployeesDao extends SuperDao {
       ]
     })
   }
+
 }
 module.exports = EmployeesDao;

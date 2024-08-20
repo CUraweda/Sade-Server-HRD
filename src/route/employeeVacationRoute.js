@@ -43,13 +43,32 @@ router.post(
     employeeVacationController.createRequest
 )
 
+
+router.put(
+    "/change-status/:condition/:id",
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    employeeVacationController.changeStatus
+)
+router.put(
+    "/change/:id",
+    uplodMiddleware.uploadFileSingle("file"),
+    employeeVacationValidator.changeVacationValidator,
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    employeeVacationController.changeData
+)
 router.put(
     "/update/:id",
+    uplodMiddleware.uploadFileSingle("file"),
     employeeVacationValidator.createUpdateValidator,
     auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
     employeeVacationController.update
 )
 
+router.delete(
+    "/remove/:id",
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    employeeVacationController.removeData
+)
 router.delete(
     "/delete/:id",
     auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
