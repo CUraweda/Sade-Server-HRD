@@ -46,10 +46,12 @@ class EmployeeAttendanceController {
             res.status(httpStatus.BAD_GATEWAY).send(e);
         }
     };
-    getRekapEmployee = async (req, res) => {
+    getRekapMonthEmployee = async (req, res) => {
         try{
             const id = +req.params.id
-            const resData = await this.employeeAttendanceService.showRekapEID(id)
+            const resData = await this.employeeAttendanceService.showRekapMonthEID(id)
+            
+            res.status(resData.statusCode).send(resData.response);
         }catch(e){
             console.log(e);
             res.status(httpStatus.BAD_GATEWAY).send(e);

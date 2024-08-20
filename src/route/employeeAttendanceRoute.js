@@ -22,9 +22,9 @@ router.get(
     employeeAttendanceController.getAll
 )
 router.get(
-    "/rekap-employee/:id",
+    "/recap-month-employee/:id",
     auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
-    employeeAttendanceController.getAll
+    employeeAttendanceController.getRekapMonthEmployee
 )
 router.get(
     "/:id",
