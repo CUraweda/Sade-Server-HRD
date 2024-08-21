@@ -14,7 +14,7 @@ class EmployeeAttendanceDao extends SuperDao {
     }
 
     async getCount(filter) {
-         let { search, outstation, type, status, division_id, date, employee_id } = filter
+         let { search, outstation, type, status, division_id, date, employee_id, start_date, end_date } = filter
         if(!search) search = ""
 
         return EmployeeAttendance.count({
@@ -44,7 +44,8 @@ class EmployeeAttendanceDao extends SuperDao {
                 ...(division_id && { "$worktime.division_id$": division_id }),
                 ...(type && { "$worktime.type$": { [Op.like]: `%${type}%` } }),
                 ...(status && { status }),
-                ...(outstation && { is_outstation: outstation != "1" ? false : true })
+                ...(outstation && { is_outstation: outstation != "1" ? false : true }),
+                ...((start_date && end_date) && { created_at: { [Op.between]: [start_date, end_date] }})
             },
             include: [
                 {
@@ -66,7 +67,7 @@ class EmployeeAttendanceDao extends SuperDao {
     }
 
     async getPage(offset, limit, filter) {
-         let { search, outstation, type, status, division_id, date, employee_id } = filter
+         let { search, outstation, type, status, division_id, date, employee_id, start_date, end_date } = filter
         if(!search) search = ""
         return EmployeeAttendance.findAll({
             where: {
@@ -95,8 +96,8 @@ class EmployeeAttendanceDao extends SuperDao {
                 ...(division_id && { "$worktime.division_id$": division_id }),
                 ...(type && { "$worktime.type$": { [Op.like]: `%${type}%` } }),
                 ...(status && { status }),
-                ...(outstation && { is_outstation: outstation != "1" ? false : true })
-
+                ...(outstation && { is_outstation: outstation != "1" ? false : true }),
+                ...((start_date && end_date) && { created_at: { [Op.between]: [start_date, end_date] }})
             },
             include: [
                 {

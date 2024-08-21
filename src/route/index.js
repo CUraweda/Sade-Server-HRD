@@ -56,7 +56,7 @@ const defaultRoutes = [
   },
   {
     path: "/application-form",
-    route: applicationFormRoute,
+    route: applicantFormRoute,
   },
   {
     path: "/bill-type",
