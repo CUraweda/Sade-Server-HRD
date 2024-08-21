@@ -15,8 +15,8 @@ const app = express();
 
 app.use(cors());
 app.options("*", cors());
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+app.use(express.json({limit: '50mb'}));
+app.use(express.urlencoded({limit: '50mb', extended: true}));
 
 // jwt authentication
 app.use(passport.initialize());
@@ -36,6 +36,6 @@ app.use(errorConverter);
 const db = require("./models");
 
 // Uncomment this line if you want to sync database model
-// db.sequelize.sync()
+db.sequelize.sync()
 
 module.exports = app;
