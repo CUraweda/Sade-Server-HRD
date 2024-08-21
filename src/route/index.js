@@ -1,4 +1,4 @@
-const express = require('express')
+const express = require("express");
 const applicantAcademicRoute = require("./applicantAcademicRoute");
 const applicantAppreciationRoute = require("./applicantAppreciationRoute");
 const applicantAppreciationAttachmentRoute = require("./applicantAppreciationAttachmentRoute");
@@ -15,130 +15,214 @@ const employeePositionRoute = require("./employeePositionRoute");
 const employeeRoute = require("./employeeRoute");
 const employeeSalaryRoute = require("./employeeSalaryRoute");
 const formPositionRoute = require("./formPositionRoute");
-const employeeAttendanceRoute = require('./employeeAttendanceRoute')
+const employeeAttendanceRoute = require("./employeeAttendanceRoute");
 const jobVacancyRoute = require("./jobVacancyRoute");
 const jobVacancyDetailRoute = require("./jobVacancyDetailRoute");
 const trainingAttendanceRoute = require("./trainingAttendanceRoute");
 const trainingRoute = require("./trainingRoute");
 const trainingSuggestionRoute = require("./trainingSuggestionRoute");
-const formAnnouncementRoute = require('./formAnnouncementRoute')
-const worktimeRoute = require('./worktimeRoute')
-const employeeVacationRoute = require('./employeeVacationRoute')
-const applicantInterviewRoute = require('./applicantInterviewRoute')
-const employeeJobdeskRoute = require('./employeeJobdeskRoute')
+const faceRoute = require("./faceRoute");
+const formAnnouncementRoute = require("./formAnnouncementRoute");
+const worktimeRoute = require("./worktimeRoute");
+const employeeVacationRoute = require("./employeeVacationRoute");
+const applicantInterviewRoute = require("./applicantInterviewRoute");
+const employeeJobdeskRoute = require("./employeeJobdeskRoute");
 const router = express.Router();
 
-
 const defaultRoutes = [
-
   {
     path: "/applicant-academic",
-    route: applicantAcademicRoute
-  },
-  {
-    path: '/applicant-interview',
-    route: applicantInterviewRoute
+    route: applicantAcademicRoute,
   },
   {
     path: "/applicant-appreciation",
-    route: applicantAppreciationRoute
+    route: applicantAppreciationRoute,
   },
   {
     path: "/applicant-appreciation-attachment",
-    route: applicantAppreciationAttachmentRoute
+    route: applicantAppreciationAttachmentRoute,
   },
   {
     path: "/applicant-job",
-    route: applicantJobRoute
+    route: applicantJobRoute,
   },
   {
     path: "/applicant-skill",
-    route: applicantSkillRoute
+    route: applicantSkillRoute,
   },
   {
     path: "/applicant-unformal",
-    route: applicantUnformalRoute
+    route: applicantUnformalRoute,
   },
   {
-    path: "/applicant-form", 
-    route: applicantFormRoute
+    path: "/application-form",
+    route: applicationFormRoute,
   },
   {
-    path: "/bill-type", 
-    route: billTypeRoute
+    path: "/bill-type",
+    route: billTypeRoute,
   },
   {
-    path: "/division", 
-    route: divisionRoute
+    path: "/division",
+    route: divisionRoute,
   },
   {
-    path: "/employee-vacation", 
-    route: employeeVacationRoute
+    path: "/employee-account",
+    route: employeeAccountRoute,
   },
   {
-    path: "/employee-account", 
-    route: employeeAccountRoute
+    path: "/employee-announcement",
+    route: employeeAnnouncementRoute,
   },
   {
-    path: "/employee-announcement", 
-    route: employeeAnnouncementRoute
+    path: "/employee-bill",
+    route: employeeBillRoute,
   },
   {
-    path: "/employee-bill", 
-    route: employeeBillRoute
+    path: "/employee-position",
+    route: employeePositionRoute,
   },
   {
-    path: "/employee-position", 
-    route: employeePositionRoute
+    path: "/employee",
+    route: employeeRoute,
   },
   {
-    path: "/employee-jobdesk", 
-    route: employeeJobdeskRoute
+    path: "/employee-salary",
+    route: employeeSalaryRoute,
   },
   {
-    path: "/employee", 
-    route: employeeRoute
+    path: "/form-position",
+    route: formPositionRoute,
   },
   {
-    path: "/employee-attendance", 
-    route: employeeAttendanceRoute
+    path: "/job-vacancy-detail",
+    route: jobVacancyDetailRoute,
   },
   {
-    path: "/employee-salary", 
-    route: employeeSalaryRoute
+    path: "/job-vacancy",
+    route: jobVacancyRoute,
   },
   {
-    path: "/form-position", 
-    route: formPositionRoute
+    path: "/training-attendance",
+    route: trainingAttendanceRoute,
   },
   {
-    path: "/form-announcement", 
-    route: formAnnouncementRoute
-  },
-    {
-    path: "/job-vacancy-detail", 
-    route: jobVacancyDetailRoute
+    path: "/training",
+    route: trainingRoute,
   },
   {
-    path: "/job-vacancy", 
-    route: jobVacancyRoute
+    path: "/training-suggestion",
+    route: trainingSuggestionRoute,
   },
   {
-    path: "/training-attendance", 
-    route: trainingAttendanceRoute
+    path: "/applicant-academic",
+    route: applicantAcademicRoute,
   },
   {
-    path: "/training", 
-    route: trainingRoute
+    path: "/applicant-interview",
+    route: applicantInterviewRoute,
   },
   {
-    path: "/worktime", 
-    route: worktimeRoute
+    path: "/applicant-appreciation",
+    route: applicantAppreciationRoute,
   },
   {
-    path: "/training-suggestion", 
-    route: trainingSuggestionRoute
-  }
+    path: "/applicant-appreciation-attachment",
+    route: applicantAppreciationAttachmentRoute,
+  },
+  {
+    path: "/applicant-job",
+    route: applicantJobRoute,
+  },
+  {
+    path: "/applicant-skill",
+    route: applicantSkillRoute,
+  },
+  {
+    path: "/applicant-unformal",
+    route: applicantUnformalRoute,
+  },
+  {
+    path: "/applicant-form",
+    route: applicantFormRoute,
+  },
+  {
+    path: "/bill-type",
+    route: billTypeRoute,
+  },
+  {
+    path: "/division",
+    route: divisionRoute,
+  },
+  {
+    path: "/employee-vacation",
+    route: employeeVacationRoute,
+  },
+  {
+    path: "/employee-account",
+    route: employeeAccountRoute,
+  },
+  {
+    path: "/employee-announcement",
+    route: employeeAnnouncementRoute,
+  },
+  {
+    path: "/employee-bill",
+    route: employeeBillRoute,
+  },
+  {
+    path: "/employee-position",
+    route: employeePositionRoute,
+  },
+  {
+    path: "/employee-jobdesk",
+    route: employeeJobdeskRoute,
+  },
+  {
+    path: "/employee",
+    route: employeeRoute,
+  },
+  {
+    path: "/employee-attendance",
+    route: employeeAttendanceRoute,
+  },
+  {
+    path: "/employee-salary",
+    route: employeeSalaryRoute,
+  },
+  {
+    path: "/form-position",
+    route: formPositionRoute,
+  },
+  {
+    path: "/form-announcement",
+    route: formAnnouncementRoute,
+  },
+  {
+    path: "/job-vacancy-detail",
+    route: jobVacancyDetailRoute,
+  },
+  {
+    path: "/job-vacancy",
+    route: jobVacancyRoute,
+  },
+  {
+    path: "/training-attendance",
+    route: trainingAttendanceRoute,
+  },
+  {
+    path: "/training",
+    route: trainingRoute,
+  },
+  {
+    path: "/worktime",
+    route: worktimeRoute,
+  },
+  {
+    path: "/training-suggestion",
+    route: trainingSuggestionRoute,
+  },
+  { path: "/face", route: faceRoute },
 ];
 
 defaultRoutes.forEach((route) => {
