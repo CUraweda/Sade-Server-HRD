@@ -100,6 +100,34 @@ class EmployeeAttendanceService {
         return responseHandler.returnSuccess(httpStatus.OK, "Rekap Monthly berhasil didapatkan", { HADIR: attendanceData, ...counter })
     }
 
+    showRecapCalendar = async (employee, start_date, end_date) => {
+        if (!employee) return responseHandler.returnError(httpStatus.UNPROCESSABLE_ENTITY, "Anda tidak terdaftar sebagai karyawan")
+
+        const attendances = await this.employeeAttendanceDao.getPage(undefined, undefined, { employee_id: employee.id, start_date, end_date})
+        const vacations = await this.employeeVacationDao.getPage(undefined, undefined, { employee_id: employee.id, start_date, end_date})
+        
+        const data = [
+            ...attendances.map(att => ({
+                id: att.id,
+                type: "PRESENSI",
+                title: att.worktime?.type ?? "HADIR",
+                start_date: att.created_at, 
+                end_date: att.created_at ,
+                is_outstation: att.is_outstation,
+                is_late: false
+            })), 
+            ...vacations.map(vac => ({
+                id: vac.id,
+                type: vac.type ?? "CUTI/IZIN",
+                title: vac.type ?? "CUTI/IZIN",
+                start_date: vac.start_date,
+                end_date: vac.end_date,
+            }))
+        ]
+
+        return responseHandler.returnSuccess(httpStatus.OK, "Rekap kehadiran berhasil didapatkan", data)
+    }
+
     showOne = async (id) => {
         const attendanceData = await this.employeeAttendanceDao.findById(id);
         if (!attendanceData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Employee Attendance Tidak ditemukan");

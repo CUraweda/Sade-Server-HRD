@@ -11,7 +11,7 @@ class EmployeeVacationDao extends SuperDao {
     }
 
     async getCount(filter) {
-        let { search, type, status, date, division_id, employee_id } = filter
+        let { search, type, status, date, division_id, employee_id, start_date, end_date } = filter
         if (!search) search = ""
         return EmployeeVacation.count({
             where: {
@@ -49,7 +49,21 @@ class EmployeeVacationDao extends SuperDao {
                 ...(employee_id && { employee_id }),
                 ...(division_id && { "$employee.division_id$": division_id }),
                 ...(type && { type }),
-                ...(status && { status })
+                ...(status && { status }),
+                ...((start_date && end_date) && { 
+                    [Op.or]: [
+                        { 
+                            start_date: {
+                                [Op.between]: [start_date, end_date]
+                            } 
+                        },
+                        {
+                            end_date: {
+                                [Op.between]: [start_date, end_date]
+                            }
+                        }
+                    ]
+                })
             },
             include: [
                 {
@@ -67,7 +81,7 @@ class EmployeeVacationDao extends SuperDao {
     }
 
     async getPage(offset, limit, filter) {
-        let { search, type, status, date, division_id, employee_id } = filter
+        let { search, type, status, date, division_id, employee_id, start_date, end_date } = filter
         if (!search) search = ""
         return EmployeeVacation.findAll({
             where: {
@@ -105,7 +119,21 @@ class EmployeeVacationDao extends SuperDao {
                 ...(employee_id && { employee_id }),
                 ...(division_id && { "$employee.division_id$": division_id }),
                 ...(type && { type }),
-                ...(status && { status })
+                ...(status && { status }),
+                ...((start_date && end_date) && { 
+                    [Op.or]: [
+                        { 
+                            start_date: {
+                                [Op.between]: [start_date, end_date]
+                            } 
+                        },
+                        {
+                            end_date: {
+                                [Op.between]: [start_date, end_date]
+                            }
+                        }
+                    ]
+                })
             },
             include: [
                 {

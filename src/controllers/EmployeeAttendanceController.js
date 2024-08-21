@@ -59,6 +59,19 @@ class EmployeeAttendanceController {
 
     }
 
+    getRekapCalendar = async (req, res) => {
+        try {
+            const { employee } = req.user
+            const { start_date, end_date } = req.query
+            const resData = await this.employeeAttendanceService.showRecapCalendar(employee, start_date, end_date)
+
+            res.status(resData.statusCode).send(resData.response)
+        } catch (error) {
+            console.log(e);
+            res.status(httpStatus.BAD_GATEWAY).send(e);            
+        }
+    }
+
     createByToken = async (req, res) => {
         try {
             const { employee } = req.user
