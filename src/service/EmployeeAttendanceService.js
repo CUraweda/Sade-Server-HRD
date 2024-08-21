@@ -24,7 +24,7 @@ class EmployeeAttendanceService {
         const { division_id, is_outstation } = employee
         if (!division_id) return responseHandler.returnError(httpStatus.UNPROCESSABLE_ENTITY, "Anda tidak terdaftar pada divisi apapun")
         if (is_outstation && !file) return responseHandler.returnError(httpStatus.UNPROCESSABLE_ENTITY, "Anda sedang Dinas Luar, mohon sertakan gambar")
-        
+
         const currentTime = new Date()
         const { closestWorktime } = await this.worktimeDao.getShortestTime(employee.division_id)
 
@@ -79,10 +79,10 @@ class EmployeeAttendanceService {
     showByUID = async (uid) => {
         const attendanceData = await this.employeeAttendanceDao.findOneByWhere({ uid });
         if (!attendanceData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Employee Attendance Tidak ditemukan");
-        
+
         return responseHandler.returnSuccess(httpStatus.OK, "Data Employee Attendance Ditemukan", attendanceData);
     }
-    
+
     showRekapMonthEID = async (employee_id) => {
         const currentDate = new Date()
         const currentMonth = currentDate.getMonth().toString().padStart(2, "0")
@@ -90,7 +90,7 @@ class EmployeeAttendanceService {
         const startDate = `01-${currentMonth}-${currentYear}T00:00:00.000Z`
         const attendanceData = await this.employeeAttendanceDao.countAttendanceStartEnd(employee_id, startDate, currentDate.toISOString())
         if (!attendanceData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Employee Attendance Tidak ditemukan");
-        
+
         const vacationData = await this.employeeVacationDao.getRekapByStartEnd(startDate, currentDate.toISOString(), { employee_id, type: ["CUTI", "IZIN"] })
         if (!vacationData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Vacation Tidak ditemukan");
 
@@ -100,22 +100,56 @@ class EmployeeAttendanceService {
         return responseHandler.returnSuccess(httpStatus.OK, "Rekap Monthly berhasil didapatkan", { HADIR: attendanceData, ...counter })
     }
 
+    showRekapYearEID = async (employee_id) => {
+        const monthObject = {}
+        constant.monthList.forEach((month, i) => { monthObject[i] = { name: month, cuti: 0, izin: 0, hadir: 0 } })
+
+        const currentDate = new Date()
+        const currentYear = currentDate.getFullYear()
+        const startDate = `01-01-${currentYear}T00:00:00.000Z`
+        const attendanceData = await this.employeeAttendanceDao.getByRange(startDate, currentDate.toISOString(), { employee_id })
+        if (!attendanceData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Employee Attendance Tidak ditemukan");
+
+        const vacationData = await this.employeeVacationDao.getRekapByStartEnd(startDate, currentDate.toISOString(), { employee_id, type: ["CUTI", "IZIN"] })
+        if (!vacationData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Vacation Tidak ditemukan");
+
+        for (let attendance of attendanceData) {
+            const monthIndex = attendance.createdAt.getMonth()
+            if (monthObject[monthIndex]) monthObject[monthIndex].hadir++
+        }
+        for (let vacation of vacationData) {
+            const monthIndex = vacation.start_date.getMonth()
+            switch (vacation.type) {
+                case "CUTI":
+                    if (monthObject[monthIndex]) monthObject[monthIndex].cuti++
+                    break;
+                case "IZIN":
+                    if (monthObject[monthIndex]) monthObject[monthIndex].izin++
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        return responseHandler.returnSuccess(httpStatus.OK, "Rekap Monthly berhasil didapatkan", monthObject)
+    }
+
     showRecapCalendar = async (employee, start_date, end_date) => {
         if (!employee) return responseHandler.returnError(httpStatus.UNPROCESSABLE_ENTITY, "Anda tidak terdaftar sebagai karyawan")
 
-        const attendances = await this.employeeAttendanceDao.getPage(undefined, undefined, { employee_id: employee.id, start_date, end_date})
-        const vacations = await this.employeeVacationDao.getPage(undefined, undefined, { employee_id: employee.id, start_date, end_date})
-        
+        const attendances = await this.employeeAttendanceDao.getPage(undefined, undefined, { employee_id: employee.id, start_date, end_date })
+        const vacations = await this.employeeVacationDao.getPage(undefined, undefined, { employee_id: employee.id, start_date, end_date })
+
         const data = [
             ...attendances.map(att => ({
                 id: att.id,
                 type: "PRESENSI",
                 title: att.worktime?.type ?? "HADIR",
-                start_date: att.created_at, 
-                end_date: att.created_at ,
+                start_date: att.created_at,
+                end_date: att.created_at,
                 is_outstation: att.is_outstation,
                 is_late: false
-            })), 
+            })),
             ...vacations.map(vac => ({
                 id: vac.id,
                 type: vac.type ?? "CUTI/IZIN",
