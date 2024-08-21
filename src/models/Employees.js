@@ -16,9 +16,28 @@ module.exports = (sequelize, DataTypes) => {
       Employees.hasMany(models.formsubject, {
         foreignKey: "employee_id",
       });
+      Employees.hasMany(models.employeeattendance, {
+        foreignKey: "employee_id",
+      });
+      Employees.hasOne(models.headmaster, {
+        foreignKey: "employee_id",
+      });
+      Employees.hasMany(models.formextra, {
+        foreignKey: "employee_id",
+      });
       Employees.belongsTo(models.user, {
         foreignKey: "user_id",
       });
+      Employees.belongsTo(models.division, {
+        foreignKey: "division_id",
+      });
+      Employees.hasMany(models.employeeattendance, {
+        foreignKey: "employee_id"
+      })
+      Employees.hasMany(models.employeevacation, {
+        foreignKey: "employee_id",
+        as: "employee"
+      })
     }
   }
   Employees.init(
@@ -26,15 +45,18 @@ module.exports = (sequelize, DataTypes) => {
       user_id: DataTypes.INTEGER,
       employee_no: DataTypes.STRING,
       full_name: DataTypes.STRING,
-    gender: DataTypes.STRING,
+      email: DataTypes.STRING,
+      phone: DataTypes.STRING,
+      nik: DataTypes.STRING,
+      religion: DataTypes.STRING,
+      gender: DataTypes.STRING,
       pob: DataTypes.STRING,
       dob: DataTypes.DATE,
-      religion: DataTypes.STRING,
       marital_status: DataTypes.STRING,
       last_education: DataTypes.STRING,
+      major: DataTypes.STRING,
       certificate_year: DataTypes.STRING,
       is_education: DataTypes.STRING,
-      major: DataTypes.STRING,
       employee_status: DataTypes.STRING,
       work_start_date: DataTypes.STRING,
       occupation: DataTypes.STRING,
@@ -42,8 +64,12 @@ module.exports = (sequelize, DataTypes) => {
       duty: DataTypes.STRING,
       job_desc: DataTypes.STRING,
       grade: DataTypes.STRING,
-      email: DataTypes.STRING,
       user_id: DataTypes.INTEGER,
+      still_in_probation: DataTypes.BOOLEAN,
+      probation_start_date: DataTypes.DATE,
+      probation_end_date: DataTypes.DATE,
+      division_id: DataTypes.INTEGER,
+      is_outstation: DataTypes.BOOLEAN
     },
     {
       sequelize,

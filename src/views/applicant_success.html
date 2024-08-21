@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+
+      * {
+        font-family: Inter;
+        font-weight: 600;
+      }
+
+      .container {
+        padding-inline: 3rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div
+        style="
+          display: flex;
+          flex-direction: column;
+          gap: 2rem;
+          margin-top: 3rem;
+        "
+      >
+        <div>
+          <span>Subjek:</span> Pemberitahuan Hasil Wawancara - {{company_name}}
+        </div>
+        <div>Yth. {{applicant_name}}</div>
+        <div>
+          Terima kasih telah meluangkan waktu untuk mengikuti proses wawancara
+          dengan {{company_name}}. Kami menghargai minat anda untuk berganbung
+          dengan tim kami.
+        </div>
+
+        <div>
+          Berdasarkan hasil wawancara yang telah dilakukan, kami dengan senang
+          hati menginformasikan bahwa Anda telah {{status}} seleksi untuk posisi
+          {{position_name}}.
+        </div>
+
+        <div>
+          Kami sangat terkesan dengan keahlian dan pengalaman yang Anda miliki,
+          serta melihat potensi yang besar dalam diri Anda untuk bergabung dan
+          berkembang bersama kami. Tahap selanjutnya adalah {{next_step}}. Kami
+          akan menghubungi Anda kembali untuk menjadwalkan tahap berikutnya.
+        </div>
+
+        <div>
+          Kami mengucapkan terima kasih atas partisipasi Anda dalam proses
+          seleksi ini dan berharap Anda sukses dalam karir dan upaya masa depan
+          Anda.
+        </div>
+
+        <div>
+          Jika Anda memiliki pertanyaan lebih lanjut, jangan ragu untuk
+          menghubungi kami melalui email ini atau nomor telepon
+          {{applicant_phone}}.
+        </div>
+
+        <div>Salam hangat,</div>
+
+        <div>
+          {{sender_name}}|<br />{{sender_position}}<br />{{company_name}}<br />{{sender_semail}}<br />{{sender_phone}}
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

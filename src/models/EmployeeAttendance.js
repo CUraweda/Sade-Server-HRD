@@ -22,7 +22,8 @@ module.exports = (sequelize, DataTypes) => {
         uid: DataTypes.STRING,
         description: DataTypes.STRING,
         status: DataTypes.STRING,
-        is_outstation: DataTypes.BOOLEAN        
+        is_outstation: DataTypes.BOOLEAN,
+        file_path: DataTypes.STRING
     },
     {
       sequelize,
@@ -31,6 +32,7 @@ module.exports = (sequelize, DataTypes) => {
       timestamps: true, // Includes created_at and updated_at columns
       underscored: true, // Maps snake_case columns to camelCase properties
     }
+    
   );
   
   return EmployeeAttendance;

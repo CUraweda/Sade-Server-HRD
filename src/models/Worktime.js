@@ -18,14 +18,12 @@ module.exports = (sequelize, DataTypes) => {
 
     Worktime.init(
         {
-            employee_id: DataTypes.INTEGER,
-            approver_id: DataTypes.INTEGER,
-            type: DataTypes.STRING,
-            status: DataTypes.STRING,
-            description: DataTypes.TEXT,
-            is_approved: DataTypes.BOOLEAN,
-            start_date: DataTypes.DATE,
-            end_date: DataTypes.DATE
+            division_id: DataTypes.INTEGER,
+            weekday_id: DataTypes.INTEGER,
+            uid: DataTypes.STRING,
+            type: DataTypes.ENUM("MASUK", "KELUAR"),
+            start_time: DataTypes.TIME,
+            end_time: DataTypes.TIME
         },
         {
             sequelize,

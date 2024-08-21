@@ -22,8 +22,9 @@ module.exports = (sequelize, DataTypes) => {
         },
         {
             sequelize,
-            tableName: 'ref_employee_position',
+            tableName: 'tbl_employee_form_position',
             modelName: 'formposition',
+            timestamps: false
         }
     );
 
