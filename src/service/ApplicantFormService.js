@@ -9,6 +9,7 @@ const ApplicantAppreciationService = require('../service/ApplicantAppreciationSe
 
 const responseHandler = require("../helper/responseHandler");
 const ApplicantInterviewDao = require("../dao/ApplicantInterviewDao");
+const JobVacancyDao = require("../dao/JobVacancyDao");
 
 class ApplicantFormService {
     constructor() {
@@ -19,6 +20,7 @@ class ApplicantFormService {
         this.applicantAppreciationService = new ApplicantAppreciationService()
         this.applicantJobService = new ApplicantJobService()
         this.applicantUnformalService = new ApplicantUnformalService()
+        this.jobVacancyDao = new JobVacancyDao()
     }
 
     create = async (body) => {
@@ -80,6 +82,7 @@ class ApplicantFormService {
         const applicantDetailData = await this.createDetail(details, applicantFormData.id)
         if (!applicantDetailData.response.status) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Gagal membuat data detail");
 
+        await this.jobVacancyDao.updateCounter(applicantFormData.vacancy_id)
         return responseHandler.returnSuccess(httpStatus.OK, "Berhasil membuat Applicant Form dan Detail", applicantFormData)
     }
 

@@ -47,6 +47,18 @@ class EmployeeAttendanceController {
         }
     };
 
+    getRekapWeekEmployee = async (req, res) => {
+        try{
+            const id = +req.params.id
+            const resData = await this.employeeAttendanceService.showRekapWeekEID(id)
+            
+            res.status(resData.statusCode).send(resData.response);
+        }catch(e){
+            console.log(e);
+            res.status(httpStatus.BAD_GATEWAY).send(e);
+        }
+    }
+
     getRekapMonthEmployee = async (req, res) => {
         try{
             const id = +req.params.id

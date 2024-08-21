@@ -23,5 +23,13 @@ module.exports = {
         "Oktober",
         "November",
         "Desember"
+    ],
+    weekList: [
+        "Minggu",
+        "Senin",
+        "Selasa",
+        "Rabu",
+        "Kamis",
+        "Sabtu",
     ]
 };

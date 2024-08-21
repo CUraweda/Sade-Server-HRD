@@ -83,6 +83,51 @@ class EmployeeAttendanceService {
         return responseHandler.returnSuccess(httpStatus.OK, "Data Employee Attendance Ditemukan", attendanceData);
     }
 
+    showRekapWeekEID = async (employee_id) => {
+        const weekObject = {}
+        constant.weekList.forEach((week, i) => { weekObject[i] = { name: week, hadir: 0, cuti: 0, izin: 0 } })
+
+        const today = new Date();
+        const dayOfWeek = today.getDay();
+        let startOfWeek = new Date(today);
+        let endOfWeek = new Date(today);
+    
+        const diff = today.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1); // Adjust start of the week based on Sunday
+        startOfWeek.setDate(diff);
+        startOfWeek = startOfWeek.toISOString().split('T')[0] + "T00:00:00.000Z"
+    
+        const daysToAdd = 5 - dayOfWeek + (dayOfWeek === 0 ? 7 : 0); // Adjust end of the week based on Friday
+        endOfWeek.setDate(today.getDate() + daysToAdd);
+        endOfWeek = endOfWeek.toISOString().split('T')[0] + "T23:59:59.999Z"
+    
+        const attendanceData = await this.employeeAttendanceDao.getByRange(startOfWeek, endOfWeek, { employee_id })
+        if (!attendanceData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Employee Attendance Tidak ditemukan");
+
+        const vacationData = await this.employeeVacationDao.getRekapByStartEnd(startOfWeek, endOfWeek, { employee_id, type: ["CUTI", "IZIN"] })
+        if (!vacationData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Vacation Tidak ditemukan");
+
+        for (let attendance of attendanceData) {
+            const dayIndex = attendance.createdAt.getDay()
+            console.log(dayIndex)
+            console.log(attendance.createdAt)
+            if (weekObject[dayIndex]) weekObject[dayIndex].hadir++
+        }
+        for (let vacation of vacationData) {
+            const dayIndex = vacation.start_date.getDay()
+            switch (vacation.type) {
+                case "CUTI":
+                    if (weekObject[dayIndex]) weekObject[dayIndex].cuti++
+                    break;
+                case "IZIN":
+                    if (weekObject[dayIndex]) weekObject[dayIndex].izin++
+                    break;
+                default:
+                    break;
+            }
+        }
+        return responseHandler.returnSuccess(httpStatus.OK, "Rekap Weekly berhasil didapatkan", weekObject)
+    }
+
     showRekapMonthEID = async (employee_id) => {
         const currentDate = new Date()
         const currentMonth = currentDate.getMonth().toString().padStart(2, "0")
@@ -131,7 +176,7 @@ class EmployeeAttendanceService {
             }
         }
 
-        return responseHandler.returnSuccess(httpStatus.OK, "Rekap Monthly berhasil didapatkan", monthObject)
+        return responseHandler.returnSuccess(httpStatus.OK, "Rekap Yearly berhasil didapatkan", monthObject)
     }
 
     showRecapCalendar = async (employee, start_date, end_date) => {

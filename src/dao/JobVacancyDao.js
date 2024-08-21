@@ -14,8 +14,8 @@ class JobVacancyDao extends SuperDao {
     }
 
     async getCount(filter) {
-         let { search } = filter
-        if(!search) search = ""
+        let { search } = filter
+        if (!search) search = ""
         return JobVacancy.count({
             where: {
                 [Op.or]: [
@@ -31,14 +31,14 @@ class JobVacancyDao extends SuperDao {
     }
 
     async getPage(offset, limit, filter) {
-         let { search } = filter
-        if(!search) search = ""
+        let { search } = filter
+        if (!search) search = ""
         return JobVacancy.findAll({
             where: {
                 [Op.or]: [
                     {
                         title: { [Op.like]: "%" + search + "%" },
-                },
+                    },
                     {
                         sub_title: { [Op.like]: "%" + search + "%" },
                     },
@@ -66,6 +66,16 @@ class JobVacancyDao extends SuperDao {
             limit: limit,
             order: [["id", "DESC"]],
         });
+    }
+
+    async updateCounter(id) {
+        const dataExist = await JobVacancy.findOne({ where: { id } })
+        if (dataExist) return {}
+        const payload = {
+            applicant_count: dataExist.applicant_count++,
+            ...(dataExist.applicant_count + 1 === dataExist.max_applicant && { is_open: false, status: "Pendaftaran Ditutup" })
+        }
+        return JobVacancy.updateById(payload, id)
     }
 }
 
