@@ -132,6 +132,18 @@ class EmployeeAttendanceDao extends SuperDao {
         })
     }
 
+    async getByRange(start_date, end_date, filter){
+        const { employee_id } = filter
+        return EmployeeAttendance.findAll({
+            where: {
+                employee_id,
+                created_at: {
+                    [Op.between]: [start_date, end_date]
+                }
+            }
+        })
+    }
+
     async getByUID(uid) {
         return EmployeeAttendance.findOne({
             where: { uid }

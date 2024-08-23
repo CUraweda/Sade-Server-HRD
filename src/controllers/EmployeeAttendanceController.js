@@ -46,6 +46,19 @@ class EmployeeAttendanceController {
             res.status(httpStatus.BAD_GATEWAY).send(e);
         }
     };
+
+    getRekapWeekEmployee = async (req, res) => {
+        try{
+            const id = +req.params.id
+            const resData = await this.employeeAttendanceService.showRekapWeekEID(id)
+            
+            res.status(resData.statusCode).send(resData.response);
+        }catch(e){
+            console.log(e);
+            res.status(httpStatus.BAD_GATEWAY).send(e);
+        }
+    }
+
     getRekapMonthEmployee = async (req, res) => {
         try{
             const id = +req.params.id
@@ -56,7 +69,18 @@ class EmployeeAttendanceController {
             console.log(e);
             res.status(httpStatus.BAD_GATEWAY).send(e);
         }
+    }
 
+    getRekapYearEmployee = async (req, res) => {
+        try{
+            const id = +req.params.id
+            const resData = await this.employeeAttendanceService.showRekapYearEID(id)
+            
+            res.status(resData.statusCode).send(resData.response);
+        }catch(e){
+            console.log(e);
+            res.status(httpStatus.BAD_GATEWAY).send(e);
+        }
     }
 
     getRekapCalendar = async (req, res) => {

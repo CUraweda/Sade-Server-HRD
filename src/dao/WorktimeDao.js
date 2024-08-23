@@ -5,6 +5,7 @@ const SuperDao = require("./SuperDao");
 const Worktime = models.worktime;
 const Division = models.division
 const Weekday = models.weekday
+const EmployeeAttendance = models.employeeattendance
 
 class WorktimeDao extends SuperDao {
     constructor() {
@@ -123,6 +124,29 @@ class WorktimeDao extends SuperDao {
         });
 
         return { shortestDifference, closestWorktime }
+    }
+
+    async getTodayEmployee(employee){
+        const current = new Date().toISOString().split('T')[0]
+        const startDate = `${current}T00:00:00.000Z`
+        const endDate = `${current}T23:59:59.999Z`
+
+        const { division_id, id } = employee
+        return Worktime.findAll({
+            where: { division_id },
+            include: [
+                {
+                    model: EmployeeAttendance,
+                    where: { 
+                        employee_id: id,
+                        createdAt: {
+                            [Op.between]: [startDate, endDate]
+                        }
+                    },
+                    required: false
+                }
+            ]
+        })
     }
 }
 

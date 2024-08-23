@@ -61,6 +61,16 @@ class WorktimeService {
         return responseHandler.returnSuccess(httpStatus.OK, "Data Worktime Ditemukan", worktimeData);
     };
 
+    showByEmployee = async (employee) => {
+        if (!employee) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Anda tidak termasuk sebagai karyawan")
+        if (!employee.division_id) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Anda tidak termasuk pada divisi apapun")
+
+        const worktimeData = await this.worktimeDao.getTodayEmployee(employee);
+        if (!worktimeData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Worktime Tidak ditemukan");
+
+        return responseHandler.returnSuccess(httpStatus.OK, "Data Worktime Ditemukan", worktimeData);
+    }
+
     showByUID = async (uid) => {
         const worktimeData = await this.worktimeDao.getByUID(uid)
         if (!worktimeData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Worktime Tidak Ditemukan")

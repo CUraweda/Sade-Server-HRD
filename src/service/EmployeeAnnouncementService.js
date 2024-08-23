@@ -56,7 +56,7 @@ class EmployeeAnnouncementService {
             }
         );
     };
-
+    
     showOne = async (id) => {
         const employeeAnnouncementData = await this.employeeAnnouncementDao.findById(id);
         if (!employeeAnnouncementData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Employee Announcement Tidak ditemukan");

@@ -10,8 +10,8 @@ class EmployeeJobdeskDao extends SuperDao {
     }
 
     async getCount(filter) {
-         let { search } = filter
-        if(!search) search = ""
+        let { search } = filter
+        if (!search) search = ""
         return EmployeeJobdesk.count({
             where: {
                 [Op.or]: [
@@ -33,8 +33,8 @@ class EmployeeJobdeskDao extends SuperDao {
     }
 
     async getPage(offset, limit, filter) {
-         let { search } = filter
-        if(!search) search = ""
+        let { search } = filter
+        if (!search) search = ""
         return EmployeeJobdesk.findAll({
             where: {
                 [Op.or]: [
@@ -56,6 +56,24 @@ class EmployeeJobdeskDao extends SuperDao {
             limit: limit,
             order: [["id", "DESC"]],
         });
+    }
+
+    async getStartEnd(start, end, filter) {
+        const { employee_id } = filter
+        return EmployeeJobdesk.findAll({
+            where: {
+                employee_id,
+                [Op.or]: [
+                    {
+
+                        created_at: { [Op.between]: [start, end] }
+                    },
+                    {
+                        due_date: { [Op.between]: [start, end] }
+                    }
+                ]
+            }
+        })
     }
 }
 

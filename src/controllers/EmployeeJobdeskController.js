@@ -28,6 +28,28 @@ class EmployeeJobdeskController {
         }
     };
 
+    getMonthRecap = async (req, res) => {
+        try {
+            const id = +req.params.id
+            const resData = await this.employeeJobdeskService.showRecapMonhEID(id)
+            res.status(resData.statusCode).send(resData.response);
+        } catch (e) {
+            console.log(e);
+            res.status(httpStatus.BAD_GATEWAY).send(e);
+        }
+    }
+
+    getYearRecap = async (req, res) => {
+        try {
+            const id = +req.params.id
+            const resData = await this.employeeJobdeskService.showRecapYearEID(id)
+            res.status(resData.statusCode).send(resData.response);
+        } catch (e) {
+            console.log(e);
+            res.status(httpStatus.BAD_GATEWAY).send(e);
+        }
+    }
+
     getOne = async (req, res) => {
         try {
             const id = +req.params.id;
@@ -53,6 +75,19 @@ class EmployeeJobdeskController {
         }
     };
 
+    updateGrade = async (req, res) => {
+        try {
+            const id = +req.params.id;
+            if (!id) res.status(httpStatus["422_CLASS"]).send("Tolong sertakan ID");
+
+            const resData = await this.employeeJobdeskService.update(id, req.body);
+
+            res.status(resData.statusCode).send(resData.response);
+        } catch (err) {
+            console.log(e);
+            res.status(httpStatus.BAD_GATEWAY).send(e);
+        }
+    }
     update = async (req, res) => {
         try {
             const id = +req.params.id;
@@ -75,7 +110,7 @@ class EmployeeJobdeskController {
             res.status(resData.statusCode).send(resData.response);
         } catch (e) {
             console.log(e);
-            res.status(httpStatus.BAD_GATEWAY).send(e);
+            res.status(httpStatus.BAD_GATEWAY).send(e)
         }
     };
 }

@@ -40,6 +40,18 @@ class WorktimeController {
         }
     };
 
+    getToday = async (req, res) => {
+        try {
+            const { employee } = req.user
+            const resData = await this.worktimeService.showByEmployee(employee)
+
+            res.status(resData.statusCode).send(resData.response);
+        } catch (e) {
+            console.log(e);
+            res.status(httpStatus.BAD_GATEWAY).send(e);
+        }
+    };
+
     createOne = async (req, res) => {
         try {
             const resData = await this.worktimeService.create(req.body);

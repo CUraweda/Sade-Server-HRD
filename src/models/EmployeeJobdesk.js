@@ -21,7 +21,8 @@ module.exports = (sequelize, DataTypes) => {
             description: DataTypes.TEXT,
             due_date: DataTypes.DATE,
             priority: DataTypes.INTEGER,
-            priority_label: DataTypes.STRING
+            priority_label: DataTypes.STRING,
+            grade: DataTypes.INTEGER
         },
         {
             sequelize,
