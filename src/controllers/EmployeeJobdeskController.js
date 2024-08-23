@@ -65,7 +65,6 @@ class EmployeeJobdeskController {
 
     createOne = async (req, res) => {
         try {
-            console.log(req.body)
             const resData = await this.employeeJobdeskService.create(req.body);
 
             res.status(resData.statusCode).send(resData.response);

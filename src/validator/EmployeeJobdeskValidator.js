@@ -11,6 +11,7 @@ class EmployeeJobdeskValidator {
             due_date: Joi.date(),
             priority: Joi.number().integer().optional(),
             priority_label: Joi.string().optional(),
+            grade: Joi.number().integer()
         });
 
         const options = { abortEarly: false, allowUnknown: true, stripUnknown: true };

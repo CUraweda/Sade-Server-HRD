@@ -1,6 +1,7 @@
 const httpStatus = require("http-status");
 const EmployeeJobdeskDao = require("../dao/EmployeeJobdeskDao");
 const responseHandler = require("../helper/responseHandler");
+const constant = require("../config/constant");
 
 class EmployeeJobdeskService {
     constructor() {
@@ -54,7 +55,7 @@ class EmployeeJobdeskService {
         const employeeJobdeskData = await this.employeeJobdeskDao.getStartEnd(startDate, currentDate.toISOString(), { employee_id })
         if (!employeeJobdeskData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Employee Attendance Tidak ditemukan");
 
-        return responseHandler.retwurnSuccess(httpStatus.OK, "Rekap Monthly berhasil didapatkan", employeeJobdeskData)
+        return responseHandler.returnSuccess(httpStatus.OK, "Rekap Monthly berhasil didapatkan", employeeJobdeskData)
     }
 
     showRecapYearEID = async (employee_id) => {
@@ -68,14 +69,14 @@ class EmployeeJobdeskService {
         if (!employeeJobdeskData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Employee Attendance Tidak ditemukan");
 
         employeeJobdeskData.forEach((jobdesk) => {
-            const monthIndex = attendance.createdAt.getMonth()
+            const monthIndex = jobdesk.createdAt.getMonth()
             if (monthObject[monthIndex]){
                 monthObject[monthIndex].total++
                 monthObject[monthIndex].sum_grade += jobdesk.grade
             } 
         })
 
-        return responseHandler.retwurnSuccess(httpStatus.OK, "Rekap Monthly berhasil didapatkan", monthObject)
+        return responseHandler.returnSuccess(httpStatus.OK, "Rekap Monthly berhasil didapatkan", monthObject)
     }
 
     showOne = async (id) => {

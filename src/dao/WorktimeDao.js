@@ -19,9 +19,6 @@ class WorktimeDao extends SuperDao {
             where: {
                 [Op.or]: [
                     {
-                        "$weekday.name$": { [Op.like]: "%" + search + "%" },
-                    },
-                    {
                         "$division.name$": { [Op.like]: "%" + search + "%" },
                     },
                     {
@@ -43,10 +40,6 @@ class WorktimeDao extends SuperDao {
                     model: Division,
                     required: true
                 },
-                {
-                    model: Weekday,
-                    required: true
-                },
             ]
         });
     }
@@ -57,9 +50,6 @@ class WorktimeDao extends SuperDao {
         return Worktime.findAll({
             where: {
                 [Op.or]: [
-                    {
-                        "$weekday.name$": { [Op.like]: "%" + search + "%" },
-                    },
                     {
                         "$division.name$": { [Op.like]: "%" + search + "%" },
                     },
@@ -80,10 +70,6 @@ class WorktimeDao extends SuperDao {
             include: [
                 {
                     model: Division,
-                    required: true
-                },
-                {
-                    model: Weekday,
                     required: true
                 },
             ],

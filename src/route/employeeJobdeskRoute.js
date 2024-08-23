@@ -17,8 +17,12 @@ router.get(
 router.get(
     "/recap-month-employee/:id",
     auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
-    employeeJobdeskController.getOne
-    
+    employeeJobdeskController.getMonthRecap
+)
+router.get(
+    "/recap-year-employee/:id",
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    employeeJobdeskController.getYearRecap
 )
 router.get(
     "/:id",
