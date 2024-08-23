@@ -15,6 +15,11 @@ router.get(
     worktimeController.getAll
 )
 router.get(
+    "/today",
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    worktimeController.getToday
+)
+router.get(
     "/:id",
     auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
     worktimeController.getOne

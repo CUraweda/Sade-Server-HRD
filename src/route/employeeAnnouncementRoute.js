@@ -15,6 +15,11 @@ router.get(
     employeeAnnouncementController.getAll
 )
 router.get(
+    "/for-me",
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    employeeAnnouncementController.getAll
+)
+router.get(
     "/:id",
     auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
     employeeAnnouncementController.getOne

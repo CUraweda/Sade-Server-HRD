@@ -10,14 +10,15 @@ class EmployeeAnnouncementController {
         try {
             const page = +req.query.page || 0;
             const limit = +req.query.limit || 10;
-            const { search } = req.query;
+            let { search, only_specific, employee_id } = req.query;
 
+            if(only_specific === "1") employee_id = req.user?.employee?.id
             const offset = limit * page;
             const resData = await this.employeeAnnouncementService.showPage(
                 page,
                 limit,
                 offset,
-                { search }
+                { search, employee_id, only_specific }
             );
 
             res.status(resData.statusCode).send(resData.response);

@@ -28,6 +28,12 @@ router.post(
 )
 
 router.put(
+    "/grade/:id",
+    employeeJobdeskValidator.createUpdateValidator,
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    employeeJobdeskController.update
+)
+router.put(
     "/update/:id",
     employeeJobdeskValidator.createUpdateValidator,
     auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),

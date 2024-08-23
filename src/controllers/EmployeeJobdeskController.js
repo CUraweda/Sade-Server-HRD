@@ -40,7 +40,7 @@ class EmployeeJobdeskController {
             res.status(httpStatus.BAD_GATEWAY).send(e);
         }
     };
-
+    
     createOne = async (req, res) => {
         try {
             console.log(req.body)
@@ -52,11 +52,24 @@ class EmployeeJobdeskController {
             res.status(httpStatus.BAD_GATEWAY).send(e);
         }
     };
+    
+    updateGrade = async (req, res) => {
+        try{
+            const id = +req.params.id;
+            if (!id) res.status(httpStatus["422_CLASS"]).send("Tolong sertakan ID");
 
+            const resData = await this.employeeJobdeskService.update(id, req.body);
+            
+            res.status(resData.statusCode).send(resData.response);
+        }catch(err){
+            console.log(e);
+            res.status(httpStatus.BAD_GATEWAY).send(e);        
+        }
+    }
     update = async (req, res) => {
         try {
             const id = +req.params.id;
-            if (!id) res.status(httpStatus["422_CLASS"]).send("Tolong sertakan ID");
+            if(!id) res.status(httpStatus["422_CLASS"]).send("Tolong sertakan ID");
             const resData = await this.employeeJobdeskService.update(id, req.body);
 
             res.status(resData.statusCode).send(resData.response);
@@ -75,7 +88,7 @@ class EmployeeJobdeskController {
             res.status(resData.statusCode).send(resData.response);
         } catch (e) {
             console.log(e);
-            res.status(httpStatus.BAD_GATEWAY).send(e);
+            res.status(httpStatus.BAD_GATEWAY).send(e)
         }
     };
 }

@@ -6,7 +6,6 @@ class WorktimeValidator {
     async createUpdateValidator(req, res, next) {
         const schema = Joi.object({
             division_id: Joi.number().integer(),
-            weekday_id: Joi.number().integer(),
             uid: Joi.string(),
             type: Joi.string().valid('MASUK', 'KELUAR'),
             start_time: Joi.string().pattern(/^([01]\d|2[0-3]):([0-5]\d)(:([0-5]\d))?$/).optional(),
@@ -28,7 +27,6 @@ class WorktimeValidator {
     async upsertValidator(req, res, next) {
         const schema = Joi.object({
             division_id: Joi.number().integer(),
-            weekday_id: Joi.number().integer(),
             type: Joi.string().valid('MASUK', 'KELUAR'),
             start_time: Joi.string().pattern(/^([01]\d|2[0-3]):([0-5]\d)(:([0-5]\d))?$/).optional(),
             end_time: Joi.string().pattern(/^([01]\d|2[0-3]):([0-5]\d)(:([0-5]\d))?$/).optional()
