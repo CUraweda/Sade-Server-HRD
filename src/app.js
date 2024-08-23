@@ -28,6 +28,7 @@ app.get("/", async (req, res) => {
 });
 app.use("/stg-server1/api", routes);
 app.use("/stg-server1/public", express.static(path.join(__dirname, '../public')));
+app.use("/stg-server1/training-attendance", express.static(path.join(__dirname, '../files/attendance')));
 
 app.use((req, res, next) => { next(new ApiError(httpStatus.NOT_FOUND, "Not found")); });
 app.use(errorConverter);
