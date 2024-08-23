@@ -63,15 +63,7 @@ class EmployeeJobdeskDao extends SuperDao {
         return EmployeeJobdesk.findAll({
             where: {
                 employee_id,
-                [Op.or]: [
-                    {
-
-                        created_at: { [Op.between]: [start, end] }
-                    },
-                    {
-                        due_date: { [Op.between]: [start, end] }
-                    }
-                ]
+                created_at: { [Op.between]: [start, end] }
             }
         })
     }
