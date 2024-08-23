@@ -10,14 +10,14 @@ class TrainingAttendanceController {
         try {
             const page = +req.query.page || 0;
             const limit = +req.query.limit || 10;
-            const { search, employee_id } = req.query;
+            const { search, employee_id, training_id } = req.query;
             
             const offset = limit * page;
             const resData = await this.trainingAttendanceService.showPage(
                 page,
                 limit,
                 offset,
-                { search, employee_id }
+                { search, employee_id, training_id }
             );
 
             res.status(resData.statusCode).send(resData.response);
