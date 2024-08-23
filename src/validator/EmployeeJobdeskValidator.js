@@ -40,6 +40,8 @@ class EmployeeJobdeskValidator {
             return next();
         }
     }
+
+    hy
 }
 
 module.exports = EmployeeJobdeskValidator;

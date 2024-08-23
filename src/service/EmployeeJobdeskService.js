@@ -46,6 +46,38 @@ class EmployeeJobdeskService {
         );
     };
 
+    showRecapMonhEID = async (employee_id) => {
+        const currentDate = new Date()
+        const currentMonth = currentDate.getMonth().toString().padStart(2, "0")
+        const currentYear = currentDate.getFullYear()
+        const startDate = `01-${currentMonth}-${currentYear}T00:00:00.000Z`
+        const employeeJobdeskData = await this.employeeJobdeskDao.getStartEnd(startDate, currentDate.toISOString(), { employee_id })
+        if (!employeeJobdeskData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Employee Attendance Tidak ditemukan");
+
+        return responseHandler.retwurnSuccess(httpStatus.OK, "Rekap Monthly berhasil didapatkan", employeeJobdeskData)
+    }
+
+    showRecapYearEID = async (employee_id) => {
+        const monthObject = {}
+        constant.monthList.forEach((month, i) => { monthObject[i] = { name: month, total: 0, sum_grade: 0 } })
+
+        const currentDate = new Date()
+        const currentYear = currentDate.getFullYear()
+        const startDate = `01-01-${currentYear}T00:00:00.000Z`
+        const employeeJobdeskData = await this.employeeJobdeskDao.getStartEnd(startDate, currentDate.toISOString(), { employee_id })
+        if (!employeeJobdeskData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Employee Attendance Tidak ditemukan");
+
+        employeeJobdeskData.forEach((jobdesk) => {
+            const monthIndex = attendance.createdAt.getMonth()
+            if (monthObject[monthIndex]){
+                monthObject[monthIndex].total++
+                monthObject[monthIndex].sum_grade += jobdesk.grade
+            } 
+        })
+
+        return responseHandler.retwurnSuccess(httpStatus.OK, "Rekap Monthly berhasil didapatkan", monthObject)
+    }
+
     showOne = async (id) => {
         const employeeJobdeskData = await this.employeeJobdeskDao.findById(id);
         if (!employeeJobdeskData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Employee Jobdesk Tidak ditemukan");

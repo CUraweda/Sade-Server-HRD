@@ -172,7 +172,7 @@ class EmployeeAttendanceService {
                     if (monthObject[monthIndex]) monthObject[monthIndex].izin++
                     break;
                 default:
-                    break;
+                    break;j
             }
         }
 
