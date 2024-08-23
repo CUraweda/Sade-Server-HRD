@@ -130,9 +130,9 @@ class EmployeeAttendanceService {
 
     showRekapMonthEID = async (employee_id) => {
         const currentDate = new Date()
-        const currentMonth = currentDate.getMonth().toString().padStart(2, "0")
+        const currentMonth = (currentDate.getMonth() + 1).toString().padStart(2, "0")
         const currentYear = currentDate.getFullYear()
-        const startDate = `01-${currentMonth}-${currentYear}T00:00:00.000Z`
+        const startDate = `${currentYear}-${currentMonth}-01T00:00:00.000Z`
         const attendanceData = await this.employeeAttendanceDao.countAttendanceStartEnd(employee_id, startDate, currentDate.toISOString())
         if (!attendanceData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Employee Attendance Tidak ditemukan");
 
