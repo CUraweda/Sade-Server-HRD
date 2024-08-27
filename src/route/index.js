@@ -55,10 +55,10 @@ const defaultRoutes = [
     path: "/applicant-unformal",
     route: applicantUnformalRoute,
   },
-  // {
-  //   path: "/application-form",
-  //   route: applicationFormRoute,
-  // },
+  {
+    path: "/application-form",
+    route: applicationFormRoute,
+  },
   {
     path: "/bill-type",
     route: billTypeRoute,
