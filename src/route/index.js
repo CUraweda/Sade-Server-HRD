@@ -22,6 +22,7 @@ const trainingAttendanceRoute = require("./trainingAttendanceRoute");
 const trainingRoute = require("./trainingRoute");
 const trainingSuggestionRoute = require("./trainingSuggestionRoute");
 const faceRoute = require("./faceRoute");
+const locationRoute = require("./locationRoute");
 const formAnnouncementRoute = require("./formAnnouncementRoute");
 const worktimeRoute = require("./worktimeRoute");
 const employeeVacationRoute = require("./employeeVacationRoute");
@@ -54,10 +55,10 @@ const defaultRoutes = [
     path: "/applicant-unformal",
     route: applicantUnformalRoute,
   },
-  {
-    path: "/application-form",
-    route: applicationFormRoute,
-  },
+  // {
+  //   path: "/application-form",
+  //   route: applicationFormRoute,
+  // },
   {
     path: "/bill-type",
     route: billTypeRoute,
@@ -223,6 +224,7 @@ const defaultRoutes = [
     route: trainingSuggestionRoute,
   },
   { path: "/face", route: faceRoute },
+  { path: "/location", route: locationRoute}
 ];
 
 defaultRoutes.forEach((route) => {

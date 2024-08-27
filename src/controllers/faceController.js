@@ -52,8 +52,6 @@ const detectFace = async (req, res) => {
       return res.status(400).json({ message: "Not found face" });
     }
 
-    console.log(result);
-
     res.status(200).json({ result });
   } catch (error) {
     console.error("Error in detectFace", error);
