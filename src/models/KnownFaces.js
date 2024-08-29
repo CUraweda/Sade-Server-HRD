@@ -5,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
   const KnownFaces = sequelize.define('KnownFaces', {
     name: DataTypes.STRING,
     descriptor: {
-      type: DataTypes.JSONB,
+      type: DataTypes.JSON,
       allowNull: false
     }
   }, {

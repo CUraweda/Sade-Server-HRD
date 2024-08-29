@@ -64,7 +64,7 @@ module.exports = (sequelize, DataTypes) => {
       duty: DataTypes.STRING,
       job_desc: DataTypes.STRING,
       grade: DataTypes.STRING,
-      user_id: DataTypes.INTEGER,
+      // user_id: DataTypes.INTEGER,
       still_in_probation: DataTypes.BOOLEAN,
       probation_start_date: DataTypes.DATE,
       probation_end_date: DataTypes.DATE,

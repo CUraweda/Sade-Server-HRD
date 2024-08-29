@@ -35,7 +35,6 @@ async function loadKnownFaces() {
         descriptor: JSON.parse(face.descriptor),
       };
     });
-
   } catch (error) {
     console.error("Error loading known faces from database:", error.message);
   }
@@ -101,13 +100,12 @@ const checkFace = async (teacher) => {
 
 const detectFace = async (descriptor, teacher) => {
   if (!descriptor || !Array.isArray(descriptor)) {
-    console.log(descriptor)
     throw new Error("Invalid face data array");
   }
 
   const results = [];
 
-  const facesToCheck = knownFaces.filter(face => face.name === teacher);
+  const facesToCheck = knownFaces.filter((face) => face.name === teacher);
 
   if (facesToCheck.length === 0) {
     return results;
@@ -115,7 +113,6 @@ const detectFace = async (descriptor, teacher) => {
 
   for (const faceData of descriptor) {
     if (!Array.isArray(faceData) || faceData.length !== 128) {
-      console.error("Invalid face data received:", faceData);
       results.push({ error: "Invalid face data" });
       continue;
     }
