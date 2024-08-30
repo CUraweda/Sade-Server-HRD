@@ -5,7 +5,7 @@ const ApiError = require("../helper/ApiError");
 class EmployeeSalaryValidator {
     async createUpdateValidator(req, res, next) {
         const schema = Joi.object({
-            employee_id: Joi.number().integer(),
+            employee_id: Joi.number().integer().required(),
             fixed_salary: Joi.number().precision(2),
             is_active: Joi.boolean()
         });

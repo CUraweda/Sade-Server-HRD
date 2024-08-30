@@ -26,6 +26,7 @@ module.exports = (sequelize, DataTypes) => {
             uid: DataTypes.STRING,
             status: DataTypes.STRING,
             is_paid: DataTypes.BOOLEAN,
+            paid_amount: DataTypes.DOUBLE,
             temp_total: DataTypes.DOUBLE,
             fixed_salary: DataTypes.DOUBLE,
             variable_salary: DataTypes.DOUBLE,

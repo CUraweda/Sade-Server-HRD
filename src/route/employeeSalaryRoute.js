@@ -21,6 +21,12 @@ router.get(
 )
 
 router.post(
+    "/create-safe",
+    employeeSalaryValidator.createUpdateValidator,
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    employeeSalaryController.createSafeOne
+)
+router.post(
     "/create",
     employeeSalaryValidator.createUpdateValidator,
     auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
