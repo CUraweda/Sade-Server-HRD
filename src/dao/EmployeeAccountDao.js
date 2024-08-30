@@ -10,8 +10,8 @@ class EmployeeaccountDao extends SuperDao {
     }
 
     async getCount(filter) {
-         let { search } = filter
-        if(!search) search = ""
+        let { search, this_month } = filter
+        if (!search) search = ""
         return Employeeaccount.count({
             where: {
                 [Op.or]: [
@@ -33,8 +33,12 @@ class EmployeeaccountDao extends SuperDao {
     }
 
     async getPage(offset, limit, filter) {
-         let { search } = filter
-        if(!search) search = ""
+        let { search, this_month } = filter
+        if (!search) search = ""
+        const currentDate = new Date()
+        const currentMonth = currentDate.getMonth() + 1
+        const currentYear = currentDate.getFullYear()
+
         return Employeeaccount.findAll({
             where: {
                 [Op.or]: [
@@ -51,11 +55,31 @@ class EmployeeaccountDao extends SuperDao {
                     { loan: { [Op.like]: "%" + search + "%" } },
                     { cooperative: { [Op.like]: "%" + search + "%" } },
                 ],
+                ...(this_month === "Y" && {
+                    month_id: currentMonth,
+                    year: currentYear
+                })
             },
             offset: offset,
             limit: limit,
             order: [["id", "DESC"]],
         });
+    }
+
+    async getActive(employee_id) {
+        const currentDate = new Date()
+        const currentMonth = currentDate.getMonth() + 1
+        const currentYear = currentDate.getFullYear()
+        const accounts = await Employeeaccount.findAll({
+            where: {
+                employee_id,
+                month_id: currentMonth,
+                year: currentYear
+            },
+            order: [["id", "DESC"]]
+        })
+        if(accounts.length < 1) return false
+        return accounts[0]
     }
 }
 

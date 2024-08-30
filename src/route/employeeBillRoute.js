@@ -21,6 +21,12 @@ router.get(
 )
 
 router.post(
+    "/add-bill",
+    employeeBillValidator.addValidator,
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    employeeBillController.addOne
+)
+router.post(
     "/create",
     employeeBillValidator.createUpdateValidator,
     auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),

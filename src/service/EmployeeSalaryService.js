@@ -10,9 +10,16 @@ class EmployeeSalaryService {
     create = async (body) => {
         const employeeSalaryData = await this.employeeSalaryDao.create(body);
         if (!employeeSalaryData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Employee Salary Gagal dibuat");
-
+        
         return responseHandler.returnSuccess(httpStatus.CREATED, "Data Employee Salary Berhasil dibuat", employeeSalaryData);
     };
+    
+    createSafe = async (body) => {
+        const employeeSalaryData = await this.employeeSalaryDao.createOneSafe(body)
+        if (!employeeSalaryData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Employee Salary Gagal dibuat");
+        
+        return responseHandler.returnSuccess(httpStatus.CREATED, "Data Employee Salary Berhasil dibuat", employeeSalaryData);
+    }
 
     update = async (id, body) => {
         const dataExist = await this.employeeSalaryDao.findById(id);

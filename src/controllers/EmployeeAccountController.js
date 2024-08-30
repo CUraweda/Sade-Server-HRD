@@ -10,14 +10,14 @@ class EmployeeAccountController {
     try {
       const page = +req.query.page || 0;
       const limit = +req.query.limit || 10;
-      const { search } = req.query;
+      const { search, this_month } = req.query;
 
       const offset = limit * page;
       const resData = await this.employeeAccountService.showPage(
         page,
         limit,
         offset,
-        { search }
+        { search, this_month }
       );
 
       res.status(resData.statusCode).send(resData.response);
@@ -48,6 +48,30 @@ class EmployeeAccountController {
     } catch (e) {
       console.log(e);
       res.status(httpStatus.BAD_GATEWAY).send(e);
+    }
+  }
+
+  createMonthly = async (req, res) => {
+    try {
+      const resData = await this.employeeAccountService.createMonthly(req.body);
+
+      res.status(resData.statusCode).send(resData.response);
+    } catch (e) {
+      console.log(e);
+      res.status(httpStatus.BAD_GATEWAY).send(e);
+    }
+  }
+
+  updatePaid = async (req, res) => {
+    try {
+      const id = +req.params.id;
+      if (!id) res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Please provide an ID");
+      const resData = await this.employeeAccountService.updatePaid(id);
+  
+      res.status(resData.statusCode).send(resData.response);
+    } catch (e) {
+      console.log(e);
+      res.status(httpStatus.BAD_GATEWAY).send({ error: e.message });
     }
   }
 

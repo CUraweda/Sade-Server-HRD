@@ -1,23 +1,25 @@
 const httpStatus = require("http-status");
 const EmployeeBillService = require("../service/EmployeeBillService");
+const EmployeeAccountService = require("../service/EmployeeAccountService");
 
 class EmployeeBillController {
   constructor() {
     this.employeeBillService = new EmployeeBillService();
+    this.employeeAccountService = new EmployeeAccountService()
   }
 
   getAll = async (req, res) => {
     try {
       const page = +req.query.page || 0;
       const limit = +req.query.limit || 10;
-      const { search } = req.query;
+      const { search, account_id } = req.query;
 
       const offset = limit * page;
       const resData = await this.employeeBillService.showPage(
         page,
         limit,
         offset,
-        { search }
+        { search, account_id }
       );
 
       res.status(resData.statusCode).send(resData.response);
@@ -43,6 +45,22 @@ class EmployeeBillController {
   createOne = async (req, res) => {
     try {
       const resData = await this.employeeBillService.create(req.body);
+
+      res.status(resData.statusCode).send(resData.response);
+    } catch (e) {
+      console.log(e);
+      res.status(httpStatus.BAD_GATEWAY).send(e);
+    }
+  }
+
+  addOne = async (req, res) => {
+    try {
+      const resData = await this.employeeBillService.addOne(req.user?.employee, req.body);
+      if(resData.response.status) {
+        const { account_id, type_id  } = resData.response.data
+        const updateAccount = await this.employeeAccountService.updateTotal(account_id, type_id)
+        if(!updateAccount.response.status) return res.status(updateAccount.statusCode).send(updateAccount.response);
+      }
 
       res.status(resData.statusCode).send(resData.response);
     } catch (e) {
