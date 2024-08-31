@@ -27,6 +27,18 @@ class EmployeeAttachmentController {
         }
     };
 
+    getByEmployee = async (req, res) => {
+        try{
+            const id = +req.params.id
+            const resData = await this.employeeAttachmentService.showByEmployee(id)
+
+            res.status(resData.statusCode).send(resData.response);
+        }catch(e){
+            console.log(e);
+            res.status(httpStatus.BAD_GATEWAY).send(e);        
+        }
+    }
+
     getOne = async (req, res) => {
         try {
             const id = +req.params.id;
@@ -42,8 +54,13 @@ class EmployeeAttachmentController {
 
     createOne = async (req, res) => {
         try {
+            if(req.file){
+                req.body.file_path = req.file.path,
+                req.body.file_name = req.file.filename,
+                req.body.file_type = req.file.mimetype
+            }
             const resData = await this.employeeAttachmentService.create(req.body);
-
+            
             res.status(resData.statusCode).send(resData.response);
         } catch (e) {
             console.log(e);
@@ -55,6 +72,11 @@ class EmployeeAttachmentController {
         try {
             const id = +req.params.id;
             if (!id) res.status(httpStatus["422_CLASS"]).send("Tolong sertakan ID");
+            if(req.file){
+                req.body.file_path = req.file.path,
+                req.body.file_name = req.file.filename,
+                req.body.file_type = req.file.mimetype
+            }
             const resData = await this.employeeAttachmentService.update(id, req.body);
 
             res.status(resData.statusCode).send(resData.response);
