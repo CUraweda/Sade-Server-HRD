@@ -29,11 +29,6 @@ router.get(
     employeeAttendanceController.getRekapWeek
 )
 router.get(
-    "/recap-week",
-    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
-    employeeAttendanceController.getRekapWeek
-)
-router.get(
     "/recap-month",
     auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
     employeeAttendanceController.getRekapMonth
@@ -49,7 +44,7 @@ router.get(
     employeeAttendanceController.getRekapWeekEmployee
 )
 router.get(
-    "/recap-month-employee/:id",
+    "/recap-month-employee/:id?",
     auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
     employeeAttendanceController.getRekapMonthEmployee
 )

@@ -1,8 +1,9 @@
 const SuperDao = require("./SuperDao");
 const models = require("../models");
-const { Op } = require("sequelize");
+const { Op, fn, col } = require("sequelize");
 
 const EmployeeAttendance = models.employeeattendance;
+const EmployeeVacation = models.employeevacation
 const Division = models.division
 const Employee = models.employees
 const Worktime = models.worktime
@@ -148,6 +149,41 @@ class EmployeeAttendanceDao extends SuperDao {
         return EmployeeAttendance.findOne({
             where: { uid }
         })
+    }
+
+    async getAttendanceRecap(start_date, end_date) {
+        return Employee.findAll({
+            attributes: ['full_name'],
+            include: [
+                {
+                    model: EmployeeAttendance,
+                    attributes: [[fn('COUNT', col('employeeattendances.id')), 'attendance_count']],
+                    where: {
+                        created_at: {
+                            [Op.between]: [start_date, end_date]
+                        }
+                    },
+                    required: false // Use LEFT JOIN to include employees with no attendance records
+                },
+                {
+                    model: EmployeeVacation,
+                    attributes: [[fn('COUNT', col('employeevacations.id')), 'vacation_count']],
+                    where: {
+                        start_date: {
+                            [Op.between]: [start_date, end_date]
+                        }
+                    },
+                    required: false // Use LEFT JOIN to include employees with no vacation records
+                }
+            ],
+            group: ['employees.id'], // Group by employee to get the correct counts
+        }).then(results => {
+            return results.map(result => ({
+                full_name: result.full_name,
+                attendance: result.employeeattendances[0]?.get('attendance_count') || 0,
+                vacation: result.employeevacations[0]?.get('vacation_count') || 0
+            }));
+        });
     }
 }
 
