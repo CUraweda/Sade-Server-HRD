@@ -14,7 +14,7 @@ class JobVacancyDao extends SuperDao {
     }
 
     async getCount(filter) {
-        let { search } = filter
+        let { search, division_id } = filter
         if (!search) search = ""
         return JobVacancy.count({
             where: {
@@ -26,12 +26,13 @@ class JobVacancyDao extends SuperDao {
                         sub_title: { [Op.like]: "%" + search + "%" },
                     },
                 ],
+                ...(division_id && { division_id })
             },
         });
     }
 
     async getPage(offset, limit, filter) {
-        let { search } = filter
+        let { search, division_id } = filter
         if (!search) search = ""
         return JobVacancy.findAll({
             where: {
@@ -43,6 +44,7 @@ class JobVacancyDao extends SuperDao {
                         sub_title: { [Op.like]: "%" + search + "%" },
                     },
                 ],
+                ...(division_id && { division_id })
             },
             include: [
                 {

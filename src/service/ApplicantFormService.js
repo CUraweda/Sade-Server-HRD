@@ -170,6 +170,13 @@ class ApplicantFormService {
         return responseHandler.returnSuccess(httpStatus.OK, "Applicant form found", applicantFormData);
     }
 
+    showDetail = async (id) => {
+        const applicantFormData = await this.applicantFormDao.getDetail(id);
+        if (!applicantFormData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Applicant form not found");
+    
+        return responseHandler.returnSuccess(httpStatus.OK, "Applicant form found", applicantFormData);
+    }
+
     showOne = async (id) => {
         const applicantFormData = await this.applicantFormDao.findById(id);
         if (!applicantFormData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Applicant form not found");

@@ -10,10 +10,15 @@ class JobVacancyController {
         try {
             const page = +req.query.page || 0;
             const limit = +req.query.limit || 10;
-            const { search } = req.query;
+            const { search, division_id } = req.query;
 
             const offset = limit * page;
-            const resData = await this.jobVacancyService.showPage(page, limit, offset, { search });
+            const resData = await this.jobVacancyService.showPage(
+                page,
+                limit,
+                offset,
+                { search, division_id }
+            );
 
             res.status(resData.statusCode).send(resData.response);
         } catch (e) {
@@ -45,28 +50,28 @@ class JobVacancyController {
             res.status(httpStatus.BAD_GATEWAY).send(e);
         }
     };
-    
+
     createWithDetail = async (req, res) => {
-        try{
+        try {
             const resData = await this.jobVacancyService.createWithDetail(req.body)
-            
+
             res.status(resData.statusCode).send(resData.response);
-        }catch(e){
+        } catch (e) {
             console.log(e);
             res.status(httpStatus.BAD_GATEWAY).send(e);
         }
     }
-    
+
     closeVacancy = async (req, res) => {
-        try{
+        try {
             const { id } = req.params
             const resData = await this.jobVacancyService.createWithDetail(req.body)
-            
+
             res.status(resData.statusCode).send(resData.response);
-        }catch(e){
+        } catch (e) {
             console.log(e);
             res.status(httpStatus.BAD_GATEWAY).send(e);
-        }    
+        }
     }
 
     update = async (req, res) => {

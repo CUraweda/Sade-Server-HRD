@@ -1,6 +1,6 @@
 const SuperDao = require("./SuperDao");
 const models = require("../models");
-const { Op } = require("sequelize");
+const { Op, where } = require("sequelize");
 
 const ApplicantForm = models.applicantform;
 const ApplicantAcademic = models.applicantacademic
@@ -111,6 +111,19 @@ class ApplicantFormDao extends SuperDao {
                 }
             },
         })    
+    }
+
+    async getDetail(id){
+        return ApplicantForm.findOne({
+            where: { id },
+            include: [
+                { model: ApplicantAcademic },
+                { model: ApplicantUnformal },
+                { model: ApplicantSkill },
+                { model: ApplicantJob },
+                { model: ApplicantAppreciation, include: [ { model: AppreciationAttachment } ] },
+            ]
+        })
     }
 }
 
