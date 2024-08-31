@@ -40,6 +40,33 @@ class EmployeeAccountController {
     }
   };
 
+  getMonthTotal = async (req, res) => {
+    try {
+      const currentDate = new Date()
+      const currentMonth = currentDate.getMonth() + 1
+      const currentYear = currentDate.getFullYear()
+
+      const resData = await this.employeeAccountService.showTotal(currentYear, currentMonth);
+      
+      res.status(resData.statusCode).send(resData.response);
+    } catch (e) {
+      console.log(e);
+      res.status(httpStatus.BAD_GATEWAY).send(e);
+    }
+  }
+
+  getRecapYear = async (req, res) => {
+    try{
+      const currentYear = new Date().getFullYear()
+      const resData = await this.employeeAccountService.showRecapYear(currentYear)
+
+      res.status(resData.statusCode).send(resData.response);
+    }catch(e){
+      console.log(e);
+      res.status(httpStatus.BAD_GATEWAY).send(e);
+    }
+  }
+
   createOne = async (req, res) => {
     try {
       const resData = await this.employeeAccountService.create(req.body);
