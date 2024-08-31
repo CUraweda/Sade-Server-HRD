@@ -1,10 +1,12 @@
 const httpStatus = require("http-status");
 const TrainingDao = require("../dao/TrainingDao");
 const responseHandler = require("../helper/responseHandler");
+const TrainingSuggestionDao = require("../dao/TrainingSuggestionDao");
 
 class TrainingService {
     constructor() {
         this.trainingDao = new TrainingDao();
+        this.trainingSuggestionDao = new TrainingSuggestionDao()
     }
 
     create = async (body) => {
@@ -45,6 +47,20 @@ class TrainingService {
             totalPage,
         });
     };
+
+    showRecapDashboard = async () => {
+        const trainingData = await this.trainingDao.getAllActive()
+        const suggestionData = await this.trainingSuggestionDao.getAllUnapprove()
+
+        return responseHandler.returnSuccess(httpStatus.OK, "Training record found", {
+            training_counter: trainingData.length,
+            suggestion_counter: suggestionData.length,
+            data: [
+                ...suggestionData,
+                ...trainingData
+            ]
+        })
+    }
 
     showOne = async (id) => {
         const trainingData = await this.trainingDao.findById(id);

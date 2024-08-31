@@ -10,8 +10,8 @@ class TrainingDao extends SuperDao {
     }
 
     async getCount(filter) {
-         let { search, status, employee_id } = filter
-        if(!search) search = ""
+        let { search, status, employee_id } = filter
+        if (!search) search = ""
         return Training.count({
             where: {
                 [Op.or]: [
@@ -25,14 +25,15 @@ class TrainingDao extends SuperDao {
     }
 
     async getPage(offset, limit, filter) {
-         let { search, status, employee_id} = filter
-        if(!search) search = ""
+        let { search, status, employee_id, active} = filter
+        if (!search) search = ""
         return Training.findAll({
             where: {
                 [Op.or]: [
                     { title: { [Op.like]: "%" + search + "%" } },
                     { purpose: { [Op.like]: "%" + search + "%" } },
                 ],
+                ...(active && { is_active: true }),
                 ...(employee_id && { employee_id }),
                 ...(status && { status: { [Op.like]: `%${status}%` } })
             },
@@ -42,7 +43,13 @@ class TrainingDao extends SuperDao {
         });
     }
 
-    async getClosestActive(employee_id, currentTime){
+    async getAllActive(){
+        return Training.findAll({
+            where: { is_active: true }
+        })
+    }
+
+    async getClosestActive(employee_id, currentTime) {
         return Training.findAll({
             where: {
                 employee_id,

@@ -152,12 +152,8 @@ class ApplicantFormService {
         const currentStart =  currentDate.toISOString().split('T')[0] + "T00:00:00.000Z"
         const startDate = `${currentYear}-${currentMonth}-01T00:00:00.000Z`
 
-        const applicantFormData = await this.applicantFormDao.getByRange(startDate, currentDate.toISOString())
-        console.log(applicantFormData)
-        if (!applicantFormData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Applicant form not found");
-        
+        const applicantFormData = await this.applicantFormDao.getByRange(startDate, currentDate.toISOString())        
         const applicantTodayData = await this.applicantFormDao.countRange(currentStart, currentDate.toISOString())
-        if (!applicantTodayData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Applicant form not found");
     
         return responseHandler.returnSuccess(httpStatus.OK, "Applicant form found", {
             today_counter: applicantTodayData,

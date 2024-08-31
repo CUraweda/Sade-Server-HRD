@@ -47,6 +47,12 @@ class TrainingSuggestionDao extends SuperDao {
             order: [["id", "DESC"]],
         });
     }
+
+    async getAllUnapprove(){
+        return TrainingSuggestion.findAll({
+            where: { is_approved: false }
+        })
+    }
 }
 
 module.exports = TrainingSuggestionDao;
