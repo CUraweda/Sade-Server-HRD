@@ -12,6 +12,34 @@ class EmployeeAttendanceService {
         this.employeeVacationDao = new EmployeeVacationDao()
     }
 
+    formatUID = (currentDate, worktime_id, employee_id) => {
+        const date = new Date(currentDate).toISOString().split('T')[0]
+        return `${date}|${worktime_id}|${employee_id}`
+    }
+
+    formatStatus = (worktime) => {
+        const currentTime = new Date()
+        const startTime = new Date(`1970-01-01T${worktime.start_time}Z`);
+        const endTime = new Date(`1970-01-01T${worktime.end_time}Z`);
+        let status;
+
+        switch (true) {
+            case (currentTime >= startTime && currentTime <= endTime):
+                status = "Tepat Waktu";
+                break;
+            case (currentTime < startTime):
+                status = "Terlalu Cepat";
+                break;
+            case (currentTime > endTime):
+                status = "Terlambat";
+                break;
+            default:
+                status = null;
+        }
+
+        return { status };
+    }
+
     create = async (body) => {
         const attendanceData = await this.employeeAttendanceDao.create(body);
         if (!attendanceData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Employee Attendance Gagal dibuat");
@@ -22,7 +50,7 @@ class EmployeeAttendanceService {
     createByClosest = async (employee, file) => {
         if (!employee) return responseHandler.returnError(httpStatus.UNPROCESSABLE_ENTITY, "Anda tidak terdaftar sebagai karyawan")
         const { division_id, is_outstation } = employee
-    
+
         if (!division_id) return responseHandler.returnError(httpStatus.UNPROCESSABLE_ENTITY, "Anda tidak terdaftar pada divisi apapun")
         if (is_outstation && !file) return responseHandler.returnError(httpStatus.UNPROCESSABLE_ENTITY, "Anda sedang Dinas Luar, mohon sertakan gambar")
 
@@ -36,6 +64,34 @@ class EmployeeAttendanceService {
         const { status } = this.formatStatus(closestWorktime)
         const attendanceData = await this.employeeAttendanceDao.create({
             worktime_id: closestWorktime.id,
+            description: constant.attendDescription,
+            ...(file && { file_path: file.path }),
+            status, uid, employee_id: employee.id, is_outstation: employee.is_outstation
+        })
+        if (!attendanceData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Employee Attendance Gagal dibuat");
+
+        return responseHandler.returnSuccess(httpStatus.CREATED, "Data Employee Attendance Berhasil dibuat", attendanceData);
+    }
+
+    createByOrder = async (employee, file) => {
+        if (!employee) return responseHandler.returnError(httpStatus.UNPROCESSABLE_ENTITY, "Anda tidak terdaftar sebagai karyawan")
+        const { division_id, is_outstation } = employee
+
+        if (!division_id) return responseHandler.returnError(httpStatus.UNPROCESSABLE_ENTITY, "Anda tidak terdaftar pada divisi apapun")
+        if (is_outstation && !file) return responseHandler.returnError(httpStatus.UNPROCESSABLE_ENTITY, "Anda sedang Dinas Luar, mohon sertakan gambar")
+
+        const currentTime = new Date()
+        let worktimeData = await this.worktimeDao.getUnfinishTodayOrder(employee, currentTime)
+        if (worktimeData.length < 1) return responseHandler.returnError(httpStatus.UNPROCESSABLE_ENTITY, "Tidak ada jadwal yang bisa diambil")
+        worktimeData = worktimeData[0]
+
+        const uid = this.formatUID(currentTime, worktimeData.id, employee.id)
+        const checkAlreadyExist = await this.employeeAttendanceDao.getByUID(uid)
+        if (checkAlreadyExist) return responseHandler.returnSuccess(httpStatus.OK, "Data Employee Attendance Hari Ini sudah dibuat")
+
+        const { status } = this.formatStatus(worktimeData)
+        const attendanceData = await this.employeeAttendanceDao.create({
+            worktime_id: worktimeData.id,
             description: constant.attendDescription,
             ...(file && { file_path: file.path }),
             status, uid, employee_id: employee.id, is_outstation: employee.is_outstation
@@ -92,15 +148,15 @@ class EmployeeAttendanceService {
         const dayOfWeek = today.getDay();
         let startOfWeek = new Date(today);
         let endOfWeek = new Date(today);
-    
+
         const diff = today.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1); // Adjust start of the week based on Sunday
         startOfWeek.setDate(diff);
         startOfWeek = startOfWeek.toISOString().split('T')[0] + "T00:00:00.000Z"
-    
+
         const daysToAdd = 5 - dayOfWeek + (dayOfWeek === 0 ? 7 : 0); // Adjust end of the week based on Friday
         endOfWeek.setDate(today.getDate() + daysToAdd);
         endOfWeek = endOfWeek.toISOString().split('T')[0] + "T23:59:59.999Z"
-    
+
         const attendanceData = await this.employeeAttendanceDao.getByRange(startOfWeek, endOfWeek, { employee_id })
         if (!attendanceData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Employee Attendance Tidak ditemukan");
 
@@ -171,7 +227,7 @@ class EmployeeAttendanceService {
                     if (monthObject[monthIndex]) monthObject[monthIndex].izin++
                     break;
                 default:
-                    break;j
+                    break; j
             }
         }
 
@@ -212,34 +268,6 @@ class EmployeeAttendanceService {
 
         return responseHandler.returnSuccess(httpStatus.OK, "Data Employee Attendance Ditemukan", attendanceData);
     };
-
-    formatUID = (currentDate, worktime_id, employee_id) => {
-        const date = new Date(currentDate).toISOString().split('T')[0]
-        return `${date}|${worktime_id}|${employee_id}`
-    }
-
-    formatStatus = (worktime) => {
-        const currentTime = new Date()
-        const startTime = new Date(`1970-01-01T${worktime.start_time}Z`);
-        const endTime = new Date(`1970-01-01T${worktime.end_time}Z`);
-        let status;
-
-        switch (true) {
-            case (currentTime >= startTime && currentTime <= endTime):
-                status = "Tepat Waktu";
-                break;
-            case (currentTime < startTime):
-                status = "Terlalu Cepat";
-                break;
-            case (currentTime > endTime):
-                status = "Terlambat";
-                break;
-            default:
-                status = null;
-        }
-
-        return { status };
-    }
 }
 
 module.exports = EmployeeAttendanceService;

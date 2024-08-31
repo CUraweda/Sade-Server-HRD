@@ -134,6 +134,23 @@ class WorktimeDao extends SuperDao {
             ]
         })
     }
+
+    async getUnfinishTodayOrder(employee, date){
+        const startTime = date.toISOString().split('T')[0] + "T00:00:00.000Z"
+        const { divisiom_id } = employee
+        return Worktime.findAll({
+            where: {
+                divisiom_id,
+                "$employeeattendance.employee_id$": employee.id,
+                created_at: { [Op.between]: [startTime, date.toISOString()] }
+            },
+            include: [
+                {
+                    model: EmployeeAttendance
+                }
+            ]
+        })
+    }
 }
 
 module.exports = WorktimeDao;
