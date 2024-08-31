@@ -34,6 +34,17 @@ class ApplicantFormController {
             res.status(httpStatus.BAD_GATEWAY).send(e);
         }
     };
+    
+    getRekapDashboard = async (req, res) =>{
+        try{
+            const resData  = await this.applicantFormService.showRekapDashboard()
+            
+            res.status(resData.statusCode).send(resData.response);
+        }catch(e){
+            console.log(e);
+            res.status(httpStatus.BAD_GATEWAY).send(e);        
+        }
+    }
 
     getByVacancy = async (req, res) => {
         try {

@@ -81,7 +81,7 @@ class ApplicantFormDao extends SuperDao {
         });
     }
 
-    async getByVacancy(vacancy_id){
+    async getByVacancy(vacancy_id) {
         return ApplicantForm.findAll({
             where: { vacancy_id },
             include: [
@@ -91,6 +91,26 @@ class ApplicantFormDao extends SuperDao {
                 }
             ]
         })
+    }
+
+    async getByRange(start_date, end_date) {
+        return ApplicantForm.findAll({
+            where: {
+                created_at: {
+                    [Op.between]: [start_date, end_date]
+                }
+            },
+        })
+    }
+    
+    async countRange(start_date, end_date){
+        return ApplicantForm.count({
+            where: {
+                created_at: {
+                    [Op.between]: [start_date, end_date]
+                }
+            },
+        })    
     }
 }
 

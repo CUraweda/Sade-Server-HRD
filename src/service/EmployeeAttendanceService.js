@@ -84,7 +84,7 @@ class EmployeeAttendanceService {
         return responseHandler.returnSuccess(httpStatus.OK, "Data Employee Attendance Ditemukan", attendanceData);
     }
 
-    showRekapWeekEID = async (employee_id) => {
+    showRekapWeek = async (employee_id) => {
         const weekObject = {}
         constant.weekList.forEach((week, i) => { weekObject[i] = { name: week, hadir: 0, cuti: 0, izin: 0 } })
 
@@ -109,8 +109,6 @@ class EmployeeAttendanceService {
 
         for (let attendance of attendanceData) {
             const dayIndex = attendance.createdAt.getDay()
-            console.log(dayIndex)
-            console.log(attendance.createdAt)
             if (weekObject[dayIndex]) weekObject[dayIndex].hadir++
         }
         for (let vacation of vacationData) {
@@ -126,10 +124,10 @@ class EmployeeAttendanceService {
                     break;
             }
         }
-        return responseHandler.returnSuccess(httpStatus.OK, "Rekap Weekly berhasil didapatkan", weekObject)
+        return responseHandler.returnSuccess(httpStatus.OK, "Rekap Weekly berhasil didapatkan", Object.values(weekObject))
     }
 
-    showRekapMonthEID = async (employee_id) => {
+    showRekapMonth = async (employee_id) => {
         const currentDate = new Date()
         const currentMonth = (currentDate.getMonth() + 1).toString().padStart(2, "0")
         const currentYear = currentDate.getFullYear()
@@ -146,7 +144,7 @@ class EmployeeAttendanceService {
         return responseHandler.returnSuccess(httpStatus.OK, "Rekap Monthly berhasil didapatkan", { HADIR: attendanceData, ...counter })
     }
 
-    showRekapYearEID = async (employee_id) => {
+    showRekapYear = async (employee_id) => {
         const monthObject = {}
         constant.monthList.forEach((month, i) => { monthObject[i] = { name: month, cuti: 0, izin: 0, hadir: 0 } })
 

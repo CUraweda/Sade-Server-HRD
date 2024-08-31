@@ -5,6 +5,7 @@ const ApiError = require("../helper/ApiError");
 class EmployeeAnnouncementValidator {
     async createUpdateValidator(req, res, next) {
         const schema = Joi.object({
+            title: Joi.string(),
             plan_date: Joi.date(),
             notes: Joi.string(),
             is_specific: Joi.boolean().required(),
