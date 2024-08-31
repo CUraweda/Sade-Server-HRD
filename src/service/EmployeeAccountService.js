@@ -3,6 +3,7 @@ const EmployeeAccountDao = require("../dao/EmployeeAccountDao");
 const responseHandler = require("../helper/responseHandler");
 const EmployeeSalaryDao = require("../dao/EmployeeSalaryDao");
 const EmployeeBillDao = require("../dao/EmployeeBillDao");
+const constant = require("../config/constant");
 
 class EmployeeAccountService {
     constructor() {
@@ -115,6 +116,25 @@ class EmployeeAccountService {
             totalRows: totalRows,
             totalPage: totalPage,
         });
+    }
+
+    showTotal = async (year, month) => {
+        const employeeAccountData = await this.employeeAccountDao.getTotalRange(year, month)
+        if (!employeeAccountData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "EmployeeAccount data not found");
+    
+        return responseHandler.returnSuccess(httpStatus.OK, "EmployeeAccount data found", employeeAccountData[0]);
+    }
+
+    showRecapYear = async (year) => {
+        let monthMap = {}
+        constant.monthList.forEach((month, i) => { monthMap[i + 1] = { name: month, total: 0 } })
+
+        const employeeAccountDatas = await this.employeeAccountDao.getRange(year)
+        if (!employeeAccountDatas) return responseHandler.returnError(httpStatus.BAD_REQUEST, "EmployeeAccount data not found");
+
+        for(let employeeAccountData of employeeAccountDatas ) monthMap[employeeAccountData.month_id].total += employeeAccountData.temp_total
+
+        return responseHandler.returnSuccess(httpStatus.OK, "EmployeeAccount data found", Object.values(monthMap));
     }
 
     showOne = async (id) => {

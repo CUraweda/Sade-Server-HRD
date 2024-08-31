@@ -66,6 +66,24 @@ class EmployeeaccountDao extends SuperDao {
         });
     }
 
+    async getTotalRange(year, month_id) {
+        return Employeeaccount.findAll({
+            where: { month_id, year, is_paid: false },
+            attributes: [
+                [models.sequelize.fn('SUM', models.sequelize.col('temp_total')), "total"]
+            ]
+        })
+    }
+
+    async getRange(year, month_id) {
+        return Employeeaccount.findAll({
+            where: { 
+                ...(month_id && { month_id }),
+                ...(year && { year })
+             }
+        })
+    }
+
     async getActive(employee_id) {
         const currentDate = new Date()
         const currentMonth = currentDate.getMonth() + 1
@@ -78,7 +96,7 @@ class EmployeeaccountDao extends SuperDao {
             },
             order: [["id", "DESC"]]
         })
-        if(accounts.length < 1) return false
+        if (accounts.length < 1) return false
         return accounts[0]
     }
 }

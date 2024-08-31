@@ -1,5 +1,5 @@
 const models = require("../models");
-const { Op } = require("sequelize");
+const { Op, literal } = require("sequelize");
 const SuperDao = require("./SuperDao");
 
 const Worktime = models.worktime;
@@ -13,8 +13,8 @@ class WorktimeDao extends SuperDao {
     }
 
     async getCount(filter) {
-         let { search } = filter
-        if(!search) search = ""
+        let { search } = filter
+        if (!search) search = ""
         return Worktime.count({
             where: {
                 [Op.or]: [
@@ -45,8 +45,8 @@ class WorktimeDao extends SuperDao {
     }
 
     async getPage(offset, limit, filter) {
-         let { search } = filter
-        if(!search) search = ""
+        let { search } = filter
+        if (!search) search = ""
         return Worktime.findAll({
             where: {
                 [Op.or]: [
@@ -79,15 +79,15 @@ class WorktimeDao extends SuperDao {
         });
     }
 
-    async getByUID(uid){
+    async getByUID(uid) {
         return Worktime.findOne({ where: { uid } })
     }
 
-    async getByDivisionId(division_id){
+    async getByDivisionId(division_id) {
         return Worktime.findAll({ where: { division_id } })
     }
 
-    async getShortestTime(division_id){
+    async getShortestTime(division_id) {
         const currentTime = new Date();
         const worktimes = await this.getByDivisionId(division_id)
 
@@ -112,7 +112,7 @@ class WorktimeDao extends SuperDao {
         return { shortestDifference, closestWorktime }
     }
 
-    async getTodayEmployee(employee){
+    async getTodayEmployee(employee) {
         const current = new Date().toISOString().split('T')[0]
         const startDate = `${current}T00:00:00.000Z`
         const endDate = `${current}T23:59:59.999Z`
@@ -123,7 +123,7 @@ class WorktimeDao extends SuperDao {
             include: [
                 {
                     model: EmployeeAttendance,
-                    where: { 
+                    where: {
                         employee_id: id,
                         createdAt: {
                             [Op.between]: [startDate, endDate]
@@ -135,20 +135,24 @@ class WorktimeDao extends SuperDao {
         })
     }
 
-    async getUnfinishTodayOrder(employee, date){
+    async getUnfinishTodayOrder(employee, date) {
         const startTime = date.toISOString().split('T')[0] + "T00:00:00.000Z"
-        const { divisiom_id } = employee
+        const { division_id } = employee
         return Worktime.findAll({
             where: {
-                divisiom_id,
-                "$employeeattendance.employee_id$": employee.id,
-                created_at: { [Op.between]: [startTime, date.toISOString()] }
+                division_id,
             },
             include: [
                 {
-                    model: EmployeeAttendance
+                    model: EmployeeAttendance,
+                    required: false,
+                    where: {
+                        employee_id: employee.id,
+                        created_at: { [Op.between]: [startTime, date.toISOString()] }
+                    }
                 }
-            ]
+            ],
+            having: literal('COUNT(employeeattendances.id) = 0') // Filter to include only records without attendance
         })
     }
 }

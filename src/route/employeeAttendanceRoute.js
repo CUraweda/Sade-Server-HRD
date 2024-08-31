@@ -22,6 +22,12 @@ router.get(
     employeeAttendanceController.getAll
 )
 
+
+router.get(
+    "/recap-week",
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    employeeAttendanceController.getRekapWeek
+)
 router.get(
     "/recap-week",
     auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),

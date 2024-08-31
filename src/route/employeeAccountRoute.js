@@ -15,6 +15,16 @@ router.get(
     employeeAccountController.getAll
 )
 router.get(
+    "/total-month",
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    employeeAccountController.getMonthTotal
+)
+router.get(
+    "/recap-year",
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    employeeAccountController.getRecapYear
+)
+router.get(
     "/:id",
     auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
     employeeAccountController.getOne
