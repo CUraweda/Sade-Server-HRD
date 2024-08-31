@@ -12,7 +12,8 @@ class TrainingValidator {
             status: Joi.string(),
             location: Joi.string(),
             start_date: Joi.date(),
-            end_date: Joi.date()
+            end_date: Joi.date(),
+            is_active: Joi.boolean()
         });
 
         const options = { abortEarly: false, allowUnknown: true, stripUnknown: true };
