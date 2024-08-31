@@ -35,6 +35,17 @@ class TrainingController {
             res.status(httpStatus.BAD_GATEWAY).send(e);
         }
     };
+    
+    getRecapDashboard = async (req, res) => {vi
+        try {
+            const resData = await this.trainingService.showRecapDashboard()
+    
+            res.status(resData.statusCode).send(resData.response);
+        } catch (e) {
+            console.log(e);
+            res.status(httpStatus.BAD_GATEWAY).send(e);
+        }
+    }
 
     createOne = async (req, res) => {
         try {
