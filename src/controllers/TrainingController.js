@@ -36,7 +36,7 @@ class TrainingController {
         }
     };
     
-    getRecapDashboard = async (req, res) => {vi
+    getRecapDashboard = async (req, res) => {
         try {
             const resData = await this.trainingService.showRecapDashboard()
     

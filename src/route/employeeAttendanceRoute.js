@@ -35,7 +35,7 @@ router.get(
 router.get(
     "/recap-year",
     auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
-    employeeAttendanceController.getRekapYear
+    employeeAttendanceController.getRekapYearEmployee
 )
 router.get(
     "/recap-week-employee/:id",

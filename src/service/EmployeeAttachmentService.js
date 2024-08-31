@@ -46,6 +46,12 @@ class EmployeeAttachmentService {
         );
     };
 
+    showByEmployee = async (employee_id) => {
+        if (!employee_id) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Tolong sertakan ID");
+        const employeeAttachmentData = await this.employeeAttachmentDao.findByWhere({ employee_id })
+        return responseHandler.returnSuccess(httpStatus.OK, "Data Employee Attachment Ditemukan", employeeAttachmentData);
+    }
+
     showOne = async (id) => {
         const employeeAttachmentData = await this.employeeAttachmentDao.findById(id);
         if (!employeeAttachmentData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Employee Attachment Tidak ditemukan");
