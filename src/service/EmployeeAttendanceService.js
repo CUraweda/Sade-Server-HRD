@@ -200,6 +200,17 @@ class EmployeeAttendanceService {
         return responseHandler.returnSuccess(httpStatus.OK, "Rekap Monthly berhasil didapatkan", { HADIR: attendanceData, ...counter })
     }
 
+    showRekapMonthAllEmployee = async () => {
+        const currentDate = new Date()
+        const currentMonth = (currentDate.getMonth() + 1).toString().padStart(2, "0")
+        const currentYear = currentDate.getFullYear()
+        const startDate = `${currentYear}-${currentMonth}-01T00:00:00.000Z`
+        const attendanceData = await this.employeeAttendanceDao.getAttendanceRecap(startDate, currentDate.toISOString())
+        if (!attendanceData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Employee Attendance Tidak ditemukan");
+
+        return responseHandler.returnSuccess(httpStatus.OK, "Rekap Monthly Employee berhasil didapatkan", attendanceData)
+    }
+
     showRekapYear = async (employee_id) => {
         const monthObject = {}
         constant.monthList.forEach((month, i) => { monthObject[i] = { name: month, cuti: 0, izin: 0, hadir: 0 } })

@@ -34,12 +34,12 @@ class EmployeeAttendanceController {
     getOne = async (req, res) => {
         try {
             const id = +req.params.id;
-            if (!id){
+            if (!id) {
 
                 return res.status(httpStatus.UNPROCESSABLE_ENTITY).send("ID Diperlukan")
-            } 
+            }
             const resData = await this.employeeAttendanceService.showOne(id);
-            
+
             res.status(resData.statusCode).send(resData.response);
         } catch (e) {
             console.log(e);
@@ -47,71 +47,74 @@ class EmployeeAttendanceController {
         }
     };
 
-    
+
     getRekapWeek = async (req, res) => {
-        try{
+        try {
             const resData = await this.employeeAttendanceService.showRekapWeek()
-            
+
             res.status(resData.statusCode).send(resData.response);
-        }catch(e){
+        } catch (e) {
             console.log(e);
             res.status(httpStatus.BAD_GATEWAY).send(e);
         }
     }
 
     getRekapMonth = async (req, res) => {
-        try{
+        try {
             const resData = await this.employeeAttendanceService.showRekapMonth()
-            
+
             res.status(resData.statusCode).send(resData.response);
-        }catch(e){
+        } catch (e) {
             console.log(e);
             res.status(httpStatus.BAD_GATEWAY).send(e);
         }
     }
 
     getRekapYear = async (req, res) => {
-        try{
+        try {
             const resData = await this.employeeAttendanceService.showRekapYear()
-            
+
             res.status(resData.statusCode).send(resData.response);
-        }catch(e){
+        } catch (e) {
             console.log(e);
             res.status(httpStatus.BAD_GATEWAY).send(e);
         }
     }
 
     getRekapWeekEmployee = async (req, res) => {
-        try{
+        try {
             const id = +req.params.id
             const resData = await this.employeeAttendanceService.showRekapWeek(id)
-            
+
             res.status(resData.statusCode).send(resData.response);
-        }catch(e){
+        } catch (e) {
             console.log(e);
             res.status(httpStatus.BAD_GATEWAY).send(e);
         }
     }
 
     getRekapMonthEmployee = async (req, res) => {
-        try{
+        try {
             const id = +req.params.id
-            const resData = await this.employeeAttendanceService.showRekapMonth(id)
+            let resData
             
+            if (!id) { resData = await this.employeeAttendanceService.showRekapMonthAllEmployee()
+            } else resData = await this.employeeAttendanceService.showRekapMonth(id)
+
             res.status(resData.statusCode).send(resData.response);
-        }catch(e){
+        } catch (e) {
             console.log(e);
             res.status(httpStatus.BAD_GATEWAY).send(e);
         }
     }
 
     getRekapYearEmployee = async (req, res) => {
-        try{
+        try {
             const id = +req.params.id
             const resData = await this.employeeAttendanceService.showRekapYear(id)
-            
+
             res.status(resData.statusCode).send(resData.response);
-        }catch(e){
+        } catch (e) {
             console.log(e);
             res.status(httpStatus.BAD_GATEWAY).send(e);
         }
@@ -126,7 +129,7 @@ class EmployeeAttendanceController {
             res.status(resData.statusCode).send(resData.response)
         } catch (error) {
             console.log(e);
-            res.status(httpStatus.BAD_GATEWAY).send(e);            
+            res.status(httpStatus.BAD_GATEWAY).send(e);
         }
     }
 
