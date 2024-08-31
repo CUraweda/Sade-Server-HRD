@@ -32,6 +32,11 @@ router.get(
     applicantFormController.getByVacancy
 )
 router.get(
+    "/detail/:id",
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    applicantFormController.getDetail
+)
+router.get(
     "/:id",
     auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
     applicantFormController.getOne

@@ -25,15 +25,28 @@ class ApplicantFormController {
     getOne = async (req, res) => {
         try {
             const id = +req.params.id;
-            if (!id) res.status(httpStatus["422_CLASS"]).send("Please provide an ID");
+            if (!id) res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Please provide an ID");
             const resData = await this.applicantFormService.showOne(id);
-
+            
             res.status(resData.statusCode).send(resData.response);
         } catch (e) {
             console.log(e);
             res.status(httpStatus.BAD_GATEWAY).send(e);
         }
     };
+    
+    getDetail = async (req, res) => {
+        try{
+            const id = +req.params.id;
+            if (!id) res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Please provide an ID");
+            const resData = await this.applicantFormService.showDetail(id);
+            
+            res.status(resData.statusCode).send(resData.response);
+        }catch(e){
+            console.log(e);
+            res.status(httpStatus.BAD_GATEWAY).send(e);
+        }
+    }
     
     getRekapDashboard = async (req, res) =>{
         try{
