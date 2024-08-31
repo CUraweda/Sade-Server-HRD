@@ -47,10 +47,44 @@ class EmployeeAttendanceController {
         }
     };
 
+    
+    getRekapWeek = async (req, res) => {
+        try{
+            const resData = await this.employeeAttendanceService.showRekapWeek()
+            
+            res.status(resData.statusCode).send(resData.response);
+        }catch(e){
+            console.log(e);
+            res.status(httpStatus.BAD_GATEWAY).send(e);
+        }
+    }
+
+    getRekapMonth = async (req, res) => {
+        try{
+            const resData = await this.employeeAttendanceService.showRekapMonth()
+            
+            res.status(resData.statusCode).send(resData.response);
+        }catch(e){
+            console.log(e);
+            res.status(httpStatus.BAD_GATEWAY).send(e);
+        }
+    }
+
+    getRekapYear = async (req, res) => {
+        try{
+            const resData = await this.employeeAttendanceService.showRekapYear()
+            
+            res.status(resData.statusCode).send(resData.response);
+        }catch(e){
+            console.log(e);
+            res.status(httpStatus.BAD_GATEWAY).send(e);
+        }
+    }
+
     getRekapWeekEmployee = async (req, res) => {
         try{
             const id = +req.params.id
-            const resData = await this.employeeAttendanceService.showRekapWeekEID(id)
+            const resData = await this.employeeAttendanceService.showRekapWeek(id)
             
             res.status(resData.statusCode).send(resData.response);
         }catch(e){
@@ -62,7 +96,7 @@ class EmployeeAttendanceController {
     getRekapMonthEmployee = async (req, res) => {
         try{
             const id = +req.params.id
-            const resData = await this.employeeAttendanceService.showRekapMonthEID(id)
+            const resData = await this.employeeAttendanceService.showRekapMonth(id)
             
             res.status(resData.statusCode).send(resData.response);
         }catch(e){
@@ -74,7 +108,7 @@ class EmployeeAttendanceController {
     getRekapYearEmployee = async (req, res) => {
         try{
             const id = +req.params.id
-            const resData = await this.employeeAttendanceService.showRekapYearEID(id)
+            const resData = await this.employeeAttendanceService.showRekapYear(id)
             
             res.status(resData.statusCode).send(resData.response);
         }catch(e){

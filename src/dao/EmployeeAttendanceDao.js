@@ -124,7 +124,7 @@ class EmployeeAttendanceDao extends SuperDao {
     async countAttendanceStartEnd(employee_id, start_date, end_date){
         return EmployeeAttendance.count({
             where: {
-                employee_id,
+                ...(employee_id && { employee_id }),
                 created_at: {
                     [Op.between]: [start_date, end_date]
                 }
@@ -136,7 +136,7 @@ class EmployeeAttendanceDao extends SuperDao {
         const { employee_id } = filter
         return EmployeeAttendance.findAll({
             where: {
-                employee_id,
+                ...(employee_id && { employee_id }),
                 created_at: {
                     [Op.between]: [start_date, end_date]
                 }

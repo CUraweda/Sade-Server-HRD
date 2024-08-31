@@ -21,6 +21,22 @@ router.get(
     auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
     employeeAttendanceController.getAll
 )
+
+router.get(
+    "/recap-week",
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    employeeAttendanceController.getRekapWeek
+)
+router.get(
+    "/recap-month",
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    employeeAttendanceController.getRekapMonth
+)
+router.get(
+    "/recap-year",
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    employeeAttendanceController.getRekapYear
+)
 router.get(
     "/recap-week-employee/:id",
     auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),

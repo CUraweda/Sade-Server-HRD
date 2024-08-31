@@ -67,7 +67,7 @@ class EmployeeAccountController {
       const id = +req.params.id;
       if (!id) res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Please provide an ID");
       const resData = await this.employeeAccountService.updatePaid(id);
-  
+
       res.status(resData.statusCode).send(resData.response);
     } catch (e) {
       console.log(e);

@@ -145,6 +145,28 @@ class ApplicantFormService {
         });
     };
 
+    showRekapDashboard = async () => {
+        const currentDate = new Date()
+        const currentMonth = (currentDate.getMonth() + 1).toString().padStart(2, "0")
+        const currentYear = currentDate.getFullYear()
+        const currentStart =  currentDate.toISOString().split('T')[0] + "T00:00:00.000Z"
+        const startDate = `${currentYear}-${currentMonth}-01T00:00:00.000Z`
+
+        const applicantFormData = await this.applicantFormDao.getByRange(startDate, currentDate.toISOString())
+        console.log(applicantFormData)
+        if (!applicantFormData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Applicant form not found");
+        
+        const applicantTodayData = await this.applicantFormDao.countRange(currentStart, currentDate.toISOString())
+        if (!applicantTodayData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Applicant form not found");
+    
+        return responseHandler.returnSuccess(httpStatus.OK, "Applicant form found", {
+            today_counter: applicantTodayData,
+            month_counter: applicantFormData.length,
+            data: applicantFormData
+        });
+    }
+
+
     showByVacancy = async (vacancy_id) => {
         const applicantFormData = await this.applicantFormDao.getByVacancy(vacancy_id)
         if (!applicantFormData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Applicant form not found");
