@@ -133,8 +133,7 @@ class EmployeeAttendanceController {
     createByToken = async (req, res) => {
         try {
             const { employee } = req.user
-            console.log(employee);
-            const resData = await this.employeeAttendanceService.createByClosest(employee, req.file)
+            const resData = await this.employeeAttendanceService.createByOrder(employee, req.file)
 
             res.status(resData.statusCode).send(resData.response)
         } catch (e) {
