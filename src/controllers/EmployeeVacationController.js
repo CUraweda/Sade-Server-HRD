@@ -32,7 +32,7 @@ class EmployeeVacationController {
     getOne = async (req, res) => {
         try {
             const id = +req.params.id;
-            if (!id) res.status(httpStatus["422_CLASS"]).send("Tolong sertakan ID");
+            if (!id) res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Tolong sertakan ID");
             const resData = await this.employeeVacationService.showOne(id);
 
             res.status(resData.statusCode).send(resData.response);
@@ -96,7 +96,7 @@ class EmployeeVacationController {
         try {
             const id = +req.params.id;
             if (req.file) req.body.file_path = req.file.path
-            if (!id) res.status(httpStatus["422_CLASS"]).send("Tolong sertakan ID");
+            if (!id) res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Tolong sertakan ID");
             const resData = await this.employeeVacationService.update(id, req.body);
 
             res.status(resData.statusCode).send(resData.response);
@@ -109,7 +109,7 @@ class EmployeeVacationController {
     removeData = async (req, res) => {
         try{
             const id = +req.params.id;
-            if (!id) res.status(httpStatus["422_CLASS"]).send("Tolong sertakan ID");
+            if (!id) res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Tolong sertakan ID");
             const resData = await this.employeeVacationService.removeData(id);
         
             res.status(resData.statusCode).send(resData.response);
@@ -122,7 +122,7 @@ class EmployeeVacationController {
     delete = async (req, res) => {
         try {
             const id = +req.params.id;
-            if (!id) res.status(httpStatus["422_CLASS"]).send("Tolong sertakan ID");
+            if (!id) res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Tolong sertakan ID");
             const resData = await this.employeeVacationService.delete(id);
 
             res.status(resData.statusCode).send(resData.response);

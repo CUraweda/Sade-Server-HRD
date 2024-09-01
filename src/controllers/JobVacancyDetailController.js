@@ -37,7 +37,7 @@ class JobVacancyDetailController {
     getOne = async (req, res) => {
         try {
             const id = +req.params.id;
-            if (!id) res.status(httpStatus["422_CLASS"]).send("Please provide an ID");
+            if (!id) res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Please provide an ID");
             const resData = await this.jobVacancyDetailService.showOne(id);
 
             res.status(resData.statusCode).send(resData.response);
@@ -61,7 +61,7 @@ class JobVacancyDetailController {
     update = async (req, res) => {
         try {
             const id = +req.params.id;
-            if (!id) res.status(httpStatus["422_CLASS"]).send("Please provide an ID");
+            if (!id) res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Please provide an ID");
             const resData = await this.jobVacancyDetailService.update(id, req.body);
 
             res.status(resData.statusCode).send(resData.response);
@@ -74,7 +74,7 @@ class JobVacancyDetailController {
     delete = async (req, res) => {
         try {
             const id = +req.params.id;
-            if (!id) res.status(httpStatus["422_CLASS"]).send("Please provide an ID");
+            if (!id) res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Please provide an ID");
             const resData = await this.jobVacancyDetailService.delete(id);
 
             res.status(resData.statusCode).send(resData.response);

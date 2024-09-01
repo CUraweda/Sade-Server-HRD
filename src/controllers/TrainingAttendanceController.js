@@ -30,7 +30,7 @@ class TrainingAttendanceController {
     getOne = async (req, res) => {
         try {
             const id = +req.params.id;
-            if (!id) res.status(httpStatus["422_CLASS"]).send("Tolong sertakan ID");
+            if (!id) res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Tolong sertakan ID");
             const resData = await this.trainingAttendanceService.showOne(id);
 
             res.status(resData.statusCode).send(resData.response);
@@ -70,7 +70,7 @@ class TrainingAttendanceController {
     update = async (req, res) => {
         try {
             const id = +req.params.id;
-            if (!id) res.status(httpStatus["422_CLASS"]).send("Tolong sertakan ID");
+            if (!id) res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Tolong sertakan ID");
             const resData = await this.trainingAttendanceService.update(id, req.body);
 
             res.status(resData.statusCode).send(resData.response);
@@ -83,7 +83,7 @@ class TrainingAttendanceController {
     delete = async (req, res) => {
         try {
             const id = +req.params.id;
-            if (!id) res.status(httpStatus["422_CLASS"]).send("Tolong sertakan ID");
+            if (!id) res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Tolong sertakan ID");
             const resData = await this.trainingAttendanceService.delete(id);
 
             res.status(resData.statusCode).send(resData.response);

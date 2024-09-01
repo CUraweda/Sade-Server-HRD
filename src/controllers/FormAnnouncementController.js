@@ -30,7 +30,7 @@ class EmployeeFormAnnouncementController {
     getOne = async (req, res) => {
         try {
             const id = +req.params.id;
-            if (!id) res.status(httpStatus["422_CLASS"]).send("Tolong sertakan ID");
+            if (!id) res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Tolong sertakan ID");
             const resData = await this.formAnnouncementService.showOne(id);
 
             res.status(resData.statusCode).send(resData.response);
@@ -54,7 +54,7 @@ class EmployeeFormAnnouncementController {
     update = async (req, res) => {
         try {
             const id = +req.params.id;
-            if (!id) res.status(httpStatus["422_CLASS"]).send("Tolong sertakan ID");
+            if (!id) res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Tolong sertakan ID");
             const resData = await this.formAnnouncementService.update(id, req.body);
 
             res.status(resData.statusCode).send(resData.response);
@@ -67,7 +67,7 @@ class EmployeeFormAnnouncementController {
     delete = async (req, res) => {
         try {
             const id = +req.params.id;
-            if (!id) res.status(httpStatus["422_CLASS"]).send("Tolong sertakan ID");
+            if (!id) res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Tolong sertakan ID");
             const resData = await this.formAnnouncementService.delete(id);
 
             res.status(resData.statusCode).send(resData.response);

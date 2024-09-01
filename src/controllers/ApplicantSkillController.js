@@ -25,7 +25,7 @@ class ApplicantSkillController {
     getOne = async (req, res) => {
         try {
             const id = +req.params.id;
-            if (!id) res.status(httpStatus["422_CLASS"]).send("Please provide an ID");
+            if (!id) res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Please provide an ID");
             const resData = await this.applicantSkillService.showOne(id);
 
             res.status(resData.statusCode).send(resData.response);
@@ -49,7 +49,7 @@ class ApplicantSkillController {
     update = async (req, res) => {
         try {
             const id = +req.params.id;
-            if (!id) res.status(httpStatus["422_CLASS"]).send("Please provide an ID");
+            if (!id) res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Please provide an ID");
             const resData = await this.applicantSkillService.update(id, req.body);
 
             res.status(resData.statusCode).send(resData.response);
@@ -62,7 +62,7 @@ class ApplicantSkillController {
     delete = async (req, res) => {
         try {
             const id = +req.params.id;
-            if (!id) res.status(httpStatus["422_CLASS"]).send("Please provide an ID");
+            if (!id) res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Please provide an ID");
             const resData = await this.applicantSkillService.delete(id);
 
             res.status(resData.statusCode).send(resData.response);
