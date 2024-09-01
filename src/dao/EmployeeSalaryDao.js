@@ -43,6 +43,11 @@ class EmployeeSalaryDao extends SuperDao {
         let { search } = filter
         if (!search) search = ""
         return EmployeeSalary.findAll({
+            include: [
+                {
+                    model: Employees
+                }
+            ],
             offset: offset,
             limit: limit,
             order: [["id", "DESC"]],

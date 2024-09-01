@@ -57,6 +57,18 @@ class EmployeeController {
     }
   };
   
+  showDetail = async (req, res) => {
+    try{
+      const id = +req.params.id
+      const resData = await this.employeeService.showDetail(id)
+      
+      res.status(resData.statusCode).send(resData.response);
+    }catch(e){
+      console.log(e)
+      res.status(httpStatus.BAD_GATEWAY).send(e);
+    }
+  }
+  
   showMe = async (req, res) => {
     try{
       const resData = await this.employeeService.showByUser(req.user)
@@ -75,12 +87,13 @@ class EmployeeController {
       const search = req.query.search_query || "";
       const isGuru = req.query.guru
       const isAssign = req.query.isAssign
+      const division_id = +req.query.division_id
       const offset = limit * page;
 
       const resData = await this.employeeService.showPage(
         page,
         limit,
-        { search, isGuru, isAssign },
+        { search, isGuru, isAssign, division_id },
         offset
       );
 

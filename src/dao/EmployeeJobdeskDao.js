@@ -3,6 +3,7 @@ const models = require("../models");
 const { Op } = require("sequelize");
 
 const EmployeeJobdesk = models.employeejobdesk;
+const Employees = models.employees
 
 class EmployeeJobdeskDao extends SuperDao {
     constructor() {
@@ -52,18 +53,29 @@ class EmployeeJobdeskDao extends SuperDao {
                     },
                 ],
             },
+            include: [
+                {
+                    model: Employees,
+                    as: "employee",
+                    required: false
+                },
+                {
+                    model: Employees,
+                    as: "grader",
+                    required: false
+                },
+            ],
             offset: offset,
             limit: limit,
             order: [["id", "DESC"]],
         });
     }
 
-    async getStartEnd(start, end, filter) {
-        const { employee_id } = filter
+    async getStartEnd(start, end, filter = {}) {
         return EmployeeJobdesk.findAll({
             where: {
-                employee_id,
-                created_at: { [Op.between]: [start, end] }
+                ...filter,
+                finished_at: { [Op.between]: [start, end] }
             }
         })
     }

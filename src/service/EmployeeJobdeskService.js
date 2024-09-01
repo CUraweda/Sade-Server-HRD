@@ -25,6 +25,39 @@ class EmployeeJobdeskService {
         return responseHandler.returnSuccess(httpStatus.CREATED, "Data Employee Jobdesk Berhasil diperbaharui", {});
     };
 
+    updateFinish = async (id, employee) => {
+        if (!employee) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Anda tidak termasuk sebagai karyawan");
+        const dataExist = await this.employeeJobdeskDao.findById(id);
+        if (!dataExist) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Employee Jobdesk Tidak Ada");
+        if (dataExist.employee_id != employee.id) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Jobdesk tidak ditujukan untuk anda");
+
+        const payload = {
+            is_finish: true,
+            finished_at: new Date()
+        }
+        const employeeJobdeskData = await this.employeeJobdeskDao.updateWhere(payload, { id });
+        if (!employeeJobdeskData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Employee Jobdesk Gagal diperbaharui");
+    
+        return responseHandler.returnSuccess(httpStatus.CREATED, "Data Employee Jobdesk Berhasil diperbaharui", {});
+    }
+
+    updateGrade = async (id, employee, grade) => {
+        if (!employee) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Anda tidak termasuk sebagai karyawan");
+        const dataExist = await this.employeeJobdeskDao.findById(id);
+        if (!dataExist) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Employee Jobdesk Tidak Ada");
+        if (!dataExist.is_finish) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Jobdesk belum selesai dikerjakan");
+
+        const payload = {
+            grader_id: employee.id,
+            graded_at: new Date(),
+            is_graded: true, grade
+        }
+        const employeeJobdeskData = await this.employeeJobdeskDao.updateWhere(payload, { id });
+        if (!employeeJobdeskData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Employee Jobdesk Gagal diperbaharui");
+
+        return responseHandler.returnSuccess(httpStatus.CREATED, "Data Employee Jobdesk Berhasil diperbaharui", {});
+    };
+
     delete = async (id) => {
         const employeeJobdeskData = await this.employeeJobdeskDao.deleteByWhere({ id });
         if (!employeeJobdeskData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Employee Jobdesk Gagal dihapus");
@@ -46,6 +79,39 @@ class EmployeeJobdeskService {
             }
         );
     };
+
+
+
+    showRecapWeekEID = async (employee_id) => {
+        const weekObject = {}
+        constant.weekList.forEach((week, i) => { weekObject[i] = { name: week, raw_grade: 0, graded: 0 } })
+
+        const today = new Date();
+        const dayOfWeek = today.getDay();
+        let startOfWeek = new Date(today);
+        let endOfWeek = new Date(today);
+
+        const diff = today.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1); // Adjust start of the week based on Sunday
+        startOfWeek.setDate(diff);
+        startOfWeek = startOfWeek.toISOString().split('T')[0] + "T00:00:00.000Z"
+
+        const daysToAdd = 5 - dayOfWeek + (dayOfWeek === 0 ? 7 : 0); // Adjust end of the week based on Friday
+        endOfWeek.setDate(today.getDate() + daysToAdd);
+        endOfWeek = endOfWeek.toISOString().split('T')[0] + "T23:59:59.999Z"
+
+        const employeeJobdeskData = await this.employeeJobdeskDao.getStartEnd(startOfWeek, endOfWeek, { employee_id, is_graded: true })
+        if (!employeeJobdeskData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Employee Attendance Tidak ditemukan");
+
+        for (let jobdesk of employeeJobdeskData) {
+            const dayIndex = jobdesk.finished_at.getDay()
+            if (weekObject[dayIndex]) {
+                weekObject[dayIndex].raw_grade += jobdesk.grade
+                weekObject[dayIndex].graded++
+            }
+        }
+
+        return responseHandler.returnSuccess(httpStatus.OK, "Rekap Monthly berhasil didapatkan", Object.values(weekObject))
+    }
 
     showRecapMonhEID = async (employee_id) => {
         const currentDate = new Date()
@@ -70,10 +136,10 @@ class EmployeeJobdeskService {
 
         employeeJobdeskData.forEach((jobdesk) => {
             const monthIndex = jobdesk.createdAt.getMonth()
-            if (monthObject[monthIndex]){
+            if (monthObject[monthIndex]) {
                 monthObject[monthIndex].total++
                 monthObject[monthIndex].sum_grade += jobdesk.grade
-            } 
+            }
         })
 
         return responseHandler.returnSuccess(httpStatus.OK, "Rekap Monthly berhasil didapatkan", monthObject)

@@ -32,13 +32,25 @@ class EmployeeAccountController {
       const id = +req.params.id;
       if (!id) res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Please provide an ID");
       const resData = await this.employeeAccountService.showOne(id);
-
+      
       res.status(resData.statusCode).send(resData.response);
     } catch (e) {
       console.log(e);
       res.status(httpStatus.BAD_GATEWAY).send(e);
     }
   };
+  
+  getDetail = async (req, res) => {
+    try{
+      const id = +req.params.id
+      const resData = await this.employeeAccountService.showDetail(id);
+      
+      res.status(resData.statusCode).send(resData.response);
+    }catch(e){
+      console.log(e);
+      res.status(httpStatus.BAD_GATEWAY).send(e);
+    }
+  }
 
   getMonthTotal = async (req, res) => {
     try {

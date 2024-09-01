@@ -15,6 +15,11 @@ router.get(
     employeeJobdeskController.getAll
 )
 router.get(
+    "/recap-week-employee/:id",
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    employeeJobdeskController.getWeekRecap
+),
+router.get(
     "/recap-month-employee/:id",
     auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
     employeeJobdeskController.getMonthRecap
@@ -38,10 +43,15 @@ router.post(
 )
 
 router.put(
-    "/grade/:id",
-    employeeJobdeskValidator.createUpdateValidator,
+    "/finish/:id",
     auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
-    employeeJobdeskController.update
+    employeeJobdeskController.updateFinish
+)
+router.put(
+    "/grade/:id",
+    employeeJobdeskValidator.gradeValidator,
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    employeeJobdeskController.updateGrade
 )
 router.put(
     "/update/:id",
