@@ -37,6 +37,15 @@ module.exports = (sequelize, DataTypes) => {
       Employees.hasMany(models.employeevacation, {
         foreignKey: "employee_id",
       })
+      Employees.hasMany(models.employeeattachment, {
+        foreignKey: "employee_id",
+      })
+      Employees.hasMany(models.formposition, {
+        foreignKey: "employee_id",
+      })
+      Employees.hasMany(models.training, {
+        foreignKey: "employee_id",
+      })
     }
   }
   Employees.init(
@@ -63,10 +72,9 @@ module.exports = (sequelize, DataTypes) => {
       duty: DataTypes.STRING,
       job_desc: DataTypes.STRING,
       grade: DataTypes.STRING,
-      // user_id: DataTypes.INTEGER,
       still_in_probation: DataTypes.BOOLEAN,
       probation_start_date: DataTypes.DATE,
-      probation_end_date: DataTypes.DATE,
+    probation_end_date: DataTypes.DATE,
       division_id: DataTypes.INTEGER,
       is_outstation: DataTypes.BOOLEAN
     },

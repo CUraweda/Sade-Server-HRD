@@ -131,10 +131,30 @@ class EmployeeAccountService {
 
         const employeeAccountDatas = await this.employeeAccountDao.getRange(year)
         if (!employeeAccountDatas) return responseHandler.returnError(httpStatus.BAD_REQUEST, "EmployeeAccount data not found");
-
+        
         for(let employeeAccountData of employeeAccountDatas ) monthMap[employeeAccountData.month_id].total += employeeAccountData.temp_total
 
         return responseHandler.returnSuccess(httpStatus.OK, "EmployeeAccount data found", Object.values(monthMap));
+    }
+    
+    showDetail = async (id) => {
+        if (!id) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Please Provide an ID");
+        const employeeAccountData = await this.employeeAccountDao.getDetail(id)
+        if (!employeeAccountData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "EmployeeAccount data not found");
+        
+        const { employeebills } = employeeAccountData
+        delete employeeAccountData.dataValues.employeebills
+
+        let bills = {}
+        for(let bill of employeebills){
+            const { name, is_subtraction } = bill.billtype
+            if(!bills[name]) bills[name] = { name, subtraction: is_subtraction, total: 0, datas: [] }
+            bills[name].total += bill.amount
+            bills[name].datas.push(bill)
+        }
+        bills = Object.values(bills)
+        
+        return responseHandler.returnSuccess(httpStatus.OK, "EmployeeAccount data found", { account: employeeAccountData, bills });
     }
 
     showOne = async (id) => {

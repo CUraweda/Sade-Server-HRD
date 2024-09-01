@@ -73,7 +73,7 @@ class EmployeeService {
     if (!data.employee) return responseHandler.returnError(httpStatus.UNPROCESSABLE_ENTITY, "Anda tidak termasuk kedalam Karyawan")
     const { id } = data.employee
     const employeeData = await this.employeeDao.getMe(id)
-    if(!employeeData) return responseHandler.returnError(httpStatus.UNPROCESSABLE_ENTITY, "Anda tidak termasuk kedalam Karyawan")
+    if (!employeeData) return responseHandler.returnError(httpStatus.UNPROCESSABLE_ENTITY, "Anda tidak termasuk kedalam Karyawan")
 
     return responseHandler.returnSuccess(httpStatus.OK, "Data Me berhasil  didapatkan", employeeData)
   }
@@ -94,8 +94,17 @@ class EmployeeService {
     return responseHandler.returnSuccess(httpStatus.OK, message, dt);
   };
 
+  showDetail = async (id) => {
+    if (!id) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Please Provide an Id");
+
+    const employeeData = await this.employeeDao.getDetail(id)
+    if (!employeeData) return responseHandler.returnError(httpStatus.UNPROCESSABLE_ENTITY, "Data Employee TIdak Ditemukan")
+
+    return responseHandler.returnSuccess(httpStatus.OK, "Data Employee Berhasil Diambil", employeeData);
+  }
+
   async showPage(page, limit, filter, offset) {
-    const totalRows = await this.employeeDao.getCount(filter.search);
+    const totalRows = await this.employeeDao.getCount(filter);
     const totalPage = Math.ceil(totalRows / limit);
 
     const result = await this.employeeDao.getEmployeesPage(

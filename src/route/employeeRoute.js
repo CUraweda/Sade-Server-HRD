@@ -55,6 +55,11 @@ router.get(
   employeeController.showMe
 )
 router.get(
+  "/detail/:id",
+  auth([1, 2, 3, 4, 5, 6]),
+  employeeController.showDetail
+);
+router.get(
   "/",
   auth([1, 2, 3, 4, 5, 6]),
   employeeController.showAll

@@ -28,6 +28,17 @@ class EmployeeJobdeskController {
         }
     };
 
+    getWeekRecap = async (req, res) => {
+        try {
+            const id = +req.params.id
+            const resData = await this.employeeJobdeskService.showRecapWeekEID(id)
+            res.status(resData.statusCode).send(resData.response);
+        } catch (e) {
+            console.log(e);
+            res.status(httpStatus.BAD_GATEWAY).send(e);
+        }
+    }
+
     getMonthRecap = async (req, res) => {
         try {
             const id = +req.params.id
@@ -74,15 +85,30 @@ class EmployeeJobdeskController {
         }
     };
 
+    updateFinish = async (req, res) => {
+        try{
+            const id = +req.params.id;
+            const { employee } = req.user
+            if (!id) res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Tolong sertakan ID");
+        
+            const resData = await this.employeeJobdeskService.updateFinish(id, employee);
+        
+            res.status(resData.statusCode).send(resData.response);
+        }catch(e){
+            console.log(e);
+            res.status(httpStatus.BAD_GATEWAY).send(e);
+        }
+    }
     updateGrade = async (req, res) => {
         try {
             const id = +req.params.id;
-            if (!id) res.status(httpStatus["422_CLASS"]).send("Tolong sertakan ID");
+            const { employee } = req.user
+            if (!id) res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Tolong sertakan ID");
 
-            const resData = await this.employeeJobdeskService.update(id, req.body);
+            const resData = await this.employeeJobdeskService.updateGrade(id, employee, req.body.grade);
 
             res.status(resData.statusCode).send(resData.response);
-        } catch (err) {
+        } catch (e) {
             console.log(e);
             res.status(httpStatus.BAD_GATEWAY).send(e);
         }
@@ -90,7 +116,7 @@ class EmployeeJobdeskController {
     update = async (req, res) => {
         try {
             const id = +req.params.id;
-            if (!id) res.status(httpStatus["422_CLASS"]).send("Tolong sertakan ID");
+            if (!id) res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Tolong sertakan ID");
             const resData = await this.employeeJobdeskService.update(id, req.body);
 
             res.status(resData.statusCode).send(resData.response);

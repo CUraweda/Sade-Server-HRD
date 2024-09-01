@@ -3,6 +3,10 @@ const models = require("../models");
 const { Op } = require("sequelize");
 
 const Employeeaccount = models.employeeaccount;
+const EmployeeSalary = models.employeesalary
+const Employees = models.employees
+const BillType = models.billtype
+const EmployeeBill = models.employeebill
 
 class EmployeeaccountDao extends SuperDao {
     constructor() {
@@ -60,6 +64,16 @@ class EmployeeaccountDao extends SuperDao {
                     year: currentYear
                 })
             },
+            include: [
+                {
+                    model: Employees,
+                    required: false
+                },
+                {
+                    model: EmployeeSalary,
+                    required: false
+                },
+            ],
             offset: offset,
             limit: limit,
             order: [["id", "DESC"]],
@@ -81,6 +95,28 @@ class EmployeeaccountDao extends SuperDao {
                 ...(month_id && { month_id }),
                 ...(year && { year })
              }
+        })
+    }
+
+    async getDetail(id) {
+        return Employeeaccount.findOne({
+            where: { id },
+            include: [
+                {
+                    model: Employees,
+                    required: false
+                },
+                {
+                    model: EmployeeBill,
+                    include: [
+                        {
+                            model: BillType,
+                            required: false
+                        }
+                    ],
+                    required: false
+                }
+            ]
         })
     }
 
