@@ -30,7 +30,7 @@ class WorktimeController {
     getOne = async (req, res) => {
         try {
             const id = +req.params.id;
-            if (!id) res.status(httpStatus["422_CLASS"]).send("Tolong sertakan ID");
+            if (!id) res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Tolong sertakan ID");
             const resData = await this.worktimeService.showOne(id);
 
             res.status(resData.statusCode).send(resData.response);
@@ -79,7 +79,7 @@ class WorktimeController {
     update = async (req, res) => {
         try {
             const id = +req.params.id;
-            if (!id) res.status(httpStatus["422_CLASS"]).send("Tolong sertakan ID");
+            if (!id) res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Tolong sertakan ID");
             const resData = await this.worktimeService.update(id, req.body);
 
             res.status(resData.statusCode).send(resData.response);
@@ -92,7 +92,7 @@ class WorktimeController {
     delete = async (req, res) => {
         try {
             const id = +req.params.id;
-            if (!id) res.status(httpStatus["422_CLASS"]).send("Tolong sertakan ID");
+            if (!id) res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Tolong sertakan ID");
             const resData = await this.worktimeService.delete(id);
 
             res.status(resData.statusCode).send(resData.response);

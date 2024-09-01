@@ -159,7 +159,7 @@ class EmployeeAttendanceController {
     update = async (req, res) => {
         try {
             const id = +req.params.id;
-            if (!id) res.status(httpStatus["422_CLASS"]).send("Tolong sertakan ID");
+            if (!id) res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Tolong sertakan ID");
             const resData = await this.employeeAttendanceService.update(id, req.body);
 
             res.status(resData.statusCode).send(resData.response);
@@ -172,7 +172,7 @@ class EmployeeAttendanceController {
     delete = async (req, res) => {
         try {
             const id = +req.params.id;
-            if (!id) res.status(httpStatus["422_CLASS"]).send("Tolong sertakan ID");
+            if (!id) res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Tolong sertakan ID");
             const resData = await this.employeeAttendanceService.delete(id);
 
             res.status(resData.statusCode).send(resData.response);

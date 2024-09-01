@@ -25,7 +25,7 @@ class ApplicantAppreciationAttachmentController {
     getOne = async (req, res) => {
         try {
             const id = +req.params.id;
-            if (!id) res.status(httpStatus["422_CLASS"]).send("Please provide an ID");
+            if (!id) res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Please provide an ID");
             const resData = await this.applicantAppreciationAttachmentService.showOne(id);
 
             res.status(resData.statusCode).send(resData.response);
@@ -49,7 +49,7 @@ class ApplicantAppreciationAttachmentController {
     update = async (req, res) => {
         try {
             const id = +req.params.id;
-            if (!id) res.status(httpStatus["422_CLASS"]).send("Please provide an ID");
+            if (!id) res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Please provide an ID");
             const resData = await this.applicantAppreciationAttachmentService.update(id, req.body);
 
             res.status(resData.statusCode).send(resData.response);
@@ -62,7 +62,7 @@ class ApplicantAppreciationAttachmentController {
     delete = async (req, res) => {
         try {
             const id = +req.params.id;
-            if (!id) res.status(httpStatus["422_CLASS"]).send("Please provide an ID");
+            if (!id) res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Please provide an ID");
             const resData = await this.applicantAppreciationAttachmentService.delete(id);
 
             res.status(resData.statusCode).send(resData.response);

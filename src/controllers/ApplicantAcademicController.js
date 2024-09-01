@@ -25,7 +25,7 @@ class ApplicantAcademicController {
     getOne = async (req, res) => {
         try {
             const id = +req.params.id;
-            if (!id) res.status(httpStatus["422_CLASS"]).send("Please provide an ID");
+            if (!id) res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Please provide an ID");
             const resData = await this.applicantAcademicService.showOne(id);
 
             res.status(resData.statusCode).send(resData.response);
@@ -49,7 +49,7 @@ class ApplicantAcademicController {
     update = async (req, res) => {
         try {
             const id = +req.params.id;
-            if (!id) res.status(httpStatus["422_CLASS"]).send("Please provide an ID");
+            if (!id) res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Please provide an ID");
             const resData = await this.applicantAcademicService.update(id, req.body);
 
             res.status(resData.statusCode).send(resData.response);
@@ -62,7 +62,7 @@ class ApplicantAcademicController {
     delete = async (req, res) => {
         try {
             const id = +req.params.id;
-            if (!id) res.status(httpStatus["422_CLASS"]).send("Please provide an ID");
+            if (!id) res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Please provide an ID");
             const resData = await this.applicantAcademicService.delete(id);
 
             res.status(resData.statusCode).send(resData.response);

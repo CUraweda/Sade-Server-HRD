@@ -42,7 +42,7 @@ class EmployeeAttachmentController {
     getOne = async (req, res) => {
         try {
             const id = +req.params.id;
-            if (!id) res.status(httpStatus["422_CLASS"]).send("Tolong sertakan ID");
+            if (!id) res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Tolong sertakan ID");
             const resData = await this.employeeAttachmentService.showOne(id);
 
             res.status(resData.statusCode).send(resData.response);
@@ -71,7 +71,7 @@ class EmployeeAttachmentController {
     update = async (req, res) => {
         try {
             const id = +req.params.id;
-            if (!id) res.status(httpStatus["422_CLASS"]).send("Tolong sertakan ID");
+            if (!id) res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Tolong sertakan ID");
             if(req.file){
                 req.body.file_path = req.file.path,
                 req.body.file_name = req.file.filename,
@@ -89,7 +89,7 @@ class EmployeeAttachmentController {
     delete = async (req, res) => {
         try {
             const id = +req.params.id;
-            if (!id) res.status(httpStatus["422_CLASS"]).send("Tolong sertakan ID");
+            if (!id) res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Tolong sertakan ID");
             const resData = await this.employeeAttachmentService.delete(id);
 
             res.status(resData.statusCode).send(resData.response);
