@@ -10,14 +10,14 @@ class JobVacancyController {
         try {
             const page = +req.query.page || 0;
             const limit = +req.query.limit || 10;
-            const { search, division_id } = req.query;
+            const { search, division_id, only_open } = req.query;
 
             const offset = limit * page;
             const resData = await this.jobVacancyService.showPage(
                 page,
                 limit,
                 offset,
-                { search, division_id }
+                { search, division_id, only_open }
             );
 
             res.status(resData.statusCode).send(resData.response);
@@ -65,7 +65,7 @@ class JobVacancyController {
     closeVacancy = async (req, res) => {
         try {
             const { id } = req.params
-            const resData = await this.jobVacancyService.createWithDetail(req.body)
+            const resData = await this.jobVacancyService.updateClose(id, req.body)
 
             res.status(resData.statusCode).send(resData.response);
         } catch (e) {
