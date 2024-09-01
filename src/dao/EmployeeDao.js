@@ -241,6 +241,7 @@ class EmployeesDao extends SuperDao {
       include: [
         {
           model: User,
+          required: false
         }
       ],
       offset: offset,

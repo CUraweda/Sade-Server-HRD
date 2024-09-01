@@ -15,6 +15,11 @@ router.get(
     employeeJobdeskController.getAll
 )
 router.get(
+    "/difference-day/:id",
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    employeeJobdeskController.getWeekRecap
+),
+router.get(
     "/recap-week-employee/:id",
     auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
     employeeJobdeskController.getWeekRecap

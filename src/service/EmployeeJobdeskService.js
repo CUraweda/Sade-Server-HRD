@@ -37,7 +37,7 @@ class EmployeeJobdeskService {
         }
         const employeeJobdeskData = await this.employeeJobdeskDao.updateWhere(payload, { id });
         if (!employeeJobdeskData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Employee Jobdesk Gagal diperbaharui");
-    
+
         return responseHandler.returnSuccess(httpStatus.CREATED, "Data Employee Jobdesk Berhasil diperbaharui", {});
     }
 
@@ -80,6 +80,26 @@ class EmployeeJobdeskService {
         );
     };
 
+    showDifferencesDay = async (employee_id) => {
+        if (!employee_id) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Tolong sertakan ID");
+        const currentDate = new Date()
+        const [startCurrentDate, endCurrentDate] = [
+            currentDate.toISOString().split('T')[0] + "T00:00:00.000Z",
+            currentDate.toISOString().split('T')[0] + "T23:59:59.999Z"
+        ]
+
+        const yesterday = new Date(currentDate);
+        yesterday.setDate(currentDate.getDate() - 1);
+        const [startPastDate, endPastDate] = [
+            yesterday.toISOString().split('T')[0] + "T00:00:00.000Z",
+            yesterday.toISOString().split('T')[0] + "T23:59:59.999Z"
+        ];
+
+        const todayPerformance = this.employeeJobdeskDao.countRawGradeRange(startCurrentDate, endCurrentDate)
+        const yesterdayPerformance = this.employeeJobdeskDao.countRawGradeRange(startPastDate, endPastDate)
+
+        
+    }
 
 
     showRecapWeekEID = async (employee_id) => {

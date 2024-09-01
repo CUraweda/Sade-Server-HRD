@@ -28,6 +28,17 @@ class EmployeeJobdeskController {
         }
     };
 
+    getDifferenceDay = async (req, res) => {
+        try {
+            const id = +req.params.id
+            const resData = await this.employeeJobdeskService.showRecapWeekEID(id)
+            res.status(resData.statusCode).send(resData.response);
+        } catch (e) {
+            console.log(e);
+            res.status(httpStatus.BAD_GATEWAY).send(e);
+        }
+    }
+
     getWeekRecap = async (req, res) => {
         try {
             const id = +req.params.id
