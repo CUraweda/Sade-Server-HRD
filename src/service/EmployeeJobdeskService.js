@@ -95,10 +95,24 @@ class EmployeeJobdeskService {
             yesterday.toISOString().split('T')[0] + "T23:59:59.999Z"
         ];
 
-        const todayPerformance = this.employeeJobdeskDao.countRawGradeRange(startCurrentDate, endCurrentDate)
-        const yesterdayPerformance = this.employeeJobdeskDao.countRawGradeRange(startPastDate, endPastDate)
+        let todayPerformance = await this.employeeJobdeskDao.countRawGradeRange(startCurrentDate, endCurrentDate, { employee_id, is_graded: true })
+        let yesterdayPerformance = await this.employeeJobdeskDao.countRawGradeRange(startPastDate, endPastDate, { employee_id, is_graded: true })
 
-        
+        if (!todayPerformance) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Kesalahan terjadi saat mengambil data Employee Attendance hari ini");
+        if (!yesterdayPerformance) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Kesalahan terjadi saat mengambil data Employee Attendance kemarin");
+
+        todayPerformance = todayPerformance[0]
+        yesterdayPerformance = yesterdayPerformance[0]
+
+        todayPerformance = +todayPerformance.dataValues.count > 0 ? (todayPerformance.dataValues.raw_grade || 0) / +todayPerformance.dataValues.count : 0
+        yesterdayPerformance = +yesterdayPerformance.dataValues.count > 0 ? (yesterdayPerformance.dataValues.raw_grade || 0) / +yesterdayPerformance.dataValues.count : 0
+        let differences = todayPerformance - yesterdayPerformance
+        differences = {
+            status: differences > 0 ? "Naik" : "Turun",
+            differences
+        }
+
+        return responseHandler.returnSuccess(httpStatus.OK, "Rekap Monthly berhasil didapatkan", differences)
     }
 
 

@@ -1,6 +1,6 @@
 const SuperDao = require("./SuperDao");
 const models = require("../models");
-const { Op } = require("sequelize");
+const { Op, fn, col} = require("sequelize");
 
 const EmployeeJobdesk = models.employeejobdesk;
 const Employees = models.employees
@@ -79,19 +79,20 @@ class EmployeeJobdeskDao extends SuperDao {
             }
         })
     }
-    
-    async countRawGradeRange(start, end, filter ) {
+
+    async countRawGradeRange(start, end, filter = {}) {
         return EmployeeJobdesk.findAll({
             where: {
                 ...filter,
                 finished_at: { [Op.between]: [start, end] }
             },
             attributes: [
-                [models.sequelize.fn("COUNT", models.sequelize.col('id')), "count"]
-                [models.sequelize.fn("SUM", models.sequelize.col('grade')), "raw_grade"]
+                [fn("COUNT", col('id')), "count"],
+                [fn("SUM", col('grade')), "raw_grade"]
             ]
-        })
+        });
     }
 }
+
 
 module.exports = EmployeeJobdeskDao;
