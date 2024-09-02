@@ -3,6 +3,8 @@ const models = require("../models");
 const { Op } = require("sequelize");
 
 const Training = models.training;
+const Employees = models.employees
+const TrainingAttendance = models.trainingattendance
 
 class TrainingDao extends SuperDao {
     constructor() {
@@ -37,6 +39,16 @@ class TrainingDao extends SuperDao {
                 ...(employee_id && { employee_id }),
                 ...(status && { status: { [Op.like]: `%${status}%` } })
             },
+            include: [
+                {
+                    model: Employees,
+                    required: false
+                },
+                {
+                    model: TrainingAttendance,
+                    required: false
+                },
+            ],
             offset: offset,
             limit: limit,
             order: [["id", "DESC"]],
