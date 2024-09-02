@@ -31,7 +31,8 @@ class EmployeeJobdeskController {
     getDifferenceDay = async (req, res) => {
         try {
             const id = +req.params.id
-            const resData = await this.employeeJobdeskService.showRecapWeekEID(id)
+            const resData = await this.employeeJobdeskService.showDifferencesDay(id)
+            
             res.status(resData.statusCode).send(resData.response);
         } catch (e) {
             console.log(e);
