@@ -35,17 +35,24 @@ class TrainingDao extends SuperDao {
                     { title: { [Op.like]: "%" + search + "%" } },
                     { purpose: { [Op.like]: "%" + search + "%" } },
                 ],
-                ...(active && { is_active: true }),
+            ...(active && { is_active: true }),
                 ...(employee_id && { employee_id }),
                 ...(status && { status: { [Op.like]: `%${status}%` } })
             },
             include: [
                 {
                     model: Employees,
+                    as: "proposer",
+                    required: false
+                },
+                {
+                    model: Employees,
+                    as: "employee",
                     required: false
                 },
                 {
                     model: TrainingAttendance,
+                    orderBy: [['created_at', 'DESC'], ],
                     required: false
                 },
             ],
