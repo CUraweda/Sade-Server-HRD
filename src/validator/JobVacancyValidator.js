@@ -17,7 +17,7 @@ class JobVacancyValidator {
             applicant_count: Joi.number(),
             notes: Joi.string(),
             status: Joi.string(),
-            role: Joi.string(),
+            role: Joi.valid("GURU", "KARYAWAN"),
             division_id: Joi.number(),
             is_fulltime: Joi.boolean(),
             is_open: Joi.boolean()
@@ -49,7 +49,7 @@ class JobVacancyValidator {
             applicant_count: Joi.number(),
             notes: Joi.string(),
             status: Joi.string(),
-            role: Joi.string(),
+            role: Joi.valid("GURU", "KARYAWAN"),
             division_id: Joi.number(),
             is_fulltime: Joi.boolean(),
             is_open: Joi.boolean(),

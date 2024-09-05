@@ -1,6 +1,7 @@
 const httpStatus = require("http-status");
 const constant = require('../config/constant')
 const ApplicantFormDao = require("../dao/ApplicantFormDao");
+const EmployeeDao = require("../dao/EmployeeDao");
 const ApplicantAcademicService = require('../service/ApplicantAcademicService')
 const ApplicantSkillService = require('../service/ApplicantSkillService')
 const ApplicantJobService = require('../service/ApplicantJobService')
@@ -21,6 +22,7 @@ class ApplicantFormService {
         this.applicantJobService = new ApplicantJobService()
         this.applicantUnformalService = new ApplicantUnformalService()
         this.jobVacancyDao = new JobVacancyDao()
+        this.employeeDao = new EmployeeDao()
     }
 
     create = async (body) => {
@@ -51,25 +53,58 @@ class ApplicantFormService {
         } : { is_passed_interview: true, status: constant.applicantFirstEvaluation.success }
         const applicantFormData = await this.applicantFormDao.updateById(payloadData, id);
         if (!applicantFormData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Gagal mengupdate Applicant Form");
-        
+
         return responseHandler.returnSuccess(httpStatus.CREATED, "Seleksi berhasil dicatat", {});
     }
-    
-    createSecondEvalution = async (id, condition) => {
+
+    createSecondEvalution = async (id, condition, body) => {
         if (!condition) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Kondisi Lulus atau Tidak Lulus tidak dispesifikan");
         condition = condition.toLowerCase()
         const applicationExist = await this.applicantFormDao.findById(id)
         if (!applicationExist) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Tidak ada data pada ID");
         if (applicationExist.is_passed || applicationExist.is_passed === false) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Applicant Sudah Pernah melewati Seleksi Kedua");
-        
+
         const payloadData = condition != "lulus" ? {
             is_passed: false,
             status: constant.applicantSecondEvaluation.fail
-        }: { is_passed: true, status: constant.applicantSecondEvaluation.success }
+        } : { is_passed: true, status: constant.applicantSecondEvaluation.success }
         const applicantFormData = await this.applicantFormDao.updateById(payloadData, id);
         if (!applicantFormData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Gagal mengupdate Applicant Form");
 
+        await this.aggregateToEmployee(id, body)
+
         return responseHandler.returnSuccess(httpStatus.CREATED, "Seleksi berhasil dicatat", {});
+    }
+
+    aggregateToEmployee = async (id, addedPayload) => {
+        const applicantData = await this.applicantFormDao.getAggregationData(id)
+        if (!applicantData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Tidak ada data pada ID");
+        if (applicantData.employee_id) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Applicant sudah menjadi Employee");
+
+        let extra = { ...addedPayload }
+        const { applicantacademic, jobvacancy } = applicantData
+        if(applicantacademic[0]){
+            const latestAcademicData = applicantacademic[0]
+            extra['last_education'] = latestAcademicData.degree
+            extra['certificate_year'] = latestAcademicData.end_date.getFullYear()
+            extra['is_education'] = latestAcademicData.is_kuliah ? "K" : "NK"
+            extra['major'] = latestAcademicData.major
+        }
+
+        if(jobvacancy){
+            extra['occupation'] = jobvacancy.sub_title
+            extra['is_teacher'] = jobvacancy.role != "GURU" ? "NG" : "G"
+            extra['division_id'] = jobvacancy.division_id
+        }
+
+        const payload = {
+            ...({ user_id, full_name, email, phone, nik, pob, dob, religion, martial_status } = applicantData),
+            ...extra, employee_status: "Probation", work_start_date: new Date(), still_in_probation: true
+        }
+
+        const employeeData = await this.employeeDao.create(payload)
+        const updatedApplicant = await this.applicantFormDao.updateById(id, { employee_id: employeeData.id })
+        return responseHandler.returnSuccess(httpStatus.OK, "Berhasil Aggregasi Applicant", updatedApplicant)
     }
 
     createDataAndDetail = async (body) => {
@@ -149,12 +184,12 @@ class ApplicantFormService {
         const currentDate = new Date()
         const currentMonth = (currentDate.getMonth() + 1).toString().padStart(2, "0")
         const currentYear = currentDate.getFullYear()
-        const currentStart =  currentDate.toISOString().split('T')[0] + "T00:00:00.000Z"
+        const currentStart = currentDate.toISOString().split('T')[0] + "T00:00:00.000Z"
         const startDate = `${currentYear}-${currentMonth}-01T00:00:00.000Z`
 
-        const applicantFormData = await this.applicantFormDao.getByRange(startDate, currentDate.toISOString())        
+        const applicantFormData = await this.applicantFormDao.getByRange(startDate, currentDate.toISOString())
         const applicantTodayData = await this.applicantFormDao.countRange(currentStart, currentDate.toISOString())
-    
+
         return responseHandler.returnSuccess(httpStatus.OK, "Applicant form found", {
             today_counter: applicantTodayData,
             month_counter: applicantFormData.length,
@@ -173,7 +208,7 @@ class ApplicantFormService {
     showDetail = async (id) => {
         const applicantFormData = await this.applicantFormDao.getDetail(id);
         if (!applicantFormData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Applicant form not found");
-    
+
         return responseHandler.returnSuccess(httpStatus.OK, "Applicant form found", applicantFormData);
     }
 

@@ -103,7 +103,10 @@ class ApplicantFormValidator {
     }
 
     async evaluateSecondValidator(req, res, next){
-        const schema = Joi.object({});
+        const schema = Joi.object({
+            probation_start_date: Joi.date(),
+            probation_end_date: Joi.date()
+        });
 
         const options = { abortEarly: false, allowUnknown: true, stripUnknown: true };
         const { error, value } = schema.validate(req.body, options);
