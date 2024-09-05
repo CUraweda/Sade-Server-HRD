@@ -93,7 +93,7 @@ class ApplicantFormService {
 
         if(jobvacancy){
             extra['occupation'] = jobvacancy.sub_title
-            extra['is_teacher'] = jobvacancy.role != "KARYAWAN" ? "G" : "NG"
+            extra['is_teacher'] = jobvacancy.role != "GURU" ? "NG" : "G"
             extra['division_id'] = jobvacancy.division_id
         }
 
