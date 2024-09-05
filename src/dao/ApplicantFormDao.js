@@ -1,12 +1,14 @@
 const SuperDao = require("./SuperDao");
 const models = require("../models");
 const { Op, where } = require("sequelize");
+const { required } = require("joi");
 
 const ApplicantForm = models.applicantform;
 const ApplicantAcademic = models.applicantacademic
 const ApplicantUnformal = models.applicantunformal
 const ApplicantSkill = models.applicantskill
 const ApplicantJob = models.applicantjob
+const JobVacancy = models.jobvacancy
 const ApplicantAppreciation = models.applicantappreciation
 const AppreciationAttachment = models.appreciationattachment
 const User = models.user
@@ -88,6 +90,23 @@ class ApplicantFormDao extends SuperDao {
                 {
                     model: User,
                     required: false
+                }
+            ]
+        })
+    }
+
+    async getAggregationData(id) {
+        return ApplicantForm.findOne({
+            where: { id },
+            include: [
+                {
+                    model: JobVacancy,
+                    required: false
+                },
+                {
+                    model: ApplicantAcademic,
+                    required: false,
+                    order: [["end_date", "DESC"]]
                 }
             ]
         })

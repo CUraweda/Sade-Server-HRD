@@ -9,6 +9,7 @@ class ApplicantAcademicValidator {
             degree: Joi.string(),
             city: Joi.string(),
             institution: Joi.string(),
+            major: Joi.string(),
             description: Joi.string().optional(),
             is_kuliah: Joi.boolean(),
             start_date: Joi.date(),

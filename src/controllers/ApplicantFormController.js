@@ -134,7 +134,7 @@ class ApplicantFormController {
         try{
             const id = +req.params.id
             const { condition } = req.params
-            const resData = await this.applicantFormService.createSecondEvalution(id, condition)
+            const resData = await this.applicantFormService.createSecondEvalution(id, condition, req.body)
 
             res.status(resData.statusCode).send(resData.response);
         }catch(e){

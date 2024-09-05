@@ -16,7 +16,7 @@ class JobVacancyValidator {
             max_applicant: Joi.number(),
             applicant_count: Joi.number(),
             notes: Joi.string(),
-            status: Joi.string(),
+            status: Joi.valid("GURU", "KARYAWAN"),
             role: Joi.string(),
             division_id: Joi.number(),
             is_fulltime: Joi.boolean(),
