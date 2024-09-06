@@ -2,6 +2,7 @@ const httpStatus = require("http-status");
 const constant = require('../config/constant')
 const ApplicantFormDao = require("../dao/ApplicantFormDao");
 const EmployeeDao = require("../dao/EmployeeDao");
+const UserDao = require("../dao/UserDao");
 const ApplicantAcademicService = require('../service/ApplicantAcademicService')
 const ApplicantSkillService = require('../service/ApplicantSkillService')
 const ApplicantJobService = require('../service/ApplicantJobService')
@@ -22,6 +23,7 @@ class ApplicantFormService {
         this.applicantJobService = new ApplicantJobService()
         this.applicantUnformalService = new ApplicantUnformalService()
         this.jobVacancyDao = new JobVacancyDao()
+        this.userDao = new UserDao()
         this.employeeDao = new EmployeeDao()
     }
 
@@ -71,7 +73,7 @@ class ApplicantFormService {
         const applicantFormData = await this.applicantFormDao.updateById(payloadData, id);
         if (!applicantFormData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Gagal mengupdate Applicant Form");
 
-        await this.aggregateToEmployee(id, body)
+        if(condition === "lulus") await this.aggregateToEmployee(id, body)
 
         return responseHandler.returnSuccess(httpStatus.CREATED, "Seleksi berhasil dicatat", {});
     }
@@ -81,7 +83,7 @@ class ApplicantFormService {
         if (!applicantData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Tidak ada data pada ID");
         if (applicantData.employee_id) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Applicant sudah menjadi Employee");
 
-        let extra = { ...addedPayload }
+        let extra = { ...addedPayload }, userData = {}
         const { applicantacademic, jobvacancy } = applicantData
         if(applicantacademic[0]){
             const latestAcademicData = applicantacademic[0]
@@ -97,6 +99,8 @@ class ApplicantFormService {
             extra['division_id'] = jobvacancy.division_id
         }
 
+        userData['role_id'] = jobvacancy.role != "GURU" ? 6 : 11
+
         const payload = {
             ...({ user_id, full_name, email, phone, nik, pob, dob, religion, martial_status } = applicantData),
             ...extra, employee_status: "Probation", work_start_date: new Date(), still_in_probation: true
@@ -104,6 +108,7 @@ class ApplicantFormService {
 
         const employeeData = await this.employeeDao.create(payload)
         const updatedApplicant = await this.applicantFormDao.updateById(id, { employee_id: employeeData.id })
+        await this.userDao.updateById(applicantData.user_id, userData)
         return responseHandler.returnSuccess(httpStatus.OK, "Berhasil Aggregasi Applicant", updatedApplicant)
     }
 
