@@ -109,6 +109,7 @@ class EmployeeJobdeskService {
         let differences = todayPerformance - yesterdayPerformance
         differences = {
             status: differences > 0 ? "Naik" : "Turun",
+            todayPerformance, yesterdayPerformance,
             differences
         }
 
