@@ -11,12 +11,12 @@ const jobVacancyDetailValidator = new JobVacancyDetailValidator();
 
 router.get(
     "/",
-    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    // auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
     jobVacancyDetailController.getAll
 )
 router.get(
     "/by-vacancy/:id",
-    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    // auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
     jobVacancyDetailController.getByVacancy
 )
 router.get(

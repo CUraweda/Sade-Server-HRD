@@ -54,7 +54,7 @@ router.post(
     auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
     applicantFormController.evaluateFirst
 )
-router.post(
+router.post( 
     "/second-evaluate/:condition/:id",
     applicantFormValidator.evaluateSecondValidator,
     auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
@@ -64,7 +64,7 @@ router.post(
     "/send",
     uploadMiddleware.uploadFileMulti("files[]"),
     applicantFormValidator.sendFormValidator,
-    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    // auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
     applicantFormController.sendData
 )
 

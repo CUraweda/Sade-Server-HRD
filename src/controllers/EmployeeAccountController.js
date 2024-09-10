@@ -32,21 +32,21 @@ class EmployeeAccountController {
       const id = +req.params.id;
       if (!id) res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Please provide an ID");
       const resData = await this.employeeAccountService.showOne(id);
-      
+
       res.status(resData.statusCode).send(resData.response);
     } catch (e) {
       console.log(e);
       res.status(httpStatus.BAD_GATEWAY).send(e);
     }
   };
-  
+
   getDetail = async (req, res) => {
-    try{
+    try {
       const id = +req.params.id
       const resData = await this.employeeAccountService.showDetail(id);
-      
+
       res.status(resData.statusCode).send(resData.response);
-    }catch(e){
+    } catch (e) {
       console.log(e);
       res.status(httpStatus.BAD_GATEWAY).send(e);
     }
@@ -54,12 +54,15 @@ class EmployeeAccountController {
 
   getMonthTotal = async (req, res) => {
     try {
-      const currentDate = new Date()
-      const currentMonth = currentDate.getMonth() + 1
-      const currentYear = currentDate.getFullYear()
+      let { year, month } = req.query
+      if (!(year && month)) {
+        const currentDate = new Date()
+        year = currentDate.getMonth() + 1
+        month = currentDate.getFullYear()
+      }
 
-      const resData = await this.employeeAccountService.showTotal(currentYear, currentMonth);
-      
+      const resData = await this.employeeAccountService.showTotal(year, month);
+
       res.status(resData.statusCode).send(resData.response);
     } catch (e) {
       console.log(e);
@@ -68,12 +71,12 @@ class EmployeeAccountController {
   }
 
   getRecapYear = async (req, res) => {
-    try{
+    try {
       const currentYear = new Date().getFullYear()
       const resData = await this.employeeAccountService.showRecapYear(currentYear)
 
       res.status(resData.statusCode).send(resData.response);
-    }catch(e){
+    } catch (e) {
       console.log(e);
       res.status(httpStatus.BAD_GATEWAY).send(e);
     }
