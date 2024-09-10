@@ -76,7 +76,8 @@ module.exports = (sequelize, DataTypes) => {
       probation_start_date: DataTypes.DATE,
     probation_end_date: DataTypes.DATE,
       division_id: DataTypes.INTEGER,
-      is_outstation: DataTypes.BOOLEAN
+      is_outstation: DataTypes.BOOLEAN,
+      is_asessor: DataTypes.BOOLEAN
     },
     {
       sequelize,

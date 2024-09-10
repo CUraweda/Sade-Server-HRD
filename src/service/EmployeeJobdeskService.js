@@ -43,6 +43,7 @@ class EmployeeJobdeskService {
 
     updateGrade = async (id, employee, grade) => {
         if (!employee) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Anda tidak termasuk sebagai karyawan");
+        if (!employee.is_asessor) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Anda tidak termasuk sebagai assesor");
         const dataExist = await this.employeeJobdeskDao.findById(id);
         if (!dataExist) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Employee Jobdesk Tidak Ada");
         if (!dataExist.is_finish) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Jobdesk belum selesai dikerjakan");
