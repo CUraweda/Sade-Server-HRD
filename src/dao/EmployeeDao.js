@@ -7,6 +7,7 @@ const Employees = models.employees;
 const User = models.user
 const EmployeeAttendance = models.employeeattendance
 const EmployeeVacation = models.employeevacation
+const EmployeePosition = models.employeeposition
 const EmployeeAttachment = models.employeeattachment
 const FormPosistion = models.formposition
 const Training = models.training
@@ -24,7 +25,7 @@ class EmployeesDao extends SuperDao {
   }
 
   async getCount(filter) {
-    const { isGuru, search, isAssign, division_id } = filter
+    const { isGuru, search, isAssign, division_id, status } = filter
     return Employees.count({
       where: {
         ...(isGuru && { is_teacher: isGuru }),
@@ -37,6 +38,7 @@ class EmployeesDao extends SuperDao {
             })
           }
         }),
+        ...(status && { employee_status: status }),
         ...(division_id && { division_id }),
         [Op.or]: [
           {
@@ -136,7 +138,7 @@ class EmployeesDao extends SuperDao {
   }
 
   async getEmployeesPage(filter, offset, limit) {
-    const { isGuru, search, isAssign, division_id } = filter
+    const { isGuru, search, isAssign, division_id, status } = filter
     return Employees.findAll({
       where: {
         ...(isGuru && { is_teacher: isGuru }),
@@ -149,6 +151,7 @@ class EmployeesDao extends SuperDao {
             })
           }
         }),
+        ...(status && { employee_status: status }),
         ...(division_id && { division_id }),
         [Op.or]: [
           {
@@ -260,6 +263,11 @@ class EmployeesDao extends SuperDao {
         },
         {
           model: FormPosistion,
+          include: [
+            {
+              model: EmployeePosition
+            }
+          ],
           required: false
         },
         {
