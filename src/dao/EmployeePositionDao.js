@@ -10,8 +10,8 @@ class EmployeePositionDao extends SuperDao {
     }
 
     async getCount(filter) {
-         let { search } = filter
-        if(!search) search = ""
+        let { search } = filter
+        if (!search) search = ""
         return EmployeePosition.count({
             where: {
                 name: { [Op.like]: "%" + search + "%" }
@@ -20,8 +20,8 @@ class EmployeePositionDao extends SuperDao {
     }
 
     async getPage(offset, limit, filter) {
-         let { search } = filter
-        if(!search) search = ""
+        let { search } = filter
+        if (!search) search = ""
         return EmployeePosition.findAll({
             where: {
                 name: { [Op.like]: "%" + search + "%" }
