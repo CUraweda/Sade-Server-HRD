@@ -95,7 +95,7 @@ class EmployeeController {
         page,
         limit,
         { search, isGuru, isAssign, division_id, status },
-        offsetP
+        offset
       );
 
       res.status(resData.statusCode).send(resData.response);
