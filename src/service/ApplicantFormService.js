@@ -66,14 +66,14 @@ class ApplicantFormService {
         if (!applicationExist) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Tidak ada data pada ID");
         if (applicationExist.is_passed || applicationExist.is_passed === false) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Applicant Sudah Pernah melewati Seleksi Kedua");
 
+        if (condition === "lulus") await this.aggregateToEmployee(id, body)
+
         const payloadData = condition != "lulus" ? {
             is_passed: false,
             status: constant.applicantSecondEvaluation.fail
         } : { is_passed: true, status: constant.applicantSecondEvaluation.success }
         const applicantFormData = await this.applicantFormDao.updateById(payloadData, id);
         if (!applicantFormData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Gagal mengupdate Applicant Form");
-
-        if(condition === "lulus") await this.aggregateToEmployee(id, body)
 
         return responseHandler.returnSuccess(httpStatus.CREATED, "Seleksi berhasil dicatat", {});
     }
@@ -84,16 +84,16 @@ class ApplicantFormService {
         if (applicantData.employee_id) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Applicant sudah menjadi Employee");
 
         let extra = { ...addedPayload }, userData = {}
-        const { applicantacademic, jobvacancy } = applicantData
-        if(applicantacademic[0]){
-            const latestAcademicData = applicantacademic[0]
+        const { applicantacademics, jobvacancy } = applicantData.dataValues
+        if (applicantacademics[0]) {
+            const latestAcademicData = applicantacademics[0]
             extra['last_education'] = latestAcademicData.degree
-            extra['certificate_year'] = latestAcademicData.end_date.getFullYear()
+            extra['certificate_year'] = latestAcademicData?.end_date?.getFullYear()
             extra['is_education'] = latestAcademicData.is_kuliah ? "K" : "NK"
             extra['major'] = latestAcademicData.major
         }
 
-        if(jobvacancy){
+        if (jobvacancy) {
             extra['occupation'] = jobvacancy.sub_title
             extra['is_teacher'] = jobvacancy.role != "GURU" ? "NG" : "G"
             extra['division_id'] = jobvacancy.division_id
@@ -101,13 +101,14 @@ class ApplicantFormService {
 
         userData['role_id'] = jobvacancy.role != "GURU" ? 6 : 11
 
+        const { user_id, full_name, email, phone, nik, pob, dob, religion, martial_status } = applicantData.dataValues 
         const payload = {
-            ...({ user_id, full_name, email, phone, nik, pob, dob, religion, martial_status } = applicantData),
-            ...extra, employee_status: "Probation", work_start_date: new Date(), still_in_probation: true
+            user_id, full_name, email, phone, nik, pob, dob, religion, martial_status,
+            ...extra, employee_status: "Probation", work_start_date: new Date().toISOString(), still_in_probation: true
         }
-
-        const employeeData = await this.employeeDao.create(payload)
-        const updatedApplicant = await this.applicantFormDao.updateById(id, { employee_id: employeeData.id })
+        if (!employeeData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Gagal membuat data employee")
+        const updatedApplicant = await this.applicantFormDao.updateById({ employee_id: employeeData.id }, id)
+        if (!updatedApplicant) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Gagal mengupdate data applicant")
         await this.userDao.updateById(applicantData.user_id, userData)
         return responseHandler.returnSuccess(httpStatus.OK, "Berhasil Aggregasi Applicant", updatedApplicant)
     }
