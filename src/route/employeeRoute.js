@@ -38,6 +38,16 @@ router.put(
   employeeValidator.attachEmployeeValidator,
   employeeController.update
 )
+router.put(
+  '/finish-probation/:id',
+  auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+  employeeController.finishProbation
+)
+router.put(
+  '/contract/:id',
+  auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+  employeeController.sendContract
+)
 
 router.get(
   "/show/:id",
@@ -61,7 +71,7 @@ router.get(
 );
 router.get(
   "/",
-  auth([1, 2, 3, 4, 5, 6]),
+  auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
   employeeController.showAll
 );
 

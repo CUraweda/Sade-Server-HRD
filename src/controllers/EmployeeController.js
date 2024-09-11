@@ -31,6 +31,32 @@ class EmployeeController {
     }
   };
 
+  finishProbation = async (req, res) => {
+    try {
+      var id = req.params.id;
+
+      const resData = await this.employeeService.actionProbation("FAIL", id);
+
+      res.status(resData.statusCode).send(resData.response);
+    } catch (e) {
+      console.log(e)
+      res.status(httpStatus.BAD_GATEWAY).send(e);
+    }
+  };
+  
+  sendContract = async (req, res) => {
+    try {
+      var id = req.params.id;
+
+      const resData = await this.employeeService.actionProbation("SUCCESS", id);
+
+      res.status(resData.statusCode).send(resData.response);
+    } catch (e) {
+      console.log(e)
+      res.status(httpStatus.BAD_GATEWAY).send(e);
+    }
+  };
+
   show = async (req, res) => {
     try {
       const id = req.params.id;

@@ -1,10 +1,13 @@
 const httpStatus = require("http-status");
 const EmployeeDao = require("../dao/EmployeeDao");
+const UserDao = require("../dao/UserDao");
 const responseHandler = require("../helper/responseHandler");
+const { response } = require("express");
 
 class EmployeeService {
   constructor() {
     this.employeeDao = new EmployeeDao();
+    this.userDao = new UserDao()
   }
 
   createEmployee = async (reqBody) => {
@@ -51,6 +54,33 @@ class EmployeeService {
     if (updateData) {
       return responseHandler.returnSuccess(httpStatus.OK, message, {});
     }
+  };
+
+  actionProbation = async (condition, id) => {
+    if (!id) return responseHandler.returnError(httpStatus.BAD_REQUEST, "ID is required")
+    const employeeData = await this.employeeDao.findById(id)
+    if (!employeeData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Employee Not Found")
+    if (!employeeData.still_in_probation) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Employee already finish the probation")
+    let userPayload = {}, employeePayload = {}
+    switch (condition) {
+      case "SUCCESS":
+        // userPayload = { role_id: 11 }
+        employeePayload = { still_in_probation: false, probation_end_date: new Date(), employee_status: "Kontrak"}
+        break;
+      case "FAIL":
+        userPayload = { role_id: 11 }
+        employeePayload = { still_in_probation: false, probation_end_date: new Date(), user_id: null, employee_status: "Diberhentikan" }
+        break;
+      default:
+        break;
+    }
+
+    const updateEmployee = await this.employeeDao.updateById(employeePayload, id)
+    if (!updateEmployee) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Failed to update employee data")
+    const updateUser = await this.userDao.updateById(userPayload, employeeData.user_id)
+    if (!updateUser) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Failed to update user data")
+
+    return responseHandler.returnSuccess(httpStatus.OK, "Succesfully finish the action", {});
   };
 
   showEmployee = async (id) => {
