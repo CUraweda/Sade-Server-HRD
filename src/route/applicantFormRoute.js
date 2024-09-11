@@ -18,17 +18,17 @@ const uploadMiddleware = new UploadMiddleware('applicantForm', [
 
 router.get(
     "/",
-    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    // auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
     applicantFormController.getAll
 )
 router.get(
     "/rekap-dashboard",
-    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    // auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
     applicantFormController.getRekapDashboard
 )
 router.get(
     "/by-vacancy/:id",
-    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    // auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
     applicantFormController.getByVacancy
 )
 router.get(
@@ -57,7 +57,7 @@ router.post(
 router.post( 
     "/second-evaluate/:condition/:id",
     applicantFormValidator.evaluateSecondValidator,
-    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    // auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
     applicantFormController.evaluateSecond
 )
 router.post(

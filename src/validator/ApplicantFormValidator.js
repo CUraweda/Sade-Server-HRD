@@ -84,7 +84,7 @@ class ApplicantFormValidator {
         }
     }
 
-    async evaluateFirstValidator(req, res, next){
+    async evaluateFirstValidator(req, res, next) {
         const schema = Joi.object({
             plan_date: Joi.date(),
             portal: Joi.string()
@@ -102,10 +102,10 @@ class ApplicantFormValidator {
         }
     }
 
-    async evaluateSecondValidator(req, res, next){
+    async evaluateSecondValidator(req, res, next) {
         const schema = Joi.object({
-            probation_start_date: Joi.date(),
-            probation_end_date: Joi.date()
+            probation_start_date: Joi.date().required(),
+            probation_end_date: Joi.date().required()
         });
 
         const options = { abortEarly: false, allowUnknown: true, stripUnknown: true };
