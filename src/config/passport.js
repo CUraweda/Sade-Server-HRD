@@ -28,8 +28,6 @@ const jwtVerify = async (req, payload, done) => {
         user = await userDao.findUserByUUID(payload.sub);
         if (!user) return done(null, false);
 
-        console.log(user)
-
         done(null, user);
     } catch (error) {
         console.log(error);
