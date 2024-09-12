@@ -8,7 +8,7 @@ const auth = require("../middlewares/auth");
 
 const employeeAttachmentController = new EmployeeAttachmentController();
 const employeeAttachmentValidator = new EmployeeAttachmentValidator();
-const uploadMiddleware = new UploadMiddleware('e_attachment ', [
+const uploadMiddleware = new UploadMiddleware('file_attachment ', [
     "application/pdf",
     "image/jpeg",
     "image/jpg",
