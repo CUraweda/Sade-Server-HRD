@@ -1,53 +1,81 @@
-const locationService = require("../service/locationService");
+const httpStatus = require("http-status");
+const LocationService = require("../service/LocationService");
 
-module.exports = {
-  getAllLocations: async (req, res) => {
-    try {
-      const locations = await locationService.getAllLocations();
-      res.status(200).json(locations);
-    } catch (error) {
-      res.status(500).json({ error: error.message });
+class LocationController {
+    constructor() {
+        this.locationService = new LocationService();
     }
-  },
 
-  createLocation: async (req, res) => {
-    try {
-      const { lat, lng, radius, nama } = req.body;
-      const newLocation = await locationService.createLocation({
-        lat,
-        lng,
-        radius,
-        nama,
-      });
-      res.status(201).json(newLocation);
-    } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
-  },
+    getAll = async (req, res) => {
+        try {
+            const page = +req.query.page || 0;
+            const limit = +req.query.limit || 10;
+            const { search } = req.query;
 
-  updateLocation: async (req, res) => {
-    try {
-      const { id, lat, lng, radius, nama } = req.body;
-      const updatedLocation = await locationService.updateLocation({
-        id,
-        lat,
-        lng,
-        radius,
-        nama,
-      });
-      res.status(200).json(updatedLocation);
-    } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
-  },
+            const offset = limit * page;
+            const resData = await this.locationService.showPage(
+                page,
+                limit,
+                offset,
+                { search }
+            );
 
-  deleteLocation: async (req, res) => {
-    try {
-      const { id } = req.body;
-      await locationService.deleteLocation(id);
-      res.status(200).json({ message: "Location deleted successfully" });
-    } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
-  },
-};
+            res.status(resData.statusCode).send(resData.response);
+        } catch (e) {
+            console.log(e);
+            res.status(httpStatus.BAD_GATEWAY).send(e);
+        }
+    };
+
+    getOne = async (req, res) => {
+        try {
+            const id = +req.params.id;
+            if (!id) res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Tolong sertakan ID");
+            const resData = await this.locationService.showOne(id);
+
+            res.status(resData.statusCode).send(resData.response);
+        } catch (e) {
+            console.log(e);
+            res.status(httpStatus.BAD_GATEWAY).send(e);
+        }
+    };
+
+    createOne = async (req, res) => {
+        try {
+            const resData = await this.locationService.create(req.body);
+
+            res.status(resData.statusCode).send(resData.response);
+        } catch (e) {
+            console.log(e);
+            res.status(httpStatus.BAD_GATEWAY).send(e);
+        }
+    };
+
+    update = async (req, res) => {
+        try {
+            const id = +req.params.id;
+            if (!id) res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Tolong sertakan ID");
+            const resData = await this.locationService.update(id, req.body);
+
+            res.status(resData.statusCode).send(resData.response);
+        } catch (e) {
+            console.log(e);
+            res.status(httpStatus.BAD_GATEWAY).send({ error: e.message });
+        }
+    };
+
+    delete = async (req, res) => {
+        try {
+            const id = +req.params.id;
+            if (!id) res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Tolong sertakan ID");
+            const resData = await this.locationService.delete(id);
+
+            res.status(resData.statusCode).send(resData.response);
+        } catch (e) {
+            console.log(e);
+            res.status(httpStatus.BAD_GATEWAY).send(e);
+        }
+    };
+}
+
+module.exports = LocationController;

@@ -1,5 +1,17 @@
+'use strict';
+const { Model } = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
-    const Location = sequelize.define('Location', {
+  class FormPosition extends Model {
+    /**
+     * Helper method for defining associations.
+     * This method is not a part of Sequelize lifecycle.
+     * The `models/index` file will call this method automatically.
+     */
+  }
+
+  FormPosition.init(
+    {
       id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -21,10 +33,14 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
-    }, {
+    },
+    {
+      sequelize,
       tableName: 'tbl_location',
-      timestamps: false,
-    });
-  
-    return Location;
-  };
+      modelName: 'locations',
+      timestamps: false
+    }
+  );
+
+  return FormPosition;
+};
