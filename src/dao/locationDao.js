@@ -1,33 +1,25 @@
-const { Location } = require("../models");
+const SuperDao = require("./SuperDao");
+const models = require("../models");
+const { Op } = require("sequelize");
 
-module.exports = {
-  getAllLocations: async () => {
-    return await Location.findAll();
-  },
+const Locations = models.locations;
 
-  createLocation: async (locationData) => {
-    return await Location.create(locationData);
-  },
-
-  updateLocation: async (locationData) => {
-    const { id, lat, lng, radius, nama } = locationData;
-    const location = await Location.findByPk(id);
-    if (location) {
-      location.lat = lat;
-      location.lng = lng;
-      location.radius = radius;
-      location.nama = nama;
-      return await location.save();
+class LocationsDao extends SuperDao {
+    constructor() {
+        super(Locations);
     }
-    throw new Error("Location not found");
-  },
 
-  deleteLocation: async (id) => {
-    const location = await Location.findByPk(id);
-    if (location) {
-      await location.destroy();
-    } else {
-      throw new Error("Location not found");
+    async getCount(filter) {
+        return Locations.count({});
     }
-  },
-};
+
+    async getPage(offset, limit, filter) {
+        return Locations.findAll({
+            offset: offset,
+            limit: limit,
+            order: [["id", "DESC"]],
+        });
+    }
+}
+
+module.exports = LocationsDao;
