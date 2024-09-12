@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+
+      * {
+        font-family: Inter;
+        font-weight: 600;
+      }
+
+      .container {
+        padding-inline: 3rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div
+        style="
+          display: flex;
+          flex-direction: column;
+          gap: 2rem;
+          margin-top: 3rem;
+        "
+      >
+        <div>Kepada: {{applicant_email}}</div>
+        <div>Subjek: Kontrak Kerja - {{applicant_employee}}</div>
+        <div>Yth. {{applicant_name}}</div>
+
+        <div>
+          Terlampir adalah surat kontrak kerja Anda sebagai {{applicant_major}}
+          di {{company}}. Mohon untuk membaca dengan seksama dan memberikan
+          tanda tangan Anda. Setelah itu, harap mengirimkan kembali surat
+          kontrak yang telah ditandatangani dalam bentuk PDF ke email ini.
+        </div>
+
+        <div>
+          Silahkan lakukan pelengkapan berkas pada link ini dan
+          https://pelengkapanberkas/ link berikut untuk melakukan registrasi
+          karyawan baru https://sekolahalamdepok.sch.id/guru-dan-karyawan/
+        </div>
+
+        <div>Terima Kasih.,</div>
+
+        <div>
+          Hormat Kami,<br />{{sender_name}}|<br />{{sender_position}}<br />{{company_name}}<br />{{sender_semail}}<br />{{sender_phone}}
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
