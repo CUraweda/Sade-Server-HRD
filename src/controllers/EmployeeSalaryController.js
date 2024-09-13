@@ -8,7 +8,7 @@ class EmployeeSalaryController {
 
     getAll = async (req, res) => {
         try {
-            const page = +req.query.page || 0;
+            const page = +req.query.page - 1 || 0;
             const limit = +req.query.limit || 10;
             const { search } = req.query;
 
@@ -50,13 +50,13 @@ class EmployeeSalaryController {
             res.status(httpStatus.BAD_GATEWAY).send(e);
         }
     };
-    
+
     createSafeOne = async (req, res) => {
-        try{
+        try {
             const resData = await this.employeeSalaryService.createSafe(req.body)
-            
+
             res.status(resData.statusCode).send(resData.response);
-        }catch(e){
+        } catch (e) {
             console.log(e);
             res.status(httpStatus.BAD_GATEWAY).send(e);
         }
