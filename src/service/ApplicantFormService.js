@@ -14,6 +14,7 @@ const responseHandler = require("../helper/responseHandler");
 const ApplicantInterviewDao = require("../dao/ApplicantInterviewDao");
 const JobVacancyDao = require("../dao/JobVacancyDao");
 const config = require("../config/config");
+const { warn } = require("winston");
 
 class ApplicantFormService {
     constructor() {
@@ -188,6 +189,7 @@ class ApplicantFormService {
             user_id, full_name, email, phone, nik, pob, dob, religion, martial_status,
             ...extra, employee_status: "Probation", work_start_date: new Date().toISOString(), still_in_probation: true
         }
+        const employeeData = await this.employeeDao.create(payload)
         if (!employeeData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Gagal membuat data employee")
         const updatedApplicant = await this.applicantFormDao.updateById({ employee_id: employeeData.id }, id)
         if (!updatedApplicant) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Gagal mengupdate data applicant")
@@ -375,9 +377,9 @@ class ApplicantFormService {
         );
     };
 
-    showByVacancy = async (vacancy_id) => {
+    showByVacancy = async (vacancy_id, filter) => {
         const applicantFormData = await this.applicantFormDao.getByVacancy(
-            vacancy_id
+            vacancy_id, filter
         );
         if (!applicantFormData)
             return responseHandler.returnError(
