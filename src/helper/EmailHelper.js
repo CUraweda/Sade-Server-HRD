@@ -4,6 +4,7 @@ const config = require("../config/config");
 const nodemailer = require("nodemailer");
 const handlebars = require("handlebars");
 const fs = require("fs");
+const path = require("path");
 
 const transporter = nodemailer.createTransport({
   //? GMAIL CONFIG
@@ -44,7 +45,7 @@ class EmailHelper {
     attachment = false
   ) {
     try {
-      readHTMLFile(body, function (err, html) {
+      readHTMLFile(path.resolve(__dirname, body), function (err, html) {
         if (err) {
           console.log("error reading file", err);
           return;
@@ -52,10 +53,29 @@ class EmailHelper {
         var template = handlebars.compile(html);
 
         var replacements = {
+          company_name: 'Sekolah Alam Depok',
+          due_date: dynamic.date,
+          status: dynamic.status,
           date: dynamic.date,
           time: dynamic.time,
-          place: dynamic.place,
-
+          address: dynamic.address,
+          start_date: dynamic.startDate,
+          end_date: dynamic.endDate,
+          reason: dynamic.reason,
+          position_name: dynamic.positionName,
+          //applicant
+          applicant_name: dynamic.applicantName,
+          applicant_position: dynamic.applicantPosition,
+          applicant_address: dynamic.applicantAddress,
+          applicant_phone: dynamic.applicantPhone,
+          applicant_email: dynamic.applicantEmail,
+          applicant_major: dynamic.applicantMajor,
+          applicant_employee: dynamic.applicantEmployee,
+          //sender
+          sender_name: dynamic.senderName,
+          sender_position: dynamic.senderPosition,
+          sender_email: dynamic.senderEmail,
+          sender_phone: dynamic.senderPhone,
         };
         var htmlToSend = template(replacements);
         var mailOptions = {
