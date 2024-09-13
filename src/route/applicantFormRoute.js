@@ -8,77 +8,77 @@ const auth = require("../middlewares/auth");
 
 const applicantFormController = new ApplicantFormController();
 const applicantFormValidator = new ApplicantFormValidator();
-const uploadMiddleware = new UploadMiddleware('applicantForm', [
-    "application/pdf",
-    "image/jpeg",
-    "image/jpg",
-    "image/png",
-    "image/gif",
-])
+const uploadMiddleware = new UploadMiddleware("applicantForm", [
+  "application/pdf",
+  "image/jpeg",
+  "image/jpg",
+  "image/png",
+  "image/gif",
+]);
 
 router.get(
-    "/",
-    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
-    applicantFormController.getAll
-)
+  "/",
+  auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+  applicantFormController.getAll
+);
 router.get(
-    "/rekap-dashboard",
-    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
-    applicantFormController.getRekapDashboard
-)
+  "/rekap-dashboard",
+  auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+  applicantFormController.getRekapDashboard
+);
 router.get(
-    "/by-vacancy/:id",
-    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
-    applicantFormController.getByVacancy
-)
+  "/by-vacancy/:id",
+  auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+  applicantFormController.getByVacancy
+);
 router.get(
-    "/detail/:id",
-    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
-    applicantFormController.getDetail
-)
+  "/detail/:id",
+  auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+  applicantFormController.getDetail
+);
 router.get(
-    "/:id",
-    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
-    applicantFormController.getOne
-)
+  "/:id",
+  auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+  applicantFormController.getOne
+);
 
 router.post(
-    "/create",
-    applicantFormValidator.createUpdateValidator,
-    // auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
-    applicantFormController.createOne
-)
+  "/create",
+  applicantFormValidator.createUpdateValidator,
+  // auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+  applicantFormController.createOne
+);
 router.post(
-    "/first-evaluate/:condition/:id",
-    applicantFormValidator.evaluateFirstValidator,
-    // auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
-    applicantFormController.evaluateFirst
-)
-router.post( 
-    "/second-evaluate/:condition/:id",
-    applicantFormValidator.evaluateSecondValidator,
-    // auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
-    applicantFormController.evaluateSecond
-)
+  "/first-evaluate/:condition/:id",
+  applicantFormValidator.evaluateFirstValidator,
+  auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+  applicantFormController.evaluateFirst
+);
 router.post(
-    "/send",
-    uploadMiddleware.uploadFileMulti("files[]"),
-    applicantFormValidator.sendFormValidator,
-    // auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
-    applicantFormController.sendData
-)
+  "/second-evaluate/:condition/:id",
+  applicantFormValidator.evaluateSecondValidator,
+  auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+  applicantFormController.evaluateSecond
+);
+router.post(
+  "/send",
+  uploadMiddleware.uploadFileMulti("files[]"),
+  applicantFormValidator.sendFormValidator,
+  // auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+  applicantFormController.sendData
+);
 
 router.put(
-    "/update/:id",
-    applicantFormValidator.createUpdateValidator,
-    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
-    applicantFormController.update
-)
+  "/update/:id",
+  applicantFormValidator.createUpdateValidator,
+  auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+  applicantFormController.update
+);
 
 router.delete(
-    "/delete/:id",
-    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
-    applicantFormController.delete
-)
+  "/delete/:id",
+  auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+  applicantFormController.delete
+);
 
 module.exports = router;
