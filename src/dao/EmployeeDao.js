@@ -155,11 +155,6 @@ class EmployeesDao extends SuperDao {
         ...(division_id && { division_id }),
         [Op.or]: [
           {
-            employee_no: {
-              [Op.like]: "%" + search + "%",
-            },
-          },
-          {
             full_name: {
               [Op.like]: "%" + search + "%",
             },

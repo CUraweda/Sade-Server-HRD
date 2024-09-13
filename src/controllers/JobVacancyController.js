@@ -8,7 +8,7 @@ class JobVacancyController {
 
     getAll = async (req, res) => {
         try {
-            const page = +req.query.page || 0;
+            const page = +req.query.page  || 0;
             const limit = +req.query.limit || 10;
             const { search, division_id, only_open } = req.query;
 

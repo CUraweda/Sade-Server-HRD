@@ -13,13 +13,14 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsTo(models.employees, { foreignKey: 'employee_id' });
     }
   }
-  
+
   EmployeeAttachment.init(
     {
-        employee_id: DataTypes.INTEGER,
-        file_path: DataTypes.STRING,
-        file_name: DataTypes.STRING,
-        file_type: DataTypes.STRING        
+      employee_id: DataTypes.INTEGER,
+      description: DataTypes.STRING,
+      file_path: DataTypes.STRING,
+      file_name: DataTypes.STRING,
+      file_type: DataTypes.STRING
     },
     {
       sequelize,
@@ -29,6 +30,6 @@ module.exports = (sequelize, DataTypes) => {
       underscored: true, // Maps snake_case columns to camelCase properties
     }
   );
-  
+
   return EmployeeAttachment;
 };

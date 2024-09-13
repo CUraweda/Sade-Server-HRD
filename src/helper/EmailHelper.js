@@ -35,9 +35,8 @@ var readHTMLFile = function (path, callback) {
 };
 
 class EmailHelper {
-  async sendEmail(
-    webUrl,
-    from,
+  async sendApplicantEmail(
+    dynamic,
     to,
     subject,
     body,
@@ -51,12 +50,16 @@ class EmailHelper {
           return;
         }
         var template = handlebars.compile(html);
+
         var replacements = {
-          url: webUrl,
+          date: dynamic.date,
+          time: dynamic.time,
+          place: dynamic.place,
+
         };
         var htmlToSend = template(replacements);
         var mailOptions = {
-          from: from,
+          from: config.email.account,
           to: to,
           subject: subject,
           html: htmlToSend,

@@ -5,7 +5,8 @@ const ApiError = require("../helper/ApiError");
 class EmployeeAttachmentValidator {
     async createUpdateValidator(req, res, next) {
         const schema = Joi.object({
-            employee_id: Joi.number().integer()
+            employee_id: Joi.number().integer(),
+            description: Joi.string()
         });
 
         const options = { abortEarly: false, allowUnknown: true, stripUnknown: true };
