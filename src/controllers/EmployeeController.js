@@ -110,7 +110,7 @@ class EmployeeController {
     try {
       const page = +req.query.page || 0;
       const limit = parseInt(req.query.limit) || 10;
-      const search = req.query.search_query || "";
+      const search = req.query.search || "";
       const isGuru = req.query.guru
       const isAssign = req.query.isAssign
       const division_id = +req.query.division_id
