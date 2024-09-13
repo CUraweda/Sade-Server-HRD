@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+
+      * {
+        font-family: Inter;
+        font-weight: 600;
+      }
+
+      .container {
+        padding-inline: 3rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div
+        style="
+          display: flex;
+          flex-direction: column;
+          gap: 2rem;
+          margin-top: 3rem;
+        "
+      >
+        <div>Yth. {{applicant_name}}</div>
+        <div>
+          Terima kasih atas minat Anda terhadap posisi {{applicant_position}} di
+          {{company_name}}. Kami telah menerima dan meninjau lamaran anda dengan
+          seksama. Dengan senang hati, kami mengundang Anda untuk menghadiri
+          sesi wawancara dengan tim rekrutmen kami.
+        </div>
+
+        <div>
+          <div>Detail Wawancara</div>
+          <ul>
+            <li>Tanggal: {{date}}</li>
+            <li>Waktu: {{time}}</li>
+            <li>Tempat: {{address}}</li>
+          </ul>
+        </div>
+
+        <div>
+          Wawancara ini akan berlangsung selama {{duration}} dan akan mencakup
+          diskusi mengenai pengalaman kerja Anda, serta bagaimana keterampilan
+          Anda sesuai dengan kebutuhan kami.
+        </div>
+
+        <div>
+          Mohon konfirmasi kehadiran Anda dengan membalas email ini atau
+          menghubungi kami di {{sender_phone}} paling lambat {{due_date}}. jika
+          Anda memiliki pertanyaan atau membutuhkan informasi tambahan, jangan
+          ragu untuk menghubungi kami.
+        </div>
+
+        <div>Hormat kami,</div>
+
+        <div>
+          {{sender_name}}|<br />{{sender_position}}<br />{{company_name}}<br />{{sender_semail}}<br />{{sender_phone}}
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

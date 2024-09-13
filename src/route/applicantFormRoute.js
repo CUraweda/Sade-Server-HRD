@@ -45,19 +45,19 @@ router.get(
 router.post(
     "/create",
     applicantFormValidator.createUpdateValidator,
-    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    // auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
     applicantFormController.createOne
 )
 router.post(
     "/first-evaluate/:condition/:id",
     applicantFormValidator.evaluateFirstValidator,
-    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    // auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
     applicantFormController.evaluateFirst
 )
 router.post( 
     "/second-evaluate/:condition/:id",
     applicantFormValidator.evaluateSecondValidator,
-    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    // auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
     applicantFormController.evaluateSecond
 )
 router.post(

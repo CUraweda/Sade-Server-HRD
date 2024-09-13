@@ -27,35 +27,35 @@ class ApplicantFormController {
             const id = +req.params.id;
             if (!id) res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Please provide an ID");
             const resData = await this.applicantFormService.showOne(id);
-            
+
             res.status(resData.statusCode).send(resData.response);
         } catch (e) {
             console.log(e);
             res.status(httpStatus.BAD_GATEWAY).send(e);
         }
     };
-    
+
     getDetail = async (req, res) => {
-        try{
+        try {
             const id = +req.params.id;
             if (!id) res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Please provide an ID");
             const resData = await this.applicantFormService.showOne(id);
-            
+
             res.status(resData.statusCode).send(resData.response);
-        }catch(e){
+        } catch (e) {
             console.log(e);
             res.status(httpStatus.BAD_GATEWAY).send(e);
         }
     }
-    
-    getRekapDashboard = async (req, res) =>{
-        try{
-            const resData  = await this.applicantFormService.showRekapDashboard()
-            
+
+    getRekapDashboard = async (req, res) => {
+        try {
+            const resData = await this.applicantFormService.showRekapDashboard()
+
             res.status(resData.statusCode).send(resData.response);
-        }catch(e){
+        } catch (e) {
             console.log(e);
-            res.status(httpStatus.BAD_GATEWAY).send(e);        
+            res.status(httpStatus.BAD_GATEWAY).send(e);
         }
     }
 
@@ -120,7 +120,7 @@ class ApplicantFormController {
         try {
             const id = +req.params.id
             const { condition } = req.params
-            const { employee } = req.user
+            const employee = req.user?.employee
             const resData = await this.applicantFormService.createInterview(req.body, id, condition, employee)
 
             res.status(resData.statusCode).send(resData.response);
@@ -131,13 +131,13 @@ class ApplicantFormController {
     }
 
     evaluateSecond = async (req, res) => {
-        try{
+        try {
             const id = +req.params.id
             const { condition } = req.params
             const resData = await this.applicantFormService.createSecondEvalution(id, condition, req.body)
 
             res.status(resData.statusCode).send(resData.response);
-        }catch(e){
+        } catch (e) {
             console.log(e);
             res.status(httpStatus.BAD_GATEWAY).send({ error: e.message });
         }
