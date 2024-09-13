@@ -17,20 +17,23 @@ class EmployeeJobdeskDao extends SuperDao {
             where: {
                 [Op.or]: [
                     {
-                        employee_id: { [Op.like]: "%" + search + "%" },
-                    },
-                    {
-                        name: { [Op.like]: "%" + search + "%" },
-                    },
-                    {
-                        description: { [Op.like]: "%" + search + "%" },
-                    },
-                    {
-                        priority_label: { [Op.like]: "%" + search + "%" },
+                        "$employee.full_name": { [Op.like]: "%" + search + "%" }
                     },
                 ],
                 ...(employee_id && { employee_id })
             },
+            include: [
+                {
+                    model: Employees,
+                    as: "employee",
+                    required: false
+                },
+                {
+                    model: Employees,
+                    as: "grader",
+                    required: false
+                },
+            ],
         });
     }
 
@@ -41,16 +44,7 @@ class EmployeeJobdeskDao extends SuperDao {
             where: {
                 [Op.or]: [
                     {
-                        employee_id: { [Op.like]: "%" + search + "%" },
-                    },
-                    {
-                        name: { [Op.like]: "%" + search + "%" },
-                    },
-                    {
-                        description: { [Op.like]: "%" + search + "%" },
-                    },
-                    {
-                        priority_label: { [Op.like]: "%" + search + "%" },
+                        "$employee.full_name": { [Op.like]: "%" + search + "%" }
                     },
                 ],
                 ...(employee_id && { employee_id })

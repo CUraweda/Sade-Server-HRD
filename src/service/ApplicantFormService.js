@@ -377,9 +377,9 @@ class ApplicantFormService {
         );
     };
 
-    showByVacancy = async (vacancy_id) => {
+    showByVacancy = async (vacancy_id, filter) => {
         const applicantFormData = await this.applicantFormDao.getByVacancy(
-            vacancy_id
+            vacancy_id, filter
         );
         if (!applicantFormData)
             return responseHandler.returnError(

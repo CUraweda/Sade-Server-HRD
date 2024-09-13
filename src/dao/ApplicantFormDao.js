@@ -83,9 +83,17 @@ class ApplicantFormDao extends SuperDao {
         });
     }
 
-    async getByVacancy(vacancy_id) {
+    async getByVacancy(vacancy_id, filter) {
+        const { search } = filter
         return ApplicantForm.findAll({
-            where: { vacancy_id },
+            where: {
+                vacancy_id,
+                [Op.or]: [
+                    {
+                        "$user.full_name": { [Op.like]: `%${search}%` }
+                    }
+                ]
+            },
             include: [
                 {
                     model: User,
@@ -121,18 +129,18 @@ class ApplicantFormDao extends SuperDao {
             },
         })
     }
-    
-    async countRange(start_date, end_date){
+
+    async countRange(start_date, end_date) {
         return ApplicantForm.count({
             where: {
                 created_at: {
                     [Op.between]: [start_date, end_date]
                 }
             },
-        })    
+        })
     }
 
-    async getDetail(id){
+    async getDetail(id) {
         return ApplicantForm.findOne({
             where: { id },
             include: [
@@ -140,7 +148,7 @@ class ApplicantFormDao extends SuperDao {
                 { model: ApplicantUnformal },
                 { model: ApplicantSkill },
                 { model: ApplicantJob },
-                { model: ApplicantAppreciation, include: [ { model: AppreciationAttachment } ] },
+                { model: ApplicantAppreciation, include: [{ model: AppreciationAttachment }] },
             ]
         })
     }
