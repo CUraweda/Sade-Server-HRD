@@ -62,8 +62,9 @@ class ApplicantFormController {
     getByVacancy = async (req, res) => {
         try {
             const id = +req.params.id;
+            const { search } = req.query
             if (!id) res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Tolong Sertakan ID");
-            const resData = await this.applicantFormService.showByVacancy(id)
+            const resData = await this.applicantFormService.showByVacancy(id, { search })
 
             res.status(resData.statusCode).send(resData.response);
         } catch (e) {

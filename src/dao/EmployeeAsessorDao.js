@@ -15,6 +15,11 @@ class EmployeesDao extends SuperDao {
         if (!search) search = ""
         return Employees.count({
             where: {
+                [Op.or]: [
+                    {
+                        full_name: { [Op.like]: "%" + search + "%" }
+                    }
+                ],
                 ...(only_asessor && { is_asessor: true })
                 // name: { [Op.like]: "%" + search + "%" }
             }
@@ -27,8 +32,13 @@ class EmployeesDao extends SuperDao {
         if (!search) search = ""
         return Employees.findAll({
             where: {
-                ...(only_asessor && { is_asessor: true })
+                ...(only_asessor && { is_asessor: true }),
                 // name: { [Op.like]: "%" + search + "%" }
+                [Op.or]: [
+                    {
+                        full_name: { [Op.like]: "%" + search + "%" }
+                    }
+                ],
             },
             offset: offset,
             limit: limit,
