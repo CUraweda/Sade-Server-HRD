@@ -90,7 +90,7 @@ class ApplicantFormDao extends SuperDao {
                 vacancy_id,
                 [Op.or]: [
                     {
-                        "$user.full_name": { [Op.like]: `%${search}%` }
+                        "$user.full_name$": { [Op.like]: `%${search}%` }
                     }
                 ]
             },

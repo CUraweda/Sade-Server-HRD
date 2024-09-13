@@ -26,8 +26,14 @@ class EmployeesDao extends SuperDao {
 
   async getCount(filter) {
     const { isGuru, search, isAssign, division_id, status } = filter
+    console.log(search)
     return Employees.count({
       where: {
+        [Op.or]: [
+          {
+            full_name: { [Op.like]: "%" + search + "%" },
+          },
+        ],
         ...(isGuru && { is_teacher: isGuru }),
         ...(isAssign && {
           user_id: {
@@ -40,13 +46,6 @@ class EmployeesDao extends SuperDao {
         }),
         ...(status && { employee_status: status }),
         ...(division_id && { division_id }),
-        [Op.or]: [
-          {
-            full_name: {
-              [Op.like]: "%" + search + "%",
-            },
-          },
-        ],
       },
     });
   }
@@ -93,7 +92,7 @@ class EmployeesDao extends SuperDao {
     });
   }
 
-  async getDetail(id){
+  async getDetail(id) {
     return Employees.findOne({
       where: { id },
       include: [

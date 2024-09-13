@@ -44,7 +44,7 @@ class EmployeeJobdeskDao extends SuperDao {
             where: {
                 [Op.or]: [
                     {
-                        "$employee.full_name": { [Op.like]: "%" + search + "%" }
+                        "$employee.full_name$": { [Op.like]: "%" + search + "%" }
                     },
                 ],
                 ...(employee_id && { employee_id })
