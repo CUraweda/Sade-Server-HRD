@@ -72,7 +72,7 @@ class EmployeesDao extends SuperDao {
         }),
         ...(status && { employee_status: status }),
         ...(division_id && { division_id }),
-        [Op.or]: [
+        [Op.and ]: [
           {
             full_name: {
               [Op.like]: "%" + search + "%",

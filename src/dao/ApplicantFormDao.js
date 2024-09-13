@@ -88,18 +88,12 @@ class ApplicantFormDao extends SuperDao {
         return ApplicantForm.findAll({
             where: {
                 vacancy_id,
-                [Op.or]: [
+                [Op.and]: [
                     {
-                        "$user.full_name$": { [Op.like]: `%${search}%` }
+                        full_name: { [Op.like]: "%" + search +  "%"}
                     }
                 ]
             },
-            include: [
-                {
-                    model: User,
-                    required: false
-                }
-            ]
         })
     }
 
