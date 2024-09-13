@@ -30,6 +30,7 @@ const applicantInterviewRoute = require("./applicantInterviewRoute");
 const employeeJobdeskRoute = require("./employeeJobdeskRoute");
 const employeeAsessorRoute = require("./employeeAsessorRoute");
 const employeeAttachmentRoute = require('./employeeAttachmentRoute')
+// const authRoute = require('./authRoute')
 const router = express.Router();
 
 const defaultRoutes = [
@@ -135,8 +136,12 @@ const defaultRoutes = [
   },
   {
     path: "/applicant-appreciation",
-    route: applicantAppreciationRoute,
+    route: applicantAppreciationRoute
   },
+  // {
+  //   path: "/auth",
+  //   route: authRoute
+  // },
   {
     path: "/applicant-appreciation-attachment",
     route: applicantAppreciationAttachmentRoute,

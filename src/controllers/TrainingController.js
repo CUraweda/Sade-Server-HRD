@@ -8,7 +8,7 @@ class TrainingController {
 
     getAll = async (req, res) => {
         try {
-            const page = +req.query.page - 1 || 0;
+            const page = +req.query.page || 0;
             const limit = +req.query.limit || 10;
             let { search, status, by_token, employee_id } = req.query;
 

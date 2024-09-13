@@ -8,7 +8,7 @@ class EmployeeAttachmentController {
 
     getAll = async (req, res) => {
         try {
-            const page = +req.query.pag  - 1 || 0;
+            const page = +req.query.page || 0;
             const limit = +req.query.limit || 10;
             const { search } = req.query;
 

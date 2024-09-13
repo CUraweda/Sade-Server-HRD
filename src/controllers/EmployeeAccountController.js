@@ -8,16 +8,16 @@ class EmployeeAccountController {
 
   getAll = async (req, res) => {
     try {
-      const page = +req.query.page - 1 || 0;
+      const page = +req.query.page || 0
       const limit = +req.query.limit || 10;
-      const { search, this_month } = req.query;
+      const { search, year, month } = req.query;
 
       const offset = limit * page;
       const resData = await this.employeeAccountService.showPage(
         page,
         limit,
         offset,
-        { search, this_month }
+        { search, year, month }
       );
 
       res.status(resData.statusCode).send(resData.response);

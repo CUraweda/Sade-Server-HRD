@@ -12,7 +12,7 @@ class EmployeeAttendanceController {
 
     getAll = async (req, res) => {
         try {
-            const page = +req.query.page - 1 || 0;
+            const page = +req.query.page || 0;
             const limit = +req.query.limit || 10;
             const { search, outstation, type, status, division_id, date, employee_id } = req.query;
 
