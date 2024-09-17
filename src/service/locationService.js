@@ -1,5 +1,3 @@
-const locationDao = require("../dao/locationDao");
-
 const httpStatus = require("http-status");
 const LocationDao = require("../dao/locationDao");
 const responseHandler = require("../helper/responseHandler");
