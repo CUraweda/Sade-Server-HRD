@@ -94,7 +94,7 @@ class ApplicantFormService {
                     senderEmail: employee.email,
                 },
                 applicantExist.email,
-                'Interview Invitation',
+                'Interview Invitation - Sekolah Alam Depok',
                 '../views/applicant.html'
             )
         }
@@ -110,11 +110,8 @@ class ApplicantFormService {
             // Send email for fail condition
             await this.emailHelper.sendApplicantEmail(
                 {
-                    date: body.plan_date.split(' ')[0],
-                    time: body.plan_date.split(' ')[1],
-                    place: body.portal,
                     status: condition,
-                    positionName: '{{position_name}}',
+                    positionName: employee.major,
                     //applicant
                     applicantName: applicantExist.full_name,
                     //sender
@@ -124,7 +121,7 @@ class ApplicantFormService {
                     senderPhone: employee.phone,
                 },
                 applicantExist.email,
-                'Failed Interview',
+                `Hasil Wawancara - Sekolah Alam Depok`,
                 '../views/applicant_error.html'
             );
         } else {
@@ -172,9 +169,10 @@ class ApplicantFormService {
                     status: condition,
                     //applicant
                     applicantName: applicationExist.full_name,
-                    applicantEmail: applicationExist.email,
-                    applicantEmployee: '{{applicantEmployee}}',
-                    applicantMajor: '{{applicant_major}}',
+                    applicantPhone: applicationExist.phone,
+                    // applicantEmployee: applicationExist.full_name,
+                    positionName: employee.major,
+                    nextStep: '{{next_step}}',
 
                     //sender
                     senderName: employee.full_name,
@@ -183,8 +181,8 @@ class ApplicantFormService {
                     senderPhone: employee.phone,
                 },
                 applicationExist.email,
-                'Second Evaluate',
-                '../views/applicant_success2.html'
+                'Kontrak Kerja - Sekolah Alam Depok',
+                '../views/applicant_success.html'
             );
         }
 
@@ -198,22 +196,19 @@ class ApplicantFormService {
             // Send email for fail condition
             await this.emailHelper.sendApplicantEmail(
                 {
-                    startDate: body.probation_start_date.split(' ')[0],
-                    endDate: body.probation_end_date.split(' ')[0],
-                    reason: '{{reason}}',
                     status: condition,
+                    positionName: employee.major,
                     //applicant
                     applicantName: applicationExist.full_name,
-                    applicantAddress: applicationExist.address,
-                    applicantPhone: applicationExist.phone,
-                    applicantEmail: applicationExist.email,
                     //sender
                     senderName: employee.full_name,
                     senderPosition: employee.occupation,
+                    senderEmail: employee.email,
+                    senderPhone: employee.phone,
                 },
                 applicationExist.email,
-                'Second Evaluate',
-                '../views/applicant_error2.html.html'
+                `Hasil Wawancara - Sekolah Alam Depok`,
+                '../views/applicant_error.html'
             );
 
         } else {

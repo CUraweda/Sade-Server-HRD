@@ -63,6 +63,7 @@ class EmailHelper {
           end_date: dynamic.endDate,
           reason: dynamic.reason,
           position_name: dynamic.positionName,
+          next_step: dynamic.nextStep,
           //applicant
           applicant_name: dynamic.applicantName,
           applicant_position: dynamic.applicantPosition,

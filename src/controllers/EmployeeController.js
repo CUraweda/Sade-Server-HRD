@@ -34,8 +34,9 @@ class EmployeeController {
   finishProbation = async (req, res) => {
     try {
       var id = req.params.id;
+      const employee = req.user?.employee
 
-      const resData = await this.employeeService.actionProbation("FAIL", id);
+      const resData = await this.employeeService.actionProbation("FAIL", id, employee);
 
       res.status(resData.statusCode).send(resData.response);
     } catch (e) {
@@ -43,12 +44,13 @@ class EmployeeController {
       res.status(httpStatus.BAD_GATEWAY).send(e);
     }
   };
-  
+
   sendContract = async (req, res) => {
     try {
       var id = req.params.id;
+      const employee = req.user?.employee
 
-      const resData = await this.employeeService.actionProbation("SUCCESS", id);
+      const resData = await this.employeeService.actionProbation("SUCCESS", id, employee);
 
       res.status(resData.statusCode).send(resData.response);
     } catch (e) {
