@@ -1,5 +1,5 @@
 const express = require("express");
-const LocationController = require("../controllers/LocationController");
+const LocationController = require("../controllers/locationController");
 const LocationValidator = require("../validator/LocationValidator");
 
 const router = express.Router();
