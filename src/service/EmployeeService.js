@@ -3,11 +3,13 @@ const EmployeeDao = require("../dao/EmployeeDao");
 const UserDao = require("../dao/UserDao");
 const responseHandler = require("../helper/responseHandler");
 const { response } = require("express");
+const EmailHelper = require("../helper/EmailHelper");
 
 class EmployeeService {
   constructor() {
     this.employeeDao = new EmployeeDao();
     this.userDao = new UserDao()
+    this.emailHelper = new EmailHelper();
   }
 
   createEmployee = async (reqBody) => {
@@ -56,8 +58,13 @@ class EmployeeService {
     }
   };
 
-  actionProbation = async (condition, id) => {
+  actionProbation = async (condition, id, employee) => {
     if (!id) return responseHandler.returnError(httpStatus.BAD_REQUEST, "ID is required")
+    if (!employee)
+      return responseHandler.returnError(
+        httpStatus.BAD_REQUEST,
+        "Anda tidak termasuk karyawan"
+      );
     const employeeData = await this.employeeDao.findById(id)
     if (!employeeData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Employee Not Found")
     if (!employeeData.still_in_probation) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Employee already finish the probation")
@@ -65,11 +72,51 @@ class EmployeeService {
     switch (condition) {
       case "SUCCESS":
         // userPayload = { role_id: 11 }
-        employeePayload = { still_in_probation: false, probation_end_date: new Date(), employee_status: "Kontrak"}
+        employeePayload = { still_in_probation: false, probation_end_date: new Date(), employee_status: "Kontrak" }
+
+        // Send email for success condition
+        await this.emailHelper.sendApplicantEmail(
+          {
+            //applicant
+            applicantName: employeeData.full_name,
+            applicantEmail: employeeData.email,
+            applicantEmployee: employeeData.full_name,
+            applicantMajor: employeeData.major,
+
+            //sender
+            senderName: employee.full_name,
+            senderPosition: employee.occupation,
+            senderEmail: employee.email,
+            senderPhone: employee.phone,
+          },
+          applicationExist.email,
+          'Kontrak Kerja - Sekolah Alam Depok',
+          '../views/applicant_success2.html'
+        );
         break;
       case "FAIL":
         userPayload = { role_id: 11 }
         employeePayload = { still_in_probation: false, probation_end_date: new Date(), user_id: null, employee_status: "Diberhentikan" }
+
+        // Send email for fail condition
+        await this.emailHelper.sendApplicantEmail(
+          {
+            startDate: employeeData.work_start_date,
+            endDate: new Date(),
+            reason: '{{reason}}',
+            //applicant
+            applicantName: employeeData.full_name,
+            applicantAddress: employeeData.address || '{{address}}',
+            applicantPhone: employeeData.phone,
+            applicantEmail: employeeData.email,
+            //sender
+            senderName: employee.full_name,
+            senderPosition: employee.occupation,
+          },
+          applicationExist.email,
+          'Hasil Masa Percobaan Magang - Sekolah Alam Depok',
+          '../views/applicant_error2.html'
+        );
         break;
       default:
         break;

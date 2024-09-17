@@ -78,33 +78,71 @@ class ApplicantFormService {
             const applicantInterviewData = await this.applicantInterviewDao.create({ ...body, form_id: id, interviewer_id: employee.id, uid })
             if (!applicantInterviewData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Gagal dalam membuat Applicant Interview"); console.log(applicantInterviewData)
 
-            // Send email
+            // Send email for success condition
             await this.emailHelper.sendApplicantEmail(
                 {
                     date: body.plan_date.split(' ')[0],
                     time: body.plan_date.split(' ')[1],
-                    place: body.portal,
+                    address: body.portal,
+                    duration: '{{duration}}',
+                    //applicant
+                    applicantName: applicantExist.full_name,
+                    applicantPosition: applicantExist.position,
+                    //sender
+                    senderName: employee.full_name,
+                    senderPosition: employee.occupation,
+                    senderPhone: employee.phone,
+                    senderEmail: employee.email,
                 },
                 applicantExist.email,
-                'First Evaluate',
+                'Interview Invitation - Sekolah Alam Depok',
                 '../views/applicant.html'
             )
         }
 
-        const payloadData =
-            condition != "lulus"
-                ? {
-                    is_passed_interview: false,
-                    is_passed: false,
-                    status: constant.applicantFirstEvaluation.fail
-                } : { is_passed_interview: true, status: constant.applicantFirstEvaluation.success }
+        let payloadData;
+        if (condition !== "lulus") {
+            payloadData = {
+                is_passed_interview: false,
+                is_passed: false,
+                status: constant.applicantFirstEvaluation.fail,
+            };
+
+            // Send email for fail condition
+            await this.emailHelper.sendApplicantEmail(
+                {
+                    status: condition,
+                    positionName: employee.major,
+                    //applicant
+                    applicantName: applicantExist.full_name,
+                    //sender
+                    senderName: employee.full_name,
+                    senderPosition: employee.occupation,
+                    senderEmail: employee.email,
+                    senderPhone: employee.phone,
+                },
+                applicantExist.email,
+                `Hasil Wawancara - Sekolah Alam Depok`,
+                '../views/applicant_error.html'
+            );
+        } else {
+            payloadData = {
+                is_passed_interview: true,
+                status: constant.applicantFirstEvaluation.success
+            };
+        }
         const applicantFormData = await this.applicantFormDao.updateById(payloadData, id);
         if (!applicantFormData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Gagal mengupdate Applicant Form");
 
         return responseHandler.returnSuccess(httpStatus.CREATED, "Seleksi berhasil dicatat", {});
     }
 
-    createSecondEvalution = async (id, condition, body) => {
+    createSecondEvalution = async (id, condition, body, employee) => {
+        if (!employee)
+            return responseHandler.returnError(
+                httpStatus.BAD_REQUEST,
+                "Anda tidak termasuk karyawan"
+            );
         if (!condition)
             return responseHandler.returnError(
                 httpStatus.BAD_REQUEST,
@@ -123,22 +161,69 @@ class ApplicantFormService {
                 "Applicant Sudah Pernah melewati Seleksi Kedua"
             );
 
-        if (condition === "lulus") await this.aggregateToEmployee(id, body);
+        if (condition === "lulus") {
+            await this.aggregateToEmployee(id, body);
 
-        const payloadData =
-            condition != "lulus"
-                ? {
-                    is_passed: false,
-                    status: constant.applicantSecondEvaluation.fail,
-                }
-                : {
-                    is_passed: true,
-                    status: constant.applicantSecondEvaluation.success,
-                };
+            // Send email for success condition
+            await this.emailHelper.sendApplicantEmail(
+                {
+                    status: condition,
+                    //applicant
+                    applicantName: applicationExist.full_name,
+                    applicantPhone: applicationExist.phone,
+                    // applicantEmployee: applicationExist.full_name,
+                    positionName: employee.major,
+                    nextStep: '{{next_step}}',
+
+                    //sender
+                    senderName: employee.full_name,
+                    senderPosition: employee.occupation,
+                    senderEmail: employee.email,
+                    senderPhone: employee.phone,
+                },
+                applicationExist.email,
+                'Kontrak Kerja - Sekolah Alam Depok',
+                '../views/applicant_success.html'
+            );
+        }
+
+        let payload;
+        if (payload !== "lulus") {
+            payload = {
+                is_passed: false,
+                status: constant.applicantSecondEvaluation.fail,
+            }
+
+            // Send email for fail condition
+            await this.emailHelper.sendApplicantEmail(
+                {
+                    status: condition,
+                    positionName: employee.major,
+                    //applicant
+                    applicantName: applicationExist.full_name,
+                    //sender
+                    senderName: employee.full_name,
+                    senderPosition: employee.occupation,
+                    senderEmail: employee.email,
+                    senderPhone: employee.phone,
+                },
+                applicationExist.email,
+                `Hasil Wawancara - Sekolah Alam Depok`,
+                '../views/applicant_error.html'
+            );
+
+        } else {
+            payload = {
+                is_passed: true,
+                status: constant.applicantSecondEvaluation.success,
+            }
+
+        }
         const applicantFormData = await this.applicantFormDao.updateById(
             payloadData,
             id
         );
+
         if (!applicantFormData)
             return responseHandler.returnError(
                 httpStatus.BAD_REQUEST,

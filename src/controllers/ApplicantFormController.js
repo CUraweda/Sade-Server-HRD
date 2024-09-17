@@ -137,7 +137,8 @@ class ApplicantFormController {
         try {
             const id = +req.params.id
             const { condition } = req.params
-            const resData = await this.applicantFormService.createSecondEvalution(id, condition, req.body)
+            const employee = req.user?.employee
+            const resData = await this.applicantFormService.createSecondEvalution(id, condition, req.body, employee)
 
             res.status(resData.statusCode).send(resData.response);
         } catch (e) {
