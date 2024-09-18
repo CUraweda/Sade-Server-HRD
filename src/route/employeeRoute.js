@@ -39,6 +39,12 @@ router.put(
   employeeController.update
 )
 router.put(
+  '/attach-division/:id',
+  auth([1, 5]),
+  employeeValidator.divisionEmployeeValidator,
+  employeeController.update
+)
+router.put(
   '/finish-probation/:id',
   auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
   employeeController.finishProbation
