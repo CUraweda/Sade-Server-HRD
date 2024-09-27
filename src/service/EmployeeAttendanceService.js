@@ -189,15 +189,13 @@ class EmployeeAttendanceService {
         const currentYear = currentDate.getFullYear()
         const startDate = `${currentYear}-${currentMonth}-01T00:00:00.000Z`
         const attendanceData = await this.employeeAttendanceDao.countAttendanceStartEnd(employee_id, startDate, currentDate.toISOString())
-        if (!attendanceData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Employee Attendance Tidak ditemukan");
-
         const vacationData = await this.employeeVacationDao.getRekapByStartEnd(startDate, currentDate.toISOString(), { employee_id, type: ["CUTI", "IZIN"] })
         if (!vacationData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Vacation Tidak ditemukan");
 
         let counter = { IZIN: 0, CUTI: 0 }
         vacationData.map((vacation) => { counter[vacation.type]++ })
 
-        return responseHandler.returnSuccess(httpStatus.OK, "Rekap Monthly berhasil didapatkan", { HADIR: attendanceData, ...counter })
+        return responseHandler.returnSuccess(httpStatus.OK, "Rekap Monthly berhasil didapatkan", { HADIR: attendanceData || 0, ...counter })
     }
 
     showRekapMonthAllEmployee = async () => {
