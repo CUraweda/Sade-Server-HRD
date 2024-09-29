@@ -18,17 +18,17 @@ const uploadMiddleware = new UploadMiddleware('file_attachment ', [
 
 router.get(
     "/",
-    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11]),
     employeeAttachmentController.getAll
 )
 router.get(
     "/by-employee/:id",
-    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11]),
     employeeAttachmentController.getByEmployee
 )
 router.get(
     "/:id",
-    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11]),
     employeeAttachmentController.getOne
 )
 
@@ -36,7 +36,7 @@ router.post(
     "/create",
     uploadMiddleware.uploadFileSingle("file"),
     employeeAttachmentValidator.createUpdateValidator,
-    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11]),
     employeeAttachmentController.createOne
 )
 
@@ -44,13 +44,13 @@ router.put(
     "/update/:id",
     uploadMiddleware.uploadFileSingle("file"),
     employeeAttachmentValidator.createUpdateValidator,
-    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11]),
     employeeAttachmentController.update
 )
 
 router.delete(
     "/delete/:id",
-    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11]),
     employeeAttachmentController.delete
 )
 
