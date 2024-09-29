@@ -11,32 +11,32 @@ const formPositionValidator = new FormPositionValidator();
 
 router.get(
     "/",
-    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11]),
     formPositionController.getAll
 )
 router.get(
     "/:id",
-    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11]),
     formPositionController.getOne
 )
 
 router.post(
     "/create",
     formPositionValidator.createUpdateValidator,
-    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11]),
     formPositionController.createOne
 )
 
 router.put(
     "/update/:id",
     formPositionValidator.createUpdateValidator,
-    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11]),
     formPositionController.update
 )
 
 router.delete(
     "/delete/:id",
-    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11]),
     formPositionController.delete
 )
 

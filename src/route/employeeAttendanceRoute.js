@@ -18,76 +18,76 @@ const uploadMiddleware = new UploadMiddleware('attendance', [
 
 router.get(
     "/",
-    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11]),
     employeeAttendanceController.getAll
 )
 
 
 router.get(
     "/recap-week",
-    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11]),
     employeeAttendanceController.getRekapWeek
 )
 router.get(
     "/recap-month",
-    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11]),
     employeeAttendanceController.getRekapMonth
 )
 router.get(
     "/recap-year",
-    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11]),
     employeeAttendanceController.getRekapYearEmployee
 )
 router.get(
     "/recap-week-employee/:id",
-    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11]),
     employeeAttendanceController.getRekapWeekEmployee
 )
 router.get(
     "/recap-month-employee/:id?",
-    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11]),
     employeeAttendanceController.getRekapMonthEmployee
 )
 router.get(
     "/recap-year-employee/:id",
-    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11]),
     employeeAttendanceController.getRekapYearEmployee
 )
 router.get(
     "/recap-calendar-by-token",
-    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11]),
     employeeAttendanceController.getRekapCalendar
 )
 router.get(
     "/:id",
-    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11]),
     employeeAttendanceController.getOne
 )
 
 router.post(
     "/attend",
     uploadMiddleware.uploadFileSingle('file'),
-    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11]),
     employeeAttendanceController.createByToken
 )
 
 router.post(
     "/create",
     employeeAttendanceValidator.createUpdateValidator,
-    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11]),
     employeeAttendanceController.createOne
 )
 
 router.put(
     "/update/:id",
     employeeAttendanceValidator.createUpdateValidator,
-    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11]),
     employeeAttendanceController.update
 )
 
 router.delete(
     "/delete/:id",
-    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11]),
     employeeAttendanceController.delete
 )
 

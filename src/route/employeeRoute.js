@@ -28,7 +28,7 @@ router.put(
 );
 router.put(
   "/outstation/:id",
-  auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+  auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11]),
   employeeValidator.outstationEmployeeValidator,
   employeeController.update
 )
@@ -46,28 +46,28 @@ router.put(
 )
 router.put(
   '/finish-probation/:id',
-  auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+  auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11]),
   employeeController.finishProbation
 )
 router.put(
   '/contract/:id',
-  auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+  auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11]),
   employeeController.sendContract
 )
 
 router.get(
   "/show/:id",
-  auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+  auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11]),
   employeeController.show
 );
 router.get(
   "/show-by-status",
-  auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+  auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11]),
   employeeController.showAllIsGuru
 );
 router.get(
   "/me",
-  auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+  auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11]),
   employeeController.showMe
 )
 router.get(
@@ -77,7 +77,7 @@ router.get(
 );
 router.get(
   "/",
-  auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+  auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11]),
   employeeController.showAll
 );
 

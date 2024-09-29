@@ -10,32 +10,32 @@ const applicantInterviewValidator = new ApplicantInterviewValidator();
 
 router.get(
     "/",
-    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11]),
     applicantInterviewController.getAll
 )
 router.get(
     "/:id",
-    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11]),
     applicantInterviewController.getOne
 )
 
 router.post(
     "/create",
     applicantInterviewValidator.createUpdateValidator,
-    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11]),
     applicantInterviewController.createOne
 )
 
 router.put(
     "/update/:id",
     applicantInterviewValidator.createUpdateValidator,
-    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11]),
     applicantInterviewController.update
 )
 
 router.delete(
     "/delete/:id",
-    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11]),
     applicantInterviewController.delete
 )
 
