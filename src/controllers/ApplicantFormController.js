@@ -123,7 +123,7 @@ class ApplicantFormController {
         try {
             const id = +req.params.id
             const { condition } = req.params
-            const employee = req.user?.employee
+            const { employee } = req.user
             const resData = await this.applicantFormService.createInterview(req.body, id, condition, employee)
 
             res.status(resData.statusCode).send(resData.response);
