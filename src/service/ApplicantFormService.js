@@ -81,8 +81,8 @@ class ApplicantFormService {
             // Send email for success condition
             await this.emailHelper.sendApplicantEmail(
                 {
-                    date: body.plan_date.split(' ')[0],
-                    time: body.plan_date.split(' ')[1],
+                    date: body.plan_date.toString().split(' ')[0],
+                    time: body.plan_date.toString().split(' ')[1],
                     address: body.portal,
                     duration: '{{duration}}',
                     //applicant
@@ -285,6 +285,13 @@ class ApplicantFormService {
     createDataAndDetail = async (body) => {
         const { details } = body;
         delete body.details;
+
+        const jobVacancyExist = await this.jobVacancyDao.checkAvailability(body.vacancy_id)
+        if(!jobVacancyExist)  return responseHandler.returnError(
+            httpStatus.BAD_REQUEST,
+            "Job Vacancy didnt exist or available"
+        );
+
 
         const applicantFormData = await this.applicantFormDao.create({
             ...body,

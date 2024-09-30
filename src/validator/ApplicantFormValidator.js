@@ -6,7 +6,7 @@ const { reconstructDetails } = require("../middlewares/desctucture");
 class ApplicantFormValidator {
     async createUpdateValidator(req, res, next) {
         const schema = Joi.object({
-            vacancy_id: Joi.number(),
+            vacancy_id: Joi.number().required(),
             user_id: Joi.number(),
             full_name: Joi.string(),
             email: Joi.string(),
