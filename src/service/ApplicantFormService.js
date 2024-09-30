@@ -151,7 +151,7 @@ class ApplicantFormService {
         const applicationExist = await this.applicantFormDao.findById(id);
         if (!applicationExist)
             return responseHandler.returnError(
-                httpStatus.BAD_REQUEST,
+            httpStatus.BAD_REQUEST,
                 "Tidak ada data pada ID"
             );
         

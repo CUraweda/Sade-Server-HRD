@@ -89,7 +89,7 @@ class EmployeeService {
             senderEmail: employee.email,
             senderPhone: employee.phone,
           },
-          applicationExist.email,
+          employeeData.email,
           'Kontrak Kerja - Sekolah Alam Depok',
           '../views/applicant_success2.html'
         );
@@ -113,7 +113,7 @@ class EmployeeService {
             senderName: employee.full_name,
             senderPosition: employee.occupation,
           },
-          applicationExist.email,
+          employeeData.email,
           'Hasil Masa Percobaan Magang - Sekolah Alam Depok',
           '../views/applicant_error2.html'
         );
