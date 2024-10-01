@@ -4,6 +4,7 @@ const { Op } = require("sequelize");
 
 const EmployeeBill = models.employeebill;
 const BillType = models.billtype
+const Employees = models.employees
 const EmployeeAccount = models.employeeaccount
 class EmployeeBillDao extends SuperDao {
     constructor() {
@@ -35,6 +36,13 @@ class EmployeeBillDao extends SuperDao {
                 ],
                 ...(account_id && { account_id })
             },
+            include: [
+                {
+                    model: EmployeeAccount,
+                    required: false,
+                    include: [{ model: Employees, required: false }]
+                }
+            ],
             offset: offset,
             limit: limit,
             order: [["id", "DESC"]],
