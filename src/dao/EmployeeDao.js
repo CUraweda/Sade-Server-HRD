@@ -25,7 +25,7 @@ class EmployeesDao extends SuperDao {
   }
 
   async getCount(filter) {
-    const { isGuru, search, isAssign, division_id, status } = filter
+    const {search, division_id, status } = filter
     return Employees.count({
       where: {
         [Op.or]: [
@@ -33,16 +33,6 @@ class EmployeesDao extends SuperDao {
             full_name: { [Op.like]: "%" + search + "%" },
           },
         ],
-        ...(isGuru && { is_teacher: isGuru }),
-        ...(isAssign && {
-          user_id: {
-            ...(isAssign != "N" ? {
-              [Op.not]: null
-            } : {
-              [Op.is]: null
-            })
-          }
-        }),
         ...(status && { employee_status: status }),
         ...(division_id && { division_id }),
       },
@@ -56,19 +46,9 @@ class EmployeesDao extends SuperDao {
   }
 
   async getEmployeesPage(filter, offset, limit) {
-    const { isGuru, search, isAssign, division_id, status } = filter
+    const { search, division_id, status } = filter
     return Employees.findAll({
       where: {
-        ...(isGuru && { is_teacher: isGuru }),
-        ...(isAssign && {
-          user_id: {
-            ...(isAssign != "N" ? {
-              [Op.not]: null
-            } : {
-              [Op.is]: null
-            })
-          }
-        }),
         ...(status && { employee_status: status }),
         ...(division_id && { division_id }),
         [Op.or]: [
@@ -82,7 +62,6 @@ class EmployeesDao extends SuperDao {
       include: [
         {
           model: User,
-          required: false
         }
       ],
       offset: offset,
