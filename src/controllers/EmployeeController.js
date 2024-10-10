@@ -110,8 +110,8 @@ class EmployeeController {
 
   showAll = async (req, res) => {
     try {
-      const page = +req.query.page != 0 ? +req.query.page - 1 : 0
-      const limit = parseInt(req.query.limit) || 10;
+      const page = req.query.page ? req.query.page != "0" ? +req.query.page - 1 : 0 : 0
+      const limit = +req.query.limit || 10;
       const { search, division_id, status, isAssign } = req.query
       const offset = limit * page;
 

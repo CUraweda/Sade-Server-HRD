@@ -76,7 +76,7 @@ class ApplicantFormService {
         if (condition === "lulus") {
             const uid = `${id}-${employee.id}`
             const applicantInterviewData = await this.applicantInterviewDao.create({ ...body, form_id: id, interviewer_id: employee.id, uid })
-            if (!applicantInterviewData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Gagal dalam membuat Applicant Interview"); console.log(applicantInterviewData)
+            if (!applicantInterviewData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Gagal dalam membuat Applicant Interview"); 
 
             // Send email for success condition
             await this.emailHelper.sendApplicantEmail(
