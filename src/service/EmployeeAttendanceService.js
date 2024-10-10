@@ -19,18 +19,22 @@ class EmployeeAttendanceService {
 
     formatStatus = (worktime) => {
         const currentTime = new Date()
-        const startTime = new Date(`1970-01-01T${worktime.start_time}Z`);
-        const endTime = new Date(`1970-01-01T${worktime.end_time}Z`);
+        const offset = currentTime.getTimezoneOffset() * 60000
+        const localCurrentTime = new Date(currentTime.getTime() - offset)
+
+        const currentDate = localCurrentTime.toISOString().split("T")[0]
+        const startTime = new Date(`${currentDate}T${worktime.start_time}Z`); // WIB timezone
+        const endTime = new Date(`${currentDate}T${worktime.end_time}Z`);   // WIB timezone
         let status;
 
         switch (true) {
-            case (currentTime >= startTime && currentTime <= endTime):
+            case (localCurrentTime >= startTime && localCurrentTime <= endTime):
                 status = "Tepat Waktu";
                 break;
-            case (currentTime < startTime):
+            case (localCurrentTime < startTime):
                 status = "Terlalu Cepat";
                 break;
-            case (currentTime > endTime):
+            case (localCurrentTime > endTime):
                 status = "Terlambat";
                 break;
             default:
@@ -83,11 +87,16 @@ class EmployeeAttendanceService {
         const currentTime = new Date()
         let worktimeData = await this.worktimeDao.getUnfinishTodayOrder(employee, currentTime)
         if (worktimeData.length < 1) return responseHandler.returnError(httpStatus.UNPROCESSABLE_ENTITY, "Tidak ada jadwal yang bisa diambil")
-        worktimeData = worktimeData[0]
+        for (let checkWorktime of worktimeData) {
+            if (checkWorktime.employeeattendances.length < 1) {
+                worktimeData = checkWorktime
+                break
+            }
+        }
 
         const uid = this.formatUID(currentTime, worktimeData.id, employee.id)
         const checkAlreadyExist = await this.employeeAttendanceDao.getByUID(uid)
-        if (checkAlreadyExist) return responseHandler.returnSuccess(httpStatus.OK, "Data Employee Attendance Hari Ini sudah dibuat")
+        if (checkAlreadyExist) return responseHandler.returnSuccess(httpStatus.OK, `Data Employee Attendance ${worktimeData.type} Hari Ini sudah dibuat`)
 
         const { status } = this.formatStatus(worktimeData)
         const attendanceData = await this.employeeAttendanceDao.create({

@@ -51,13 +51,75 @@ class EmployeesDao extends SuperDao {
       where: {
         ...(status && { employee_status: { [Op.like]: "%" + status + "%" } }),
         ...(division_id && { division_id }),
-        [Op.or]: [
-          {
-            full_name: {
-              [Op.like]: "%" + search + "%",
+        ...(search && {
+          [Op.or]: [
+            {
+              employee_no: {
+                [Op.like]: "%" + search + "%",
+              },
             },
-          }
-        ],
+            {
+              full_name: {
+                [Op.like]: "%" + search + "%",
+              },
+            },
+            {
+              gender: {
+                [Op.like]: "%" + search + "%",
+              },
+            },
+            {
+              religion: {
+                [Op.like]: "%" + search + "%",
+              },
+            },
+            {
+              marital_status: {
+                [Op.like]: "%" + search + "%",
+              },
+            },
+            {
+              last_education: {
+                [Op.like]: "%" + search + "%",
+              },
+            },
+            {
+              is_education: {
+                [Op.like]: "%" + search + "%",
+              },
+            },
+            {
+              major: {
+                [Op.like]: "%" + search + "%",
+              },
+            },
+            {
+              employee_status: {
+                [Op.like]: "%" + search + "%",
+              },
+            },
+            {
+              occupation: {
+                [Op.like]: "%" + search + "%",
+              },
+            },
+            {
+              duty: {
+                [Op.like]: "%" + search + "%",
+              },
+            },
+            {
+              job_desc: {
+                [Op.like]: "%" + search + "%",
+              },
+            },
+            {
+              grade: {
+                [Op.like]: "%" + search + "%",
+              },
+            },
+          ],
+        })
       },
       include: [
         {
@@ -75,6 +137,10 @@ class EmployeesDao extends SuperDao {
     return Employees.findOne({
       where: { id },
       include: [
+        {
+          model: User,
+          required: false
+        },
         {
           model: EmployeeAttachment,
           required: false

@@ -10,6 +10,8 @@ const employeeAttendanceController = new EmployeeAttendanceController();
 const employeeAttendanceValidator = new EmployeeAttendanceValidator();
 const uploadMiddleware = new UploadMiddleware('attendance', [
     "application/pdf",
+    'application/msword',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
     "image/jpeg",
     "image/jpg",
     "image/png",
