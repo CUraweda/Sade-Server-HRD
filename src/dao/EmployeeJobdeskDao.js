@@ -4,6 +4,7 @@ const { Op, fn, col} = require("sequelize");
 
 const EmployeeJobdesk = models.employeejobdesk;
 const Employees = models.employees
+const User = models.user
 
 class EmployeeJobdeskDao extends SuperDao {
     constructor() {
@@ -53,6 +54,12 @@ class EmployeeJobdeskDao extends SuperDao {
                 {
                     model: Employees,
                     as: "employee",
+                    include: [
+                        {
+                            model: User,
+                            required: false
+                        }
+                    ],
                     required: false
                 },
                 {
