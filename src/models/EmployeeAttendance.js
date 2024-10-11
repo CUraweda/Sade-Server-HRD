@@ -25,7 +25,8 @@ module.exports = (sequelize, DataTypes) => {
         status: DataTypes.STRING,
         outstation_id: DataTypes.INTEGER,
         is_outstation: DataTypes.BOOLEAN,
-        file_path: DataTypes.STRING
+        file_path: DataTypes.STRING,
+        attendance_time_differences: DataTypes.INTEGER
     },
     {
       sequelize,
