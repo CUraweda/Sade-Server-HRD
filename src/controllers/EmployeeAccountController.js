@@ -61,6 +61,7 @@ class EmployeeAccountController {
         month = currentDate.getFullYear()
       }
 
+      console.log(year, month)
       const resData = await this.employeeAccountService.showTotal(year, month);
 
       res.status(resData.statusCode).send(resData.response);
