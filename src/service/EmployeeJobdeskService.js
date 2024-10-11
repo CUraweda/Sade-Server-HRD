@@ -11,13 +11,11 @@ class EmployeeJobdeskService {
     }
 
     addEmployeeGrade = (employee, jobdesk_grade) => {
-        console.log(employee)
         let { grade, raw_grade, raw_finished_task } = employee
         raw_grade = raw_grade + jobdesk_grade
         raw_finished_task++
         grade = Math.floor(raw_grade / raw_finished_task).toString()
 
-        console.log(raw_grade, raw_finished_task, grade)
         return { raw_grade, raw_finished_task, grade }
     }
 

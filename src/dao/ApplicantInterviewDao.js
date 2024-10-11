@@ -12,7 +12,6 @@ class ApplicantInterviewDao extends SuperDao {
     async getCount(filter) {
         let { search } = filter
         if(!search) search = ""
-        console.log(search)
         return ApplicantInterview.count({
         });
     }
