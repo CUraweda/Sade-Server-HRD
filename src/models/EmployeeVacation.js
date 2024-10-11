@@ -25,7 +25,8 @@ module.exports = (sequelize, DataTypes) => {
             is_approved: DataTypes.BOOLEAN,
             file_path: DataTypes.STRING,
             start_date: DataTypes.DATE,
-            end_date: DataTypes.DATE
+            end_date: DataTypes.DATE,
+            day_differences: DataTypes.INTEGER
         },
         {
             sequelize,

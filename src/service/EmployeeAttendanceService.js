@@ -85,6 +85,11 @@ class EmployeeAttendanceService {
         if (is_outstation && !file) return responseHandler.returnError(httpStatus.UNPROCESSABLE_ENTITY, "Anda sedang Dinas Luar, mohon sertakan gambar")
 
         const currentTime = new Date()
+        const endTime = `${currentTime.toISOString().split('T')[0]}T23:59:59.999Z`
+        const checkVacation = await this.employeeVacationDao.getApprovedFromRange(currentTime.toISOString(), endTime)
+        console.log(checkVacation)
+        if(checkVacation.length > 0) return responseHandler.returnError(httpStatus.UNPROCESSABLE_ENTITY, "Employee sedang dalam masa cuti")
+
         let worktimeData = await this.worktimeDao.getUnfinishTodayOrder(employee, currentTime)
         if (worktimeData.length < 1) return responseHandler.returnError(httpStatus.UNPROCESSABLE_ENTITY, "Tidak ada jadwal yang bisa diambil")
         for (let checkWorktime of worktimeData) {
@@ -202,7 +207,7 @@ class EmployeeAttendanceService {
         if (!vacationData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Vacation Tidak ditemukan");
 
         let counter = { IZIN: 0, CUTI: 0 }
-        vacationData.map((vacation) => { counter[vacation.type]++ })
+        vacationData.map((vacation) => { counter[vacation.type] = counter[vacation.type] + vacation.day_differences })
 
         return responseHandler.returnSuccess(httpStatus.OK, "Rekap Monthly berhasil didapatkan", { HADIR: attendanceData || 0, ...counter })
     }
