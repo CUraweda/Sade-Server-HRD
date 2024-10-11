@@ -57,11 +57,10 @@ class EmployeeAccountController {
       let { year, month } = req.query
       if (!(year && month)) {
         const currentDate = new Date()
-        year = currentDate.getMonth() + 1
-        month = currentDate.getFullYear()
+        month = currentDate.getMonth() + 1
+        year = currentDate.getFullYear()
       }
 
-      console.log(year, month)
       const resData = await this.employeeAccountService.showTotal(year, month);
 
       res.status(resData.statusCode).send(resData.response);

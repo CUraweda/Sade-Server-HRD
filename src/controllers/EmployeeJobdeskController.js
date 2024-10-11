@@ -10,7 +10,7 @@ class EmployeeJobdeskController {
         try {
             const page = +req.query.page || 0;
             const limit = +req.query.limit || 10;
-            const { search, employee_id } = req.query;
+            const { search, employee_id, is_graded } = req.query;
 
 
             const offset = limit * page;
@@ -18,7 +18,7 @@ class EmployeeJobdeskController {
                 page,
                 limit,
                 offset,
-                { search, employee_id}
+                { search, employee_id, is_graded}
             );
 
             res.status(resData.statusCode).send(resData.response);
