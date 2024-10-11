@@ -10,6 +10,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Employees.belongsTo(models.user, { foreignKey: "user_id" })
+      Employees.belongsTo(models.employeeoutstation, { foreignKey: "active_outstation_id" })
       Employees.hasMany(models.formteacher, {
         foreignKey: "employee_id",
       });
@@ -46,6 +47,9 @@ module.exports = (sequelize, DataTypes) => {
       Employees.hasMany(models.training, {
         foreignKey: "employee_id",
       })
+      Employees.hasMany(models.employees, {
+        foreignKey: "employee_id"
+      })
     }
   }
   Employees.init(
@@ -77,6 +81,7 @@ module.exports = (sequelize, DataTypes) => {
       probation_end_date: DataTypes.DATE,
       division_id: DataTypes.INTEGER,
       is_outstation: DataTypes.BOOLEAN,
+      active_outstation_id: DataTypes.INTEGER,
       is_asessor: DataTypes.BOOLEAN
     },
     {
