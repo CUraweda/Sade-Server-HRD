@@ -5,12 +5,14 @@ const EmployeeVacationDao = require("../dao/EmployeeVacationDao");
 const responseHandler = require("../helper/responseHandler");
 const WorktimeDao = require("../dao/WorktimeDao");
 const EmployeesDao = require("../dao/EmployeeDao");
+const EmployeeOutstationDao = require("../dao/EmployeeOutstationDao");
 
 class EmployeeAttendanceService {
     constructor() {
         this.employeeAttendanceDao = new EmployeeAttendanceDao();
         this.employeeDao = new EmployeesDao()
         this.worktimeDao = new WorktimeDao()
+        this.outstationDao = new EmployeeOutstationDao()
         this.employeeVacationDao = new EmployeeVacationDao()
     }
 
@@ -52,6 +54,22 @@ class EmployeeAttendanceService {
         }
 
         return { status };
+    }
+
+    checkOutstation = async (employee) => {
+        const { active_outstation_id, id } = employee
+        const currentTime = new Date()
+        const offset = currentTime.getTimezoneOffset() * 60000
+        const localCurrentTime = new Date(currentTime.getTime() - offset)
+
+        const outstationExist = await this.outstationDao.findById(active_outstation_id)
+        const moreThanEndDate = !outstationExist?.end_date ? false : localCurrentTime > new Date(outstationExist.end_date) ? true : false
+        if (!outstationExist || moreThanEndDate) {
+            await this.employeeDao.updateById({ is_outstation: false, active_outstation_id: null }, id)
+            return { is_outstation: false, outstation_id: null }
+        }
+
+        return { is_outstation: true, outstation_id: active_outstation_id }
     }
 
     updateEmployeeWorkhour = async (employee, attendance_masuk, worktime_keluar) => {
@@ -105,9 +123,10 @@ class EmployeeAttendanceService {
 
     createByOrder = async (employee, file) => {
         if (!employee) return responseHandler.returnError(httpStatus.UNPROCESSABLE_ENTITY, "Anda tidak terdaftar sebagai karyawan")
-        const { division_id, is_outstation } = employee
+        const { division_id } = employee
 
         if (!division_id) return responseHandler.returnError(httpStatus.UNPROCESSABLE_ENTITY, "Anda tidak terdaftar pada divisi apapun")
+        const { outstation_id, is_outstation } = await this.checkOutstation(employee)
         if (is_outstation && !file) return responseHandler.returnError(httpStatus.UNPROCESSABLE_ENTITY, "Anda sedang Dinas Luar, mohon sertakan gambar")
 
         const currentTime = new Date()
@@ -140,7 +159,7 @@ class EmployeeAttendanceService {
             worktime_id: worktimeData.id,
             description: constant.attendDescription,
             ...(file && { file_path: file.path }),
-            status, uid, attendance_time_differences, employee_id: employee.id, is_outstation: employee.is_outstation
+            status, uid, attendance_time_differences, outstation_id, employee_id: employee.id, is_outstation: employee.is_outstation
         })
         if (!attendanceData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Employee Attendance Gagal dibuat");
 

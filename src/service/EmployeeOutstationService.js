@@ -10,7 +10,9 @@ class EmployeeOutstationService {
     }
 
     attachEmployeeActive = async (employee_id, outstation_id) => {
-        const updatedEmployee = await this.employeeDao.updateById(employee_id, { is_outstation: true, active_outstation_id: outstation_id })
+        console.log(employee_id, outstation_id)
+        const updatedEmployee = await this.employeeDao.updateById({ is_outstation: true, active_outstation_id: outstation_id }, employee_id)
+        console.log(updatedEmployee)
         if (!updatedEmployee) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Employee Gagal dirubah untuk menyesuaikan Outstation");
 
         await this.employeeOutstationDao.unActiveAllExcept(outstation_id)
