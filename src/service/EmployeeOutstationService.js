@@ -10,9 +10,7 @@ class EmployeeOutstationService {
     }
 
     attachEmployeeActive = async (employee_id, outstation_id) => {
-        console.log(employee_id, outstation_id)
         const updatedEmployee = await this.employeeDao.updateById({ is_outstation: true, active_outstation_id: outstation_id }, employee_id)
-        console.log(updatedEmployee)
         if (!updatedEmployee) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Employee Gagal dirubah untuk menyesuaikan Outstation");
 
         await this.employeeOutstationDao.unActiveAllExcept(outstation_id)
@@ -20,7 +18,7 @@ class EmployeeOutstationService {
     }
 
     attachEmployeeUnactive = async (employee_id) => {
-        const updatedEmployee = await this.employeeDao.updateById(employee_id, { is_outstation: false, active_outstation_id: null })
+        const updatedEmployee = await this.employeeDao.updateById({ is_outstation: false, active_outstation_id: null }, employee_id)
         if (!updatedEmployee) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Employee Gagal dirubah untuk menyesuaikan Outstation");
 
         return responseHandler.returnSuccess(httpStatus.CREATED, "Data Employee Berhasil dirubah", updatedEmployee);
@@ -37,18 +35,21 @@ class EmployeeOutstationService {
     update = async (id, body) => {
         const dataExist = await this.employeeOutstationDao.findById(id);
         if (!dataExist) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Employee Outstation Tidak Ada");
-
+        
         const outstationData = await this.employeeOutstationDao.updateWhere(body, { id });
         if (!outstationData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Employee Outstation Gagal diperbaharui");
         await this.attachEmployeeActive(dataExist.employee_id, id)
 
         return responseHandler.returnSuccess(httpStatus.CREATED, "Data Employee Outstation Berhasil diperbaharui", {});
     };
-
+    
     delete = async (id) => {
+        const dataExist = await this.employeeOutstationDao.findById(id);
+        if (!dataExist) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Employee Outstation Tidak Ada");    
+
         const outstationData = await this.employeeOutstationDao.deleteByWhere({ id });
         if (!outstationData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Employee Outstation Gagal dihapus");
-        await this.attachEmployeeUnactive(outstationData.employee_id)
+        await this.attachEmployeeUnactive(dataExist.employee_id)
 
         return responseHandler.returnSuccess(httpStatus.CREATED, "Data Employee Outstation Berhasil dihapus", {});
     };
