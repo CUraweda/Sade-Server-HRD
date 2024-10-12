@@ -41,7 +41,7 @@ async function loadKnownFaces() {
 }
 
 async function resetProgram() {
-  console.log("Resetting program...");
+console.log("Resetting program...");
   await loadModels();
   console.log("Program reset complete. Models and known faces reloaded.");
 }

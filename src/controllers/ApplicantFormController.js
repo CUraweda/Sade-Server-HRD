@@ -39,7 +39,7 @@ class ApplicantFormController {
         try {
             const id = +req.params.id;
             if (!id) res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Please provide an ID");
-            const resData = await this.applicantFormService.showOne(id);
+            const resData = await this.applicantFormService.showDetail(id);
 
             res.status(resData.statusCode).send(resData.response);
         } catch (e) {
@@ -87,28 +87,28 @@ class ApplicantFormController {
     };
 
     sendData = async (req, res) => {
-        const { files_desc, details } = req.body
+        const { file_desc, details } = req.body
         try {
             if (req.files) {
-                for (descIndex in files_desc) {
-                    const { identifier, identifierIndex } = files_desc[descIndex]
-                    if (!req.files[descIndex]) continue
+                for (let descIndex in file_desc) {
+                    const { Identifier, index } = file_desc[descIndex]
                     const fileData = req.files[descIndex]
-                    switch (identifier) {
+                    if (!req.files[descIndex]) continue
+                    switch (Identifier) {
                         case "applicant_profile":
                             req.body.file_path = fileData.path
                             break;
                         case "appreciation":
                             const { appreciation } = details
-                            if (!appreciation || !appreciation[identifierIndex]) continue
-                            if (!appreciation[identifierIndex].files) appreciation[identifierIndex].files = []
-                            appreciation[identifierIndex].files.push(fileData)
+                            if (!appreciation || !appreciation[index]) continue
+                            if (!appreciation[index].files) appreciation[index].files = []
+                            appreciation[index].files.push(fileData)
                             break;
                         default:
                             continue
                     }
                 }
-                delete req.body.files_desc
+                delete req.body.file_desc
             }
             const resData = await this.applicantFormService.createDataAndDetail(req.body)
 

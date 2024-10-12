@@ -23,8 +23,11 @@ router.get(
     auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11]),
     employeeAttendanceController.getAll
 )
-
-
+router.get(
+    "/total-worktime",
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11]),
+    employeeAttendanceController.getTotalWorkime
+)
 router.get(
     "/recap-week",
     auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11]),

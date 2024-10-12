@@ -2,10 +2,21 @@ const httpStatus = require("http-status");
 const EmployeeJobdeskDao = require("../dao/EmployeeJobdeskDao");
 const responseHandler = require("../helper/responseHandler");
 const constant = require("../config/constant");
+const EmployeesDao = require("../dao/EmployeeDao");
 
 class EmployeeJobdeskService {
     constructor() {
         this.employeeJobdeskDao = new EmployeeJobdeskDao();
+        this.employeeDao = new EmployeesDao()
+    }
+
+    addEmployeeGrade = (employee, jobdesk_grade) => {
+        let { grade, raw_grade, raw_finished_task } = employee
+        raw_grade = raw_grade + jobdesk_grade
+        raw_finished_task++
+        grade = Math.floor(raw_grade / raw_finished_task).toString()
+
+        return { raw_grade, raw_finished_task, grade }
     }
 
     create = async (body) => {
@@ -44,17 +55,21 @@ class EmployeeJobdeskService {
     updateGrade = async (id, employee, grade) => {
         if (!employee) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Anda tidak termasuk sebagai karyawan");
         if (!employee.is_asessor) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Anda tidak termasuk sebagai assesor");
-        const dataExist = await this.employeeJobdeskDao.findById(id);
+        const dataExist = await this.employeeJobdeskDao.checkDataGrade(id);
         if (!dataExist) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Employee Jobdesk Tidak Ada");
         if (!dataExist.is_finish) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Jobdesk belum selesai dikerjakan");
 
+        const updateEmployeePayload = this.addEmployeeGrade(dataExist.employee, grade)
         const payload = {
+            status: "Selesai Dinilai",
             grader_id: employee.id,
             graded_at: new Date(),
             is_graded: true, grade
         }
         const employeeJobdeskData = await this.employeeJobdeskDao.updateWhere(payload, { id });
         if (!employeeJobdeskData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Employee Jobdesk Gagal diperbaharui");
+        const updateEmployee = await this.employeeDao.updateById(updateEmployeePayload, dataExist.employee.id)
+        if (!updateEmployee) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Employee Grade Gagal diperbaharui");
 
         return responseHandler.returnSuccess(httpStatus.CREATED, "Data Employee Jobdesk Berhasil diperbaharui", {});
     };

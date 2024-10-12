@@ -10,6 +10,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Employees.belongsTo(models.user, { foreignKey: "user_id" })
+      // Employees.hasMany(models.employeeoutstation, { foreignKey: "employee_id" })
       Employees.hasMany(models.formteacher, {
         foreignKey: "employee_id",
       });
@@ -72,12 +73,16 @@ module.exports = (sequelize, DataTypes) => {
       duty: DataTypes.STRING,
       job_desc: DataTypes.STRING,
       grade: DataTypes.STRING,
+      raw_grade: DataTypes.INTEGER,
+      raw_finished_task: DataTypes.INTEGER,
       still_in_probation: DataTypes.BOOLEAN,
       probation_start_date: DataTypes.DATE,
       probation_end_date: DataTypes.DATE,
       division_id: DataTypes.INTEGER,
       is_outstation: DataTypes.BOOLEAN,
-      is_asessor: DataTypes.BOOLEAN
+      active_outstation_id: DataTypes.INTEGER,
+      is_asessor: DataTypes.BOOLEAN,
+      raw_workhour: DataTypes.INTEGER
     },
     {
       sequelize,

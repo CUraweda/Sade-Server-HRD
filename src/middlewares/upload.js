@@ -52,6 +52,16 @@ class Upload {
 
     return util.promisify(upload); // Promisify multer's function directly
   }
+
+  uploadAny() {
+    const upload = multer({
+      storage: this.#storage,
+      limits: { fileSize: 5000000 },
+      fileFilter: this.filterFile.bind(this), // Bind the method here
+    }).any()
+
+    return util.promisify(upload)
+  }
 }
 
 module.exports = Upload;

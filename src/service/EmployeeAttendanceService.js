@@ -4,13 +4,25 @@ const EmployeeAttendanceDao = require("../dao/EmployeeAttendanceDao");
 const EmployeeVacationDao = require("../dao/EmployeeVacationDao");
 const responseHandler = require("../helper/responseHandler");
 const WorktimeDao = require("../dao/WorktimeDao");
+const EmployeesDao = require("../dao/EmployeeDao");
+const EmployeeOutstationDao = require("../dao/EmployeeOutstationDao");
 
 class EmployeeAttendanceService {
     constructor() {
         this.employeeAttendanceDao = new EmployeeAttendanceDao();
+        this.employeeDao = new EmployeesDao()
         this.worktimeDao = new WorktimeDao()
+        this.outstationDao = new EmployeeOutstationDao()
         this.employeeVacationDao = new EmployeeVacationDao()
     }
+
+    formatWorkhour = (milliseconds) => {
+        const hours = Math.floor(milliseconds / (1000 * 60 * 60)); // hours
+        const minutes = Math.floor((milliseconds % (1000 * 60 * 60)) / (1000 * 60)); // minutes
+        const seconds = Math.floor((milliseconds % (1000 * 60)) / 1000); // seconds
+
+        return { hours, minutes, seconds }
+    };
 
     formatUID = (currentDate, worktime_id, employee_id) => {
         const date = new Date(currentDate).toISOString().split('T')[0]
@@ -42,6 +54,38 @@ class EmployeeAttendanceService {
         }
 
         return { status };
+    }
+
+    checkOutstation = async (employee) => {
+        const { active_outstation_id, id } = employee
+        const currentTime = new Date()
+        const offset = currentTime.getTimezoneOffset() * 60000
+        const localCurrentTime = new Date(currentTime.getTime() - offset)
+
+        const outstationExist = await this.outstationDao.findById(active_outstation_id)
+        const moreThanEndDate = !outstationExist?.end_date ? false : localCurrentTime > new Date(outstationExist.end_date) ? true : false
+        if (!outstationExist || moreThanEndDate) {
+            await this.employeeDao.updateById({ is_outstation: false, active_outstation_id: null }, id)
+            return { is_outstation: false, outstation_id: null }
+        }
+
+        return { is_outstation: true, outstation_id: active_outstation_id }
+    }
+
+    updateEmployeeWorkhour = async (employee, attendance_masuk, worktime_keluar) => {
+        let { raw_workhour, id } = employee;
+        const currentTime = new Date()
+        const offset = currentTime.getTimezoneOffset() * 60000
+        const localCurrentTime = new Date(currentTime.getTime() - offset)
+        const currentDate = localCurrentTime.toISOString().split("T")[0]
+
+        const masukDate = new Date(attendance_masuk.createdAt);
+        const keluarDate = this.formatStatus(worktime_keluar) === "Terlambat" ? new Date(`${currentDate}T${worktime_keluar.end_time}Z`) : new Date();
+
+        const diffInMs = keluarDate - masukDate;
+        raw_workhour = raw_workhour + diffInMs
+        const updatedEmployee = await this.employeeDao.updateById({ raw_workhour }, id)
+        return { updatedEmployee, diffInMs }
     }
 
     create = async (body) => {
@@ -79,21 +123,33 @@ class EmployeeAttendanceService {
 
     createByOrder = async (employee, file) => {
         if (!employee) return responseHandler.returnError(httpStatus.UNPROCESSABLE_ENTITY, "Anda tidak terdaftar sebagai karyawan")
-        const { division_id, is_outstation } = employee
+        const { division_id } = employee
 
         if (!division_id) return responseHandler.returnError(httpStatus.UNPROCESSABLE_ENTITY, "Anda tidak terdaftar pada divisi apapun")
+        const { outstation_id, is_outstation } = await this.checkOutstation(employee)
         if (is_outstation && !file) return responseHandler.returnError(httpStatus.UNPROCESSABLE_ENTITY, "Anda sedang Dinas Luar, mohon sertakan gambar")
 
         const currentTime = new Date()
+        const endTime = `${currentTime.toISOString().split('T')[0]}T23:59:59.999Z`
+        const checkVacation = await this.employeeVacationDao.getApprovedFromRange(currentTime.toISOString(), endTime)
+        if (checkVacation.length > 0) return responseHandler.returnError(httpStatus.UNPROCESSABLE_ENTITY, "Employee sedang dalam masa cuti")
+
         let worktimeData = await this.worktimeDao.getUnfinishTodayOrder(employee, currentTime)
+        let masukWorktimeData = {}, attendance_time_differences = 0
+
         if (worktimeData.length < 1) return responseHandler.returnError(httpStatus.UNPROCESSABLE_ENTITY, "Tidak ada jadwal yang bisa diambil")
         for (let checkWorktime of worktimeData) {
+            if (checkWorktime.type === "MASUK" && checkWorktime.employeeattendances.length > 0) masukWorktimeData = checkWorktime.employeeattendances[0]
             if (checkWorktime.employeeattendances.length < 1) {
                 worktimeData = checkWorktime
                 break
             }
         }
-
+        if (Array.isArray(worktimeData)) return responseHandler.returnError(httpStatus.UNPROCESSABLE_ENTITY, "Anda sudah memenuhi absensi hari ini")
+        if (worktimeData.type === "KELUAR") {
+            const { diffInMs } = await this.updateEmployeeWorkhour(employee, masukWorktimeData, worktimeData)
+            attendance_time_differences = diffInMs
+        }
         const uid = this.formatUID(currentTime, worktimeData.id, employee.id)
         const checkAlreadyExist = await this.employeeAttendanceDao.getByUID(uid)
         if (checkAlreadyExist) return responseHandler.returnSuccess(httpStatus.OK, `Data Employee Attendance ${worktimeData.type} Hari Ini sudah dibuat`)
@@ -103,7 +159,7 @@ class EmployeeAttendanceService {
             worktime_id: worktimeData.id,
             description: constant.attendDescription,
             ...(file && { file_path: file.path }),
-            status, uid, employee_id: employee.id, is_outstation: employee.is_outstation
+            status, uid, attendance_time_differences, outstation_id, employee_id: employee.id, is_outstation: employee.is_outstation
         })
         if (!attendanceData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Employee Attendance Gagal dibuat");
 
@@ -121,8 +177,8 @@ class EmployeeAttendanceService {
     };
 
     delete = async (id) => {
-        const attendanceData = await this.employeeAttendanceDao.deleteByWhere({ id });
-        if (!attendanceData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Employee Attendance Gagal dihapus");
+        const attendanceData = await this.employeeAttendanceDao.deleteAndReduceWorkhour(id);
+        if (!attendanceData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Employee Attendance / Data Update Gagal dieksekusi");
 
         return responseHandler.returnSuccess(httpStatus.CREATED, "Data Employee Attendance Berhasil dihapus", {});
     };
@@ -147,6 +203,21 @@ class EmployeeAttendanceService {
         if (!attendanceData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Employee Attendance Tidak ditemukan");
 
         return responseHandler.returnSuccess(httpStatus.OK, "Data Employee Attendance Ditemukan", attendanceData);
+    }
+
+    showTotalWorktime = async (filter) => {
+        let { month, year } = filter
+        const currentDate = new Date()
+        if (!month) month = (currentDate.getMonth() + 1).toString()
+        if (!year) year = currentDate.getFullYear()
+
+        const startDate = `${year}-${month.padStart(2, "0")}-01T00:00:00.000Z`
+        let attendanceData = await this.employeeAttendanceDao.totalAttendanceWorktimeRange(startDate, currentDate)
+        attendanceData = attendanceData[0]
+        let { total_worktime } = attendanceData.dataValues
+        total_worktime = total_worktime != null ? this.formatWorkhour(total_worktime) : { hours: 0, minutes: 0, seconds: 0 }
+        return responseHandler.returnSuccess(httpStatus.OK, "Data Employee Attendance Ditemukan", { total_worktime });
+
     }
 
     showRekapWeek = async (employee_id) => {
@@ -202,7 +273,7 @@ class EmployeeAttendanceService {
         if (!vacationData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Vacation Tidak ditemukan");
 
         let counter = { IZIN: 0, CUTI: 0 }
-        vacationData.map((vacation) => { counter[vacation.type]++ })
+        vacationData.map((vacation) => { counter[vacation.type] = counter[vacation.type] + vacation.day_differences })
 
         return responseHandler.returnSuccess(httpStatus.OK, "Rekap Monthly berhasil didapatkan", { HADIR: attendanceData || 0, ...counter })
     }

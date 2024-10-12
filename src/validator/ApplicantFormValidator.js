@@ -66,10 +66,7 @@ class ApplicantFormValidator {
                 appreciation: Joi.array(),
                 skill: Joi.array()
             }),
-            files_desc: Joi.array().items(Joi.object({
-                identifier: Joi.string(),
-                identifierIndex: Joi.number()
-            }))
+            file_desc: Joi.array()
         });
 
         const options = { abortEarly: false, allowUnknown: true, stripUnknown: true };

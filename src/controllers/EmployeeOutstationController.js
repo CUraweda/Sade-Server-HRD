@@ -1,9 +1,9 @@
 const httpStatus = require("http-status");
-const ApplicantInterviewService = require("../service/ApplicantInterviewService");
+const EmployeeOutstationService = require("../service/EmployeeOutstationService");
 
-class ApplicantInterviewController {
+class EmployeeOutstationController {
     constructor() {
-        this.applicantInterviewService = new ApplicantInterviewService();
+        this.employeeOutstationService = new EmployeeOutstationService();
     }
 
     getAll = async (req, res) => {
@@ -13,7 +13,12 @@ class ApplicantInterviewController {
             const { search } = req.query;
 
             const offset = limit * page;
-            const resData = await this.applicantInterviewService.showPage(page, limit, offset, { search });
+            const resData = await this.employeeOutstationService.showPage(
+                page,
+                limit,
+                offset,
+                { search }
+            );
 
             res.status(resData.statusCode).send(resData.response);
         } catch (e) {
@@ -25,8 +30,8 @@ class ApplicantInterviewController {
     getOne = async (req, res) => {
         try {
             const id = +req.params.id;
-            if (!id) res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Please provide an ID");
-            const resData = await this.applicantInterviewService.showOne(id);
+            if (!id) res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Tolong sertakan ID");
+            const resData = await this.employeeOutstationService.showOne(id);
 
             res.status(resData.statusCode).send(resData.response);
         } catch (e) {
@@ -37,7 +42,7 @@ class ApplicantInterviewController {
 
     createOne = async (req, res) => {
         try {
-            const resData = await this.applicantInterviewService.create(req.body);
+            const resData = await this.employeeOutstationService.create(req.body);
 
             res.status(resData.statusCode).send(resData.response);
         } catch (e) {
@@ -49,8 +54,8 @@ class ApplicantInterviewController {
     update = async (req, res) => {
         try {
             const id = +req.params.id;
-            if (!id) res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Please provide an ID");
-            const resData = await this.applicantInterviewService.update(id, req.body);
+            if (!id) res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Tolong sertakan ID");
+            const resData = await this.employeeOutstationService.update(id, req.body);
 
             res.status(resData.statusCode).send(resData.response);
         } catch (e) {
@@ -62,8 +67,8 @@ class ApplicantInterviewController {
     delete = async (req, res) => {
         try {
             const id = +req.params.id;
-            if (!id) res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Please provide an ID");
-            const resData = await this.applicantInterviewService.delete(id);
+            if (!id) res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Tolong sertakan ID");
+            const resData = await this.employeeOutstationService.delete(id);
 
             res.status(resData.statusCode).send(resData.response);
         } catch (e) {
@@ -73,4 +78,4 @@ class ApplicantInterviewController {
     };
 }
 
-module.exports = ApplicantInterviewController;
+module.exports = EmployeeOutstationController;

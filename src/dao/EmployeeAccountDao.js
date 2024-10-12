@@ -79,7 +79,7 @@ class EmployeeaccountDao extends SuperDao {
 
     async getTotalRange(year, month_id) {
         return Employeeaccount.findAll({
-            where: { month_id, year, is_paid: false },
+            where: { month_id, year },
             attributes: [
                 [models.sequelize.fn('SUM', models.sequelize.col('temp_total')), "total"]
             ]

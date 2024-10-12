@@ -11,6 +11,7 @@ const Subject = models.subjects
 const FormXtra = models.formextra
 const SubjectXtra = models.subjectextra
 const Headmaster = models.headmaster
+const EmployeeOutstation = models.employeeoutstation
 
 class UserDao extends SuperDao {
   constructor() {
@@ -122,8 +123,8 @@ class UserDao extends SuperDao {
       where: { uuid },
       include: [
         { 
-          model: Employee, 
-          required: false, 
+          model: Employee,
+          required: false,
         }
       ]
     });
