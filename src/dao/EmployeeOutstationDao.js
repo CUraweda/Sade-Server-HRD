@@ -3,6 +3,7 @@ const models = require("../models");
 const { Op } = require("sequelize");
 
 const EmployeeOutstation = models.employeeoutstation;
+const Employees = models.employees
 
 class EmployeeOutstationDao extends SuperDao {
     constructor() {
@@ -14,7 +15,7 @@ class EmployeeOutstationDao extends SuperDao {
         if (!search) search = ""
         return EmployeeOutstation.count({
             where: {
-                name: { [Op.like]: "%" + search + "%" }
+                description: { [Op.like]: "%" + search + "%" }
             }
         });
     }
@@ -24,8 +25,13 @@ class EmployeeOutstationDao extends SuperDao {
         if (!search) search = ""
         return EmployeeOutstation.findAll({
             where: {
-                name: { [Op.like]: "%" + search + "%" }
+                description: { [Op.like]: "%" + search + "%" }
             },
+            include: [
+                {
+                    model: Employees
+                }
+            ],
             offset: offset,
             limit: limit,
             order: [["id", "DESC"]],
@@ -33,9 +39,9 @@ class EmployeeOutstationDao extends SuperDao {
     }
 
     async unActiveAllExcept(id) {
-        return EmployeeOutstation.update({
+        return EmployeeOutstation.update({ is_active: false }, {
             where: { id: { [Op.not]: id }, is_active: true }
-        }, { is_active: false })
+        })
     }
 }
 

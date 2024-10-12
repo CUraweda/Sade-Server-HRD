@@ -8,8 +8,8 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-        // this.belongsTo(models.employees, { foreignKey: 'employee_id' });
-        // this.hasMany(models.employees, { foreignKey: "active_outstation_id" })
+        EmployeeOutstation.belongsTo(models.employees, { foreignKey: 'employee_id' });
+        // EmployeeOutstation.hasMany(models.employees, { foreignKey: "active_outstation_id" })
     }
   }
   EmployeeOutstation.init(
@@ -22,10 +22,10 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
-      tableName: "tbl_employee_outstatizson",
+      tableName: "tbl_employee_outstation",
       modelName: "employeeoutstation",
       timestamps: true,
-      // underscored: true,
+      underscored: true,
     }
   );
   return EmployeeOutstation;
