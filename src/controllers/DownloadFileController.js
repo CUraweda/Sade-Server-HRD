@@ -17,7 +17,7 @@ class DownloadController {
                 });
             }
 
-            filePath = "./public/" + filePath 
+            filePath = "./" + filePath 
 
             console.log(filePath)
 
