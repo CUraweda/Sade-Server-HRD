@@ -4,7 +4,7 @@ const path = require("node:path");
 const fs = require("fs");
 
 class Upload {
-  #dir = './files/'
+  #dir = './public/files/'
   #allowedMimes
   #storage
 

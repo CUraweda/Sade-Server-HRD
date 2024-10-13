@@ -31,6 +31,7 @@ const employeeJobdeskRoute = require("./employeeJobdeskRoute");
 const employeeAsessorRoute = require("./employeeAsessorRoute");
 const employeeAttachmentRoute = require('./employeeAttachmentRoute')
 const employeeOutstationRoute = require("./employeeOutstationRoute")
+const downloadRoute = require('./downloadRoute')
 // const authRoute = require('./authRoute')
 const router = express.Router();
 
@@ -242,6 +243,10 @@ const defaultRoutes = [
   {
     path: "/training-suggestion",
     route: trainingSuggestionRoute,
+  },
+  {
+    path: "/download",
+    route: downloadRoute,
   },
   { path: "/face", route: faceRoute },
   { path: "/location", route: locationRoute}
