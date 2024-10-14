@@ -11,7 +11,7 @@ class EmployeeAnnouncementDao extends SuperDao {
     }
 
     async getCount(filter) {
-        let { search, only_specific, employee_id} = filter
+        let { search, is_specific, employee_id } = filter
         if (!search) search = ""
         return EmployeeAnnouncement.count({
             where: {
@@ -20,22 +20,22 @@ class EmployeeAnnouncementDao extends SuperDao {
                         notes: { [Op.like]: "%" + search + "%" },
                     },
                 ],
-                ...(only_specific && { is_specific: only_specific === "1" ? true : false }),
+                ...(is_specific && { is_specific }),
             },
             include: [
                 {
                     model: FormAnnouncement,
-                    ...(employee_id && { 
+                    ...(employee_id && {
                         where: { employee_id },
                         required: true
-                     })
+                    })
                 }
             ],
         });
     }
 
     async getPage(offset, limit, filter) {
-        let { search, only_specific, employee_id } = filter
+        let { search, is_specific, employee_id } = filter
         if (!search) search = ""
         return EmployeeAnnouncement.findAll({
             where: {
@@ -44,17 +44,17 @@ class EmployeeAnnouncementDao extends SuperDao {
                         notes: { [Op.like]: "%" + search + "%" },
                     },
                 ],
-                ...(only_specific && { is_specific: only_specific === "1" ? true : false }),
+                ...(is_specific != null && { is_specific }),
             },
-            include: [
-                {
-                    model: FormAnnouncement,
-                    ...(employee_id && { 
+            ...(employee_id && {
+                include: [
+                    {
+                        model: FormAnnouncement,
                         where: { employee_id },
                         required: true
-                     })
-                }
-            ],
+                    }
+                ]
+            }),
             offset: offset,
             limit: limit,
             order: [["id", "DESC"]],

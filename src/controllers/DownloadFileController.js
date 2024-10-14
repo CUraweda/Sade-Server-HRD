@@ -17,10 +17,6 @@ class DownloadController {
                 });
             }
 
-            filePath = "./" + filePath 
-
-            console.log(filePath)
-
             if (fs.existsSync(filePath)) {
                 const filename = path.basename(filePath);
                 res.setHeader("Content-Type", "application/octet-stream");
