@@ -46,10 +46,10 @@ class EmployeeOutstationService {
     delete = async (id) => {
         const dataExist = await this.employeeOutstationDao.findById(id);
         if (!dataExist) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Employee Outstation Tidak Ada");    
-
+        
+        await this.attachEmployeeUnactive(dataExist.employee_id)
         const outstationData = await this.employeeOutstationDao.deleteByWhere({ id });
         if (!outstationData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Employee Outstation Gagal dihapus");
-        await this.attachEmployeeUnactive(dataExist.employee_id)
 
         return responseHandler.returnSuccess(httpStatus.CREATED, "Data Employee Outstation Berhasil dihapus", {});
     };
