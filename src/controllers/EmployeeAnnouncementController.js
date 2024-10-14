@@ -18,17 +18,23 @@ class EmployeeAnnouncementController {
                 page,
                 limit,
                 offset,
-                { search }
+                {
+                    search,
+                    ...(only_specific && { is_specific: false })
+                }
             );
+
+
+
 
             if (employee_id) {
                 const resDataSpecific = await this.employeeAnnouncementService.showPage(
                     page,
                     limit,
                     offset,
-                    { search }
+                    { search, is_specific: true, employee_id }
                 )
-                resData.response.data.result  = [...resData.response.data.result, ...resDataSpecific.response.data.result]
+                resData.response.data.result = [...resData.response.data.result, ...resDataSpecific.response.data.result]
                 resData.response.data.totalRows += resDataSpecific.response.data.totalRows
             }
             res.status(resData.statusCode).send(resData.response);
