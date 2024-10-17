@@ -13,7 +13,6 @@ class ApplicantInterviewController {
             const { search } = req.query;
 
             const offset = limit * page;
-            console.log('dasjbhdasjoihkdvasojidhkaj')
             const resData = await this.applicantInterviewService.showPage(page, limit, offset, { search });
 
             res.status(resData.statusCode).send(resData.response);

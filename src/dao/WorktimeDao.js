@@ -149,10 +149,9 @@ class WorktimeDao extends SuperDao {
                     where: {
                         employee_id: employee.id,
                         created_at: { [Op.between]: [startTime, date.toISOString()] }
-                    }
+                    },
                 }
             ],
-            having: literal('COUNT(employeeattendances.id) = 0') // Filter to include only records without attendance
         })
     }
 }

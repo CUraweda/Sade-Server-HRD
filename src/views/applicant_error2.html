@@ -16,18 +16,18 @@
       .container {
         padding-inline: 3rem;
       }
+
+      .container-style {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+        margin-top: 3rem;
+      }
     </style>
   </head>
   <body>
     <div class="container">
-      <div
-        style="
-          display: flex;
-          flex-direction: column;
-          gap: 2rem;
-          margin-top: 3rem;
-        "
-      >
+      <div class="container-style">
         <div>
           <div>Yth. {{applicant_name}}</div>
           <div>{{applicant_address}}</div>
@@ -40,10 +40,10 @@
         <div>Dengan Hormat,</div>
 
         <div>
-          Setelah mengevaluasi hasil masa percobaan magang Anda di {{company}}
-          yang berlangsung dari {{start_date}} hingga {{end_date}}, kami sangat
-          menghargai usaha dan kontribusi yang telah Anda berikan selama periode
-          tersebut.
+          Setelah mengevaluasi hasil masa percobaan magang Anda di
+          {{company_name}} yang berlangsung dari {{start_date}} hingga
+          {{end_date}}, kami sangat menghargai usaha dan kontribusi yang telah
+          Anda berikan selama periode tersebut.
         </div>
 
         <div>
@@ -64,8 +64,9 @@
 
         <div>
           Kami juga berterima kasih atas dedikasi dan kerjasama Anda selama masa
-          magang di {{company}}. Jika Anda membutuhkan surat referensi atau ada
-          hal lain yang ingin didiskusikan, jangan ragu untuk menghubungi kami.
+          magang di {{company_name}}. Jika Anda membutuhkan surat referensi atau
+          ada hal lain yang ingin didiskusikan, jangan ragu untuk menghubungi
+          kami.
         </div>
 
         <div>Kami berharap yang terbaik untuk karier dan masa depan Anda.</div>

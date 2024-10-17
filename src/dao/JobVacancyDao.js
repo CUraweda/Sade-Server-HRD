@@ -14,7 +14,7 @@ class JobVacancyDao extends SuperDao {
     }
 
     async getCount(filter) {
-        let { search, division_id, only_open } = filter
+        let { search, division_id, only_open} = filter
         if (!search) search = ""
         return JobVacancy.count({
             where: {
@@ -33,7 +33,7 @@ class JobVacancyDao extends SuperDao {
     }
 
     async getPage(offset, limit, filter) {
-        let { search, division_id, only_open } = filter
+        let { search, division_id, only_open, user_id } = filter
         if (!search) search = ""
         return JobVacancy.findAll({
             where: {
@@ -60,6 +60,7 @@ class JobVacancyDao extends SuperDao {
                 {
                     model: ApplicantForm,
                     required: false,
+                    where: { ...(user_id && { user_id }) },
                     include: {
                         model: User,
                         required: false
@@ -74,12 +75,18 @@ class JobVacancyDao extends SuperDao {
 
     async updateCounter(id) {
         const dataExist = await JobVacancy.findOne({ where: { id } })
-        if (dataExist) return {}
+        if (!dataExist) return {}
         const payload = {
-            applicant_count: dataExist.applicant_count++,
+            applicant_count: dataExist.applicant_count + 1,
             ...(dataExist.applicant_count + 1 === dataExist.max_applicant && { is_open: false, status: "Pendaftaran Ditutup" })
         }
-        return JobVacancy.updateById(payload, id)
+        return JobVacancy.update(payload, { where: { id } })
+    }
+
+    async checkAvailability(id) {
+        const dataExist = await JobVacancy.findOne({ where: { id } })
+        if(!dataExist) return false
+        return dataExist.is_open
     }
 }
 

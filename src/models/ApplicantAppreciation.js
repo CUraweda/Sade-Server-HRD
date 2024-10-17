@@ -18,7 +18,8 @@ module.exports = (sequelize, DataTypes) => {
     ApplicantAppreciation.init(
         {
             form_id: DataTypes.INTEGER,
-            date: DataTypes.DATE
+            date: DataTypes.DATE,
+            description: DataTypes.STRING
         },
         {
             sequelize,

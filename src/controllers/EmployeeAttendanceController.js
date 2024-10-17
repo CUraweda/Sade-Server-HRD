@@ -46,7 +46,18 @@ class EmployeeAttendanceController {
             res.status(httpStatus.BAD_GATEWAY).send(e);
         }
     };
+    
+    getTotalWorkime = async (req, res) => {
+        try{
+            const resData = await this.employeeAttendanceService.showTotalWorktime(req.query)
 
+            res.status(resData.statusCode).send(resData.response);
+        }catch(e){
+            
+            console.log(e)
+            res.status(httpStatus.BAD_GATEWAY).send(e);
+        }
+    }
 
     getRekapWeek = async (req, res) => {
         try {

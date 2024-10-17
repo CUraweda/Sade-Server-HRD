@@ -50,12 +50,12 @@ class EmployeeVacationDao extends SuperDao {
                 ...(division_id && { "$employee.division_id$": division_id }),
                 ...(type && { type }),
                 ...(status && { status }),
-                ...((start_date && end_date) && { 
+                ...((start_date && end_date) && {
                     [Op.or]: [
-                        { 
+                        {
                             start_date: {
                                 [Op.between]: [start_date, end_date]
-                            } 
+                            }
                         },
                         {
                             end_date: {
@@ -120,12 +120,12 @@ class EmployeeVacationDao extends SuperDao {
                 ...(division_id && { "$employee.division_id$": division_id }),
                 ...(type && { type }),
                 ...(status && { status }),
-                ...((start_date && end_date) && { 
+                ...((start_date && end_date) && {
                     [Op.or]: [
-                        { 
+                        {
                             start_date: {
                                 [Op.between]: [start_date, end_date]
-                            } 
+                            }
                         },
                         {
                             end_date: {
@@ -153,14 +153,37 @@ class EmployeeVacationDao extends SuperDao {
         });
     }
 
+    async getApprovedFromRange(start_date, end_date) {
+        return EmployeeVacation.findAll({
+            where: {
+                [Op.and]: [
+                    { start_date: { [Op.lte]: start_date } },
+                    { end_date: { [Op.gte]: end_date } },
+                ], is_approved: true
+            }
+        })
+    }
+
     async getRekapByStartEnd(start_date, end_date, filter) {
         const { employee_id, type } = filter
         return EmployeeVacation.findAll({
-            where: { 
-                start_date: { [Op.between]: [start_date, end_date] },
+            where: {
+                [Op.and]: [
+                    { 
+                      [Op.or]: [
+                        { start_date: { [Op.between]: [start_date, end_date] } },  // Vacation starts within the range
+                        { end_date: { [Op.between]: [start_date, end_date] } },    // Vacation ends within the range
+                        { 
+                          start_date: { [Op.lte]: start_date },                    // Vacation starts before range
+                          end_date: { [Op.gte]: end_date }                         // Vacation ends after range
+                        }
+                      ] 
+                    }
+                ],
+                is_approved: true,
                 ...(employee_id && { employee_id }),
                 ...(type && { type: { [Op.in]: type } })
-             }
+            }
         })
     }
 }

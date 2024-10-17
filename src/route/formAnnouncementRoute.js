@@ -11,32 +11,32 @@ const formAnnouncementValidator = new FormAnnouncementValidator();
 
 router.get(
     "/",
-    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11]),
     formAnnouncementController.getAll
 )
 router.get(
     "/:id",
-    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11]),
     formAnnouncementController.getOne
 )
 
 router.post(
     "/create",
     formAnnouncementValidator.createUpdateValidator,
-    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11]),
     formAnnouncementController.createOne
 )
 
 router.put(
     "/update/:id",
     formAnnouncementValidator.createUpdateValidator,
-    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11]),
     formAnnouncementController.update
 )
 
 router.delete(
     "/delete/:id",
-    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11]),
     formAnnouncementController.delete
 )
 

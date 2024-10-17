@@ -76,69 +76,159 @@ class ApplicantFormService {
         if (condition === "lulus") {
             const uid = `${id}-${employee.id}`
             const applicantInterviewData = await this.applicantInterviewDao.create({ ...body, form_id: id, interviewer_id: employee.id, uid })
-            if (!applicantInterviewData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Gagal dalam membuat Applicant Interview"); console.log(applicantInterviewData)
+            if (!applicantInterviewData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Gagal dalam membuat Applicant Interview"); 
 
-            // Send email
+            // Send email for success condition
             await this.emailHelper.sendApplicantEmail(
                 {
-                    date: body.plan_date.split(' ')[0],
-                    time: body.plan_date.split(' ')[1],
-                    place: body.portal,
+                    date: body.plan_date.toString().split(' ')[0],
+                    time: body.plan_date.toString().split(' ')[1],
+                    address: body.portal,
+                    duration: '{{duration}}',
+                    //applicant
+                    applicantName: applicantExist.full_name,
+                    applicantPosition: applicantExist.position,
+                    //sender
+                    senderName: employee.full_name,
+                    senderPosition: employee.occupation,
+                    senderPhone: employee.phone,
+                    senderEmail: employee.email,
                 },
                 applicantExist.email,
-                'First Evaluate',
+                'Interview Invitation - Sekolah Alam Depok',
                 '../views/applicant.html'
             )
         }
 
-        const payloadData =
-            condition != "lulus"
-                ? {
-                    is_passed_interview: false,
-                    is_passed: false,
-                    status: constant.applicantFirstEvaluation.fail
-                } : { is_passed_interview: true, status: constant.applicantFirstEvaluation.success }
+        let payloadData;
+        if (condition !== "lulus") {
+            payloadData = {
+                is_passed_interview: false,
+                is_passed: false,
+                status: constant.applicantFirstEvaluation.fail,
+            };
+
+            // Send email for fail condition
+            await this.emailHelper.sendApplicantEmail(
+                {
+                    status: condition,
+                    positionName: employee.major,
+                    //applicant
+                    applicantName: applicantExist.full_name,
+                    //sender
+                    senderName: employee.full_name,
+                    senderPosition: employee.occupation,
+                    senderEmail: employee.email,
+                    senderPhone: employee.phone,
+                },
+                applicantExist.email,
+                `Hasil Wawancara - Sekolah Alam Depok`,
+                '../views/applicant_error.html'
+            );
+        } else {
+            payloadData = {
+                is_passed_interview: true,
+                status: constant.applicantFirstEvaluation.success
+            };
+        }
         const applicantFormData = await this.applicantFormDao.updateById(payloadData, id);
         if (!applicantFormData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Gagal mengupdate Applicant Form");
 
         return responseHandler.returnSuccess(httpStatus.CREATED, "Seleksi berhasil dicatat", {});
     }
 
-    createSecondEvalution = async (id, condition, body) => {
+    createSecondEvalution = async (id, condition, body, employee) => {
+        if (!employee)
+            return responseHandler.returnError(
+                httpStatus.BAD_REQUEST,
+                "Anda tidak termasuk karyawan"
+            );
         if (!condition)
             return responseHandler.returnError(
                 httpStatus.BAD_REQUEST,
                 "Kondisi Lulus atau Tidak Lulus tidak dispesifikan"
             );
-        condition = condition.toLowerCase();
         const applicationExist = await this.applicantFormDao.findById(id);
         if (!applicationExist)
             return responseHandler.returnError(
-                httpStatus.BAD_REQUEST,
+            httpStatus.BAD_REQUEST,
                 "Tidak ada data pada ID"
             );
+        
+        if (!applicationExist.is_passed_interview)
+            return responseHandler.returnError(
+                httpStatus.BAD_REQUEST,
+                "Applicant tidak lulus/belum melewati Seleksi Pertama"
+            );
+        
         if (applicationExist.is_passed || applicationExist.is_passed === false)
             return responseHandler.returnError(
                 httpStatus.BAD_REQUEST,
                 "Applicant Sudah Pernah melewati Seleksi Kedua"
             );
 
-        if (condition === "lulus") await this.aggregateToEmployee(id, body);
+        let payload;
+        condition = condition.toLowerCase();
+        if (condition != "lulus") {
+            payload = {
+                is_passed: false,
+                status: constant.applicantSecondEvaluation.fail,
+            }
 
-        const payloadData =
-            condition != "lulus"
-                ? {
-                    is_passed: false,
-                    status: constant.applicantSecondEvaluation.fail,
-                }
-                : {
-                    is_passed: true,
-                    status: constant.applicantSecondEvaluation.success,
-                };
+            // Send email for fail condition
+            await this.emailHelper.sendApplicantEmail(
+                {
+                    status: condition,
+                    positionName: employee.major,
+                    //applicant
+                    applicantName: applicationExist.full_name,
+                    //sender
+                    senderName: employee.full_name,
+                    senderPosition: employee.occupation,
+                    senderEmail: employee.email,
+                    senderPhone: employee.phone,
+                },
+                applicationExist.email,
+                `Hasil Wawancara - Sekolah Alam Depok`,
+                '../views/applicant_error.html'
+            );
+
+        } else {
+            await this.aggregateToEmployee(id, body);
+
+            // Send email for success condition
+            await this.emailHelper.sendApplicantEmail(
+                {
+                    status: condition,
+                    //applicant
+                    applicantName: applicationExist.full_name,
+                    applicantPhone: applicationExist.phone,
+                    // applicantEmployee: applicationExist.full_name,
+                    positionName: employee.major,
+                    nextStep: '{{next_step}}',
+
+                    //sender
+                    senderName: employee.full_name,
+                    senderPosition: employee.occupation,
+                    senderEmail: employee.email,
+                    senderPhone: employee.phone,
+                },
+                applicationExist.email,
+                'Kontrak Kerja - Sekolah Alam Depok',
+                '../views/applicant_success.html'
+            );
+
+            payload = {
+                is_passed: true,
+                status: constant.applicantSecondEvaluation.success,
+            }
+
+        }
         const applicantFormData = await this.applicantFormDao.updateById(
-            payloadData,
+            payload,
             id
         );
+
         if (!applicantFormData)
             return responseHandler.returnError(
                 httpStatus.BAD_REQUEST,
@@ -200,6 +290,13 @@ class ApplicantFormService {
     createDataAndDetail = async (body) => {
         const { details } = body;
         delete body.details;
+
+        const jobVacancyExist = await this.jobVacancyDao.checkAvailability(body.vacancy_id)
+        if (!jobVacancyExist) return responseHandler.returnError(
+            httpStatus.BAD_REQUEST,
+            "Job Vacancy didnt exist or available"
+        );
+
 
         const applicantFormData = await this.applicantFormDao.create({
             ...body,

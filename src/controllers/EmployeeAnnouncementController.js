@@ -11,16 +11,32 @@ class EmployeeAnnouncementController {
             const page = +req.query.page || 0;
             const limit = +req.query.limit || 10;
             let { search, only_specific, employee_id } = req.query;
-
             if (only_specific === "1") employee_id = req.user?.employee?.id
+
             const offset = limit * page;
-            const resData = await this.employeeAnnouncementService.showPage(
+            let resData = await this.employeeAnnouncementService.showPage(
                 page,
                 limit,
                 offset,
-                { search, employee_id, only_specific }
+                {
+                    search,
+                    ...(only_specific && { is_specific: false })
+                }
             );
 
+
+
+
+            if (employee_id) {
+                const resDataSpecific = await this.employeeAnnouncementService.showPage(
+                    page,
+                    limit,
+                    offset,
+                    { search, is_specific: true, employee_id }
+                )
+                resData.response.data.result = [...resData.response.data.result, ...resDataSpecific.response.data.result]
+                resData.response.data.totalRows += resDataSpecific.response.data.totalRows
+            }
             res.status(resData.statusCode).send(resData.response);
         } catch (e) {
             console.log(e);

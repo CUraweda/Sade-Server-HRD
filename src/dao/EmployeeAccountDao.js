@@ -17,30 +17,27 @@ class EmployeeaccountDao extends SuperDao {
         let { search, year, month } = filter
         if (!search) search = ""
         const currentDate = new Date()
-        if(!(year && month)){
+        if (!(year && month)) {
             month = currentDate.getMonth() + 1
             year = currentDate.getFullYear()
         }
         return Employeeaccount.count({
             where: {
                 [Op.or]: [
-                    { salary_id: { [Op.like]: "%" + search + "%" } },
-                    { employee_id: { [Op.like]: "%" + search + "%" } },
-                    { month_id: { [Op.like]: "%" + search + "%" } },
-                    { year: { [Op.like]: "%" + search + "%" } },
-                    { uid: { [Op.like]: "%" + search + "%" } },
-                    { status: { [Op.like]: "%" + search + "%" } },
-                    { is_paid: { [Op.like]: "%" + search + "%" } },
-                    { temp_total: { [Op.like]: "%" + search + "%" } },
-                    { fixed_salary: { [Op.like]: "%" + search + "%" } },
-                    { variable_salary: { [Op.like]: "%" + search + "%" } },
-                    { loan: { [Op.like]: "%" + search + "%" } },
-                    { cooperative: { [Op.like]: "%" + search + "%" } },
+                    {
+                        "$employee.full_name$": { [Op.like]: "%" + search + "%" }
+                    }
                 ],
                 ...((year && month) && {
                     month_id: month, year
                 })
             },
+            include: [
+                {
+                    model: Employees,
+                    required: false
+                }
+            ]
         });
     }
 
@@ -48,7 +45,7 @@ class EmployeeaccountDao extends SuperDao {
         let { search, year, month } = filter
         if (!search) search = ""
         const currentDate = new Date()
-        if(!(year && month)){
+        if (!(year && month)) {
             month = currentDate.getMonth() + 1
             year = currentDate.getFullYear()
         }
@@ -56,18 +53,9 @@ class EmployeeaccountDao extends SuperDao {
         return Employeeaccount.findAll({
             where: {
                 [Op.or]: [
-                    { salary_id: { [Op.like]: "%" + search + "%" } },
-                    { employee_id: { [Op.like]: "%" + search + "%" } },
-                    { month_id: { [Op.like]: "%" + search + "%" } },
-                    { year: { [Op.like]: "%" + search + "%" } },
-                    { uid: { [Op.like]: "%" + search + "%" } },
-                    { status: { [Op.like]: "%" + search + "%" } },
-                    { is_paid: { [Op.like]: "%" + search + "%" } },
-                    { temp_total: { [Op.like]: "%" + search + "%" } },
-                    { fixed_salary: { [Op.like]: "%" + search + "%" } },
-                    { variable_salary: { [Op.like]: "%" + search + "%" } },
-                    { loan: { [Op.like]: "%" + search + "%" } },
-                    { cooperative: { [Op.like]: "%" + search + "%" } },
+                    {
+                        "$employee.full_name$": { [Op.like]: "%" + search + "%" }
+                    }
                 ],
                 ...((year && month) && {
                     month_id: month, year
@@ -91,7 +79,7 @@ class EmployeeaccountDao extends SuperDao {
 
     async getTotalRange(year, month_id) {
         return Employeeaccount.findAll({
-            where: { month_id, year, is_paid: false },
+            where: { month_id, year },
             attributes: [
                 [models.sequelize.fn('SUM', models.sequelize.col('temp_total')), "total"]
             ]
@@ -100,10 +88,10 @@ class EmployeeaccountDao extends SuperDao {
 
     async getRange(year, month_id) {
         return Employeeaccount.findAll({
-            where: { 
+            where: {
                 ...(month_id && { month_id }),
                 ...(year && { year })
-             }
+            }
         })
     }
 

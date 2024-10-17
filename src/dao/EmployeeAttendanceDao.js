@@ -1,6 +1,7 @@
 const SuperDao = require("./SuperDao");
 const models = require("../models");
 const { Op, fn, col } = require("sequelize");
+const Employees = require("../models/Employees");
 
 const EmployeeAttendance = models.employeeattendance;
 const EmployeeVacation = models.employeevacation
@@ -15,8 +16,8 @@ class EmployeeAttendanceDao extends SuperDao {
     }
 
     async getCount(filter) {
-         let { search, outstation, type, status, division_id, date, employee_id, start_date, end_date } = filter
-        if(!search) search = ""
+        let { search, outstation, type, status, division_id, date, employee_id, start_date, end_date } = filter
+        if (!search) search = ""
 
         return EmployeeAttendance.count({
             where: {
@@ -46,7 +47,7 @@ class EmployeeAttendanceDao extends SuperDao {
                 ...(type && { "$worktime.type$": { [Op.like]: `%${type}%` } }),
                 ...(status && { status }),
                 ...(outstation && { is_outstation: outstation != "1" ? false : true }),
-                ...((start_date && end_date) && { created_at: { [Op.between]: [start_date, end_date] }})
+                ...((start_date && end_date) && { created_at: { [Op.between]: [start_date, end_date] } })
             },
             include: [
                 {
@@ -68,8 +69,8 @@ class EmployeeAttendanceDao extends SuperDao {
     }
 
     async getPage(offset, limit, filter) {
-         let { search, outstation, type, status, division_id, date, employee_id, start_date, end_date } = filter
-        if(!search) search = ""
+        let { search, outstation, type, status, division_id, date, employee_id, start_date, end_date } = filter
+        if (!search) search = ""
         return EmployeeAttendance.findAll({
             where: {
                 [Op.or]: [
@@ -98,7 +99,7 @@ class EmployeeAttendanceDao extends SuperDao {
                 ...(type && { "$worktime.type$": { [Op.like]: `%${type}%` } }),
                 ...(status && { status }),
                 ...(outstation && { is_outstation: outstation != "1" ? false : true }),
-                ...((start_date && end_date) && { created_at: { [Op.between]: [start_date, end_date] }})
+                ...((start_date && end_date) && { created_at: { [Op.between]: [start_date, end_date] } })
             },
             include: [
                 {
@@ -122,7 +123,7 @@ class EmployeeAttendanceDao extends SuperDao {
         });
     }
 
-    async countAttendanceStartEnd(employee_id, start_date, end_date){
+    async countAttendanceStartEnd(employee_id, start_date, end_date) {
         return EmployeeAttendance.count({
             where: {
                 ...(employee_id && { employee_id }),
@@ -133,7 +134,7 @@ class EmployeeAttendanceDao extends SuperDao {
         })
     }
 
-    async getByRange(start_date, end_date, filter){
+    async getByRange(start_date, end_date, filter) {
         const { employee_id } = filter
         return EmployeeAttendance.findAll({
             where: {
@@ -184,6 +185,36 @@ class EmployeeAttendanceDao extends SuperDao {
                 vacation: result.employeevacations[0]?.get('vacation_count') || 0
             }));
         });
+    }
+
+    async deleteAndReduceWorkhour(id) {
+        const dataExist = await EmployeeAttendance.findOne({
+            where: { id }, 
+            include: [{ model: Employee, required: false }]
+        })
+        if (!dataExist) return false
+
+        const deleteData = await EmployeeAttendance.destroy({ where: { id: dataExist.id } })
+        if (!deleteData) return false
+        
+        const raw_workhour = dataExist.employee.raw_workhour - dataExist.attendance_time_differences
+        const updateEmployee = await Employee.update({ raw_workhour }, { where: { id: dataExist.employee.id } })
+        if (!updateEmployee) return false
+
+        return deleteData
+    }
+
+    async totalAttendanceWorktimeRange(start_date, end_date) {
+        return EmployeeAttendance.findAll({
+            where: {  
+                attendance_time_differences: { [Op.not]: 0 },
+                createdAt: { [Op.between]: [start_date, end_date] }
+            },
+            attributes: [
+                [models.sequelize.fn('SUM', models.sequelize.col('attendance_time_differences')), "total_worktime"]
+            ],    
+
+        })
     }
 }
 

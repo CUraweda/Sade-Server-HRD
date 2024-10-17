@@ -25,8 +25,7 @@ class EmployeesDao extends SuperDao {
   }
 
   async getCount(filter) {
-    const { isGuru, search, isAssign, division_id, status } = filter
-    console.log(search)
+    const { search, division_id, status } = filter
     return Employees.count({
       where: {
         [Op.or]: [
@@ -34,17 +33,7 @@ class EmployeesDao extends SuperDao {
             full_name: { [Op.like]: "%" + search + "%" },
           },
         ],
-        ...(isGuru && { is_teacher: isGuru }),
-        ...(isAssign && {
-          user_id: {
-            ...(isAssign != "N" ? {
-              [Op.not]: null
-            } : {
-              [Op.is]: null
-            })
-          }
-        }),
-        ...(status && { employee_status: status }),
+        ...(status && { employee_status: { [Op.like]: "%" + status + "%" } }),
         ...(division_id && { division_id }),
       },
     });
@@ -57,28 +46,80 @@ class EmployeesDao extends SuperDao {
   }
 
   async getEmployeesPage(filter, offset, limit) {
-    const { isGuru, search, isAssign, division_id, status } = filter
+    const { search, division_id, status } = filter
     return Employees.findAll({
       where: {
-        ...(isGuru && { is_teacher: isGuru }),
-        ...(isAssign && {
-          user_id: {
-            ...(isAssign != "N" ? {
-              [Op.not]: null
-            } : {
-              [Op.is]: null
-            })
-          }
-        }),
-        ...(status && { employee_status: status }),
+        ...(status && { employee_status: { [Op.like]: "%" + status + "%" } }),
         ...(division_id && { division_id }),
-        [Op.and ]: [
-          {
-            full_name: {
-              [Op.like]: "%" + search + "%",
+        ...(search && {
+          [Op.or]: [
+            {
+              employee_no: {
+                [Op.like]: "%" + search + "%",
+              },
             },
-          }
-        ],
+            {
+              full_name: {
+                [Op.like]: "%" + search + "%",
+              },
+            },
+            {
+              gender: {
+                [Op.like]: "%" + search + "%",
+              },
+            },
+            {
+              religion: {
+                [Op.like]: "%" + search + "%",
+              },
+            },
+            {
+              marital_status: {
+                [Op.like]: "%" + search + "%",
+              },
+            },
+            {
+              last_education: {
+                [Op.like]: "%" + search + "%",
+              },
+            },
+            {
+              is_education: {
+                [Op.like]: "%" + search + "%",
+              },
+            },
+            {
+              major: {
+                [Op.like]: "%" + search + "%",
+              },
+            },
+            {
+              employee_status: {
+                [Op.like]: "%" + search + "%",
+              },
+            },
+            {
+              occupation: {
+                [Op.like]: "%" + search + "%",
+              },
+            },
+            {
+              duty: {
+                [Op.like]: "%" + search + "%",
+              },
+            },
+            {
+              job_desc: {
+                [Op.like]: "%" + search + "%",
+              },
+            },
+            {
+              grade: {
+                [Op.like]: "%" + search + "%",
+              },
+            },
+          ],
+        })
       },
       include: [
         {
@@ -96,6 +137,10 @@ class EmployeesDao extends SuperDao {
     return Employees.findOne({
       where: { id },
       include: [
+        {
+          model: User,
+          required: false
+        },
         {
           model: EmployeeAttachment,
           required: false

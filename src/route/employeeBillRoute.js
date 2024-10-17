@@ -11,38 +11,38 @@ const employeeBillValidator = new EmployeeBillValidator();
 
 router.get(
     "/",
-    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11]),
     employeeBillController.getAll
 )
 router.get(
     "/:id",
-    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11]),
     employeeBillController.getOne
 )
 
 router.post(
     "/add-bill",
     employeeBillValidator.addValidator,
-    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11]),
     employeeBillController.addOne
 )
 router.post(
     "/create",
     employeeBillValidator.createUpdateValidator,
-    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11]),
     employeeBillController.createOne
 )
 
 router.put(
     "/update/:id",
     employeeBillValidator.createUpdateValidator,
-    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11]),
     employeeBillController.update
 )
 
 router.delete(
     "/delete/:id",
-    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11]),
     employeeBillController.delete
 )
 

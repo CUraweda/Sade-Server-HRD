@@ -1,5 +1,5 @@
 const httpStatus = require("http-status");
-const LocationService = require("../service/LocationService");
+const LocationService = require("../service/locationService");
 
 class LocationController {
     constructor() {

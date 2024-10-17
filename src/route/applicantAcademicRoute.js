@@ -11,32 +11,32 @@ const applicantAcademicValidator = new ApplicantAcademicValidator();
 
 router.get(
     "/",
-    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]),
     applicantAcademicController.getAll
 )
 router.get(
     "/:id",
-    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]),
     applicantAcademicController.getOne
 )
 
 router.post(
     "/create",
     applicantAcademicValidator.createUpdateValidator,
-    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]),
     applicantAcademicController.createOne
 )
 
 router.put(
     "/update/:id",
     applicantAcademicValidator.createUpdateValidator,
-    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]),
     applicantAcademicController.update
 )
 
 router.delete(
     "/delete/:id",
-    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]),
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]),
     applicantAcademicController.delete
 )
 

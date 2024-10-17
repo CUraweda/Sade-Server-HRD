@@ -6,7 +6,7 @@ const { reconstructDetails } = require("../middlewares/desctucture");
 class ApplicantFormValidator {
     async createUpdateValidator(req, res, next) {
         const schema = Joi.object({
-            vacancy_id: Joi.number(),
+            vacancy_id: Joi.number().required(),
             user_id: Joi.number(),
             full_name: Joi.string(),
             email: Joi.string(),
@@ -66,10 +66,7 @@ class ApplicantFormValidator {
                 appreciation: Joi.array(),
                 skill: Joi.array()
             }),
-            files_desc: Joi.array().items(Joi.object({
-                identifier: Joi.string(),
-                identifierIndex: Joi.number()
-            }))
+            file_desc: Joi.array()
         });
 
         const options = { abortEarly: false, allowUnknown: true, stripUnknown: true };
