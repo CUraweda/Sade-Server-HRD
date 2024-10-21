@@ -76,7 +76,7 @@ class ApplicantFormService {
         if (condition === "lulus") {
             const uid = `${id}-${employee.id}`
             const applicantInterviewData = await this.applicantInterviewDao.create({ ...body, form_id: id, interviewer_id: employee.id, uid })
-            if (!applicantInterviewData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Gagal dalam membuat Applicant Interview"); 
+            if (!applicantInterviewData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Gagal dalam membuat Applicant Interview");
 
             // Send email for success condition
             await this.emailHelper.sendApplicantEmail(
@@ -151,16 +151,16 @@ class ApplicantFormService {
         const applicationExist = await this.applicantFormDao.findById(id);
         if (!applicationExist)
             return responseHandler.returnError(
-            httpStatus.BAD_REQUEST,
+                httpStatus.BAD_REQUEST,
                 "Tidak ada data pada ID"
             );
-        
+
         if (!applicationExist.is_passed_interview)
             return responseHandler.returnError(
                 httpStatus.BAD_REQUEST,
                 "Applicant tidak lulus/belum melewati Seleksi Pertama"
             );
-        
+
         if (applicationExist.is_passed || applicationExist.is_passed === false)
             return responseHandler.returnError(
                 httpStatus.BAD_REQUEST,
@@ -283,6 +283,8 @@ class ApplicantFormService {
         if (!employeeData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Gagal membuat data employee")
         const updatedApplicant = await this.applicantFormDao.updateById({ employee_id: employeeData.id }, id)
         if (!updatedApplicant) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Gagal mengupdate data applicant")
+        const updatedUser = await this.userDao.updateById({ avatar: applicantData.file_path }, applicantData.user_id)
+        if (!updatedUser) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Gagal mengupdate data user")
         await this.userDao.updateById(applicantData.user_id, userData)
         return responseHandler.returnSuccess(httpStatus.OK, "Berhasil Aggregasi Applicant", updatedApplicant)
     }
