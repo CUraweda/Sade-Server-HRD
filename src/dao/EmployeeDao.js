@@ -8,6 +8,7 @@ const User = models.user
 const EmployeeAttendance = models.employeeattendance
 const EmployeeVacation = models.employeevacation
 const EmployeePosition = models.employeeposition
+const EmployeeAccount = models.employeeaccount
 const EmployeeAttachment = models.employeeattachment
 const FormPosistion = models.formposition
 const Training = models.training
@@ -25,7 +26,7 @@ class EmployeesDao extends SuperDao {
   }
 
   async getCount(filter) {
-    const { search, division_id, status } = filter
+    const { search, division_id, status, have_account } = filter
     return Employees.count({
       where: {
         [Op.or]: [
@@ -36,6 +37,12 @@ class EmployeesDao extends SuperDao {
         ...(status && { employee_status: { [Op.like]: "%" + status + "%" } }),
         ...(division_id && { division_id }),
       },
+      include: [
+        {
+          model: EmployeeAccount,
+          required: have_account ? true : false
+        }
+      ]
     });
   }
 
@@ -46,7 +53,7 @@ class EmployeesDao extends SuperDao {
   }
 
   async getEmployeesPage(filter, offset, limit) {
-    const { search, division_id, status } = filter
+    const { search, division_id, status, have_account } = filter
     return Employees.findAll({
       where: {
         ...(status && { employee_status: { [Op.like]: "%" + status + "%" } }),
@@ -122,6 +129,10 @@ class EmployeesDao extends SuperDao {
         })
       },
       include: [
+        {
+          model: EmployeeAccount,
+          required: have_account ? true : false
+        },
         {
           model: User,
           required: false

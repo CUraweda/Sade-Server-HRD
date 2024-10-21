@@ -1,25 +1,30 @@
 const SuperDao = require("./SuperDao");
 const models = require("../models");
-const { Op } = require("sequelize");
-const { required } = require("joi");
+const { Op, Sequelize } = require("sequelize");
 
 const EmployeeSalary = models.employeesalary;
 const Employees = models.employees
+const EmployeeAccount = models.employeeaccount
 
 class EmployeeSalaryDao extends SuperDao {
     constructor() {
         super(EmployeeSalary);
     }
 
-    async getWithEmployee(){
+    async getRangeWithEmployee(year, month_id) {
         return EmployeeSalary.findAll({
             where: { is_active: true },
             include: [
                 {
+                    model: EmployeeAccount,
+                    where: { year, month_id },
+                    required: false,
+                },
+                {
                     model: Employees,
                     required: true
                 }
-            ]
+            ],
         })
     }
 

@@ -22,10 +22,7 @@ class EmployeeAnnouncementController {
                     search,
                     ...(only_specific && { is_specific: false })
                 }
-            );
-
-
-
+            ); 
 
             if (employee_id) {
                 const resDataSpecific = await this.employeeAnnouncementService.showPage(

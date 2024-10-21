@@ -112,13 +112,13 @@ class EmployeeController {
     try {
       const page = req.query.page ? req.query.page != "0" ? +req.query.page - 1 : 0 : 0
       const limit = +req.query.limit || 10;
-      const { search, division_id, status, isAssign } = req.query
+      const { search, division_id, status, isAssign, have_account } = req.query
       const offset = limit * page;
 
       const resData = await this.employeeService.showPage(
         page,
         limit,
-        { search, isAssign, division_id, status },
+        { search, isAssign, division_id, status, have_account },
         offset
       );
 

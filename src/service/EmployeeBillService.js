@@ -2,35 +2,76 @@ const httpStatus = require("http-status");
 const EmployeeBillDao = require("../dao/EmployeeBillDao");
 const responseHandler = require("../helper/responseHandler");
 const EmployeeaccountDao = require("../dao/EmployeeAccountDao");
+const EmployeeAccountService = require("./EmployeeAccountService");
+const BillTypeDao = require("../dao/BillTypeDao");
 
 class EmployeeBillService {
     constructor() {
         this.employeeBillDao = new EmployeeBillDao();
         this.employeeAccountDao = new EmployeeaccountDao()
+        this.employeeAccountService = new EmployeeAccountService()
+        this.billTypeDao = new BillTypeDao()
+    }
+
+    changeNameToIdentifier = (name) => {
+        switch (name) {
+            case "Koperasi":
+                return "cooperative"
+            case "Pinjaman":
+                return "loan"
+            case "Tunjangan":
+                return "variable_salary"
+            default:
+                return false
+        }
     }
 
     create = async (body) => {
         const employeeBillData = await this.employeeBillDao.create(body);
         if (!employeeBillData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Employee Bill data could not be created");
-        
+
         return responseHandler.returnSuccess(httpStatus.CREATED, "Employee Bill data successfully created", employeeBillData);
     };
-    
+
     addOne = async (employee, body) => {
         if (!employee) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Not an employee");
-        const activeAccount = await this.employeeAccountDao.getActive(employee.id)
+        const activeAccount = await this.employeeAccountDao.getActive(employee)
         if (!activeAccount) return responseHandler.returnError(httpStatus.BAD_REQUEST, "No active account from this employee");
-        
+
         body.account_id = activeAccount.id
         const employeeBillData = await this.employeeBillDao.create(body);
         if (!employeeBillData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Employee Bill data could not be created");
-        
+
         return responseHandler.returnSuccess(httpStatus.CREATED, "Employee Bill data successfully created", employeeBillData);
     }
-    
+
     update = async (id, body) => {
-        const dataExist = await this.employeeBillDao.findById(id);
+        const dataExist = await this.employeeBillDao.getWithBillType(id);
         if (!dataExist) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Employee Bill data not found");
+        const { employeeaccount, billtype } = dataExist
+        let payload = {}, identifierOld, identifierChange = billtype.name
+
+        if (body.type_id && dataExist.type_id != body.type_id) {
+            const billExist = await this.billTypeDao.findById(body.type_id)
+            if (!billExist) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Bill Type didnt exist");
+            identifierOld = this.changeNameToIdentifier(billtype.name)
+            payload[identifierOld] = employeeaccount[identifierOld] - dataExist.amount
+
+            identifierChange = billExist.name
+        }
+        if (body.amount) {
+            console.log(body.amount, dataExist.amount )
+            const amountDiff = dataExist.type_id != body.type_id ? body.amount : dataExist.amount - body.amount
+            identifierChange = this.changeNameToIdentifier(identifierChange)
+            console.log(employeeaccount[identifierChange], amountDiff)
+            payload[identifierChange] = employeeaccount[identifierChange] + amountDiff
+            console.log(employeeaccount[identifierChange], amountDiff)
+        }
+        if(Object.keys(payload).length > 0) {
+            console.log(payload)
+            const updateAccount = await this.employeeAccountDao.hardUpdateCounter(dataExist.employeeaccount.id, payload)
+            if (!updateAccount) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Employee Account Counter missmatch, please check");
+        }
 
         const employeeBillData = await this.employeeBillDao.updateWhere(body, { id });
         if (!employeeBillData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Employee Bill data could not be updated");
@@ -39,9 +80,12 @@ class EmployeeBillService {
     }
 
     delete = async (id) => {
+        const dataExist = await this.employeeBillDao.findById(id);
+        if (!dataExist) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Employee Bill data not found");
+        await this.employeeAccountService.updateTotal(dataExist.account_id, dataExist.id, true)
+
         const employeeBillData = await this.employeeBillDao.deleteByWhere({ id });
         if (!employeeBillData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Employee Bill data could not be deleted");
-
         return responseHandler.returnSuccess(httpStatus.OK, "Employee Bill data successfully deleted", {});
     }
 

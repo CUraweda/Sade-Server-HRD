@@ -318,7 +318,7 @@ class ApplicantFormService {
                 "Gagal membuat data detail"
             );
 
-        await this.jobVacancyDao.updateCounter(applicantFormData.vacancy_id);
+        // await this.jobVacancyDao.updateCounter(applicantFormData.vacancy_id);
         return responseHandler.returnSuccess(
             httpStatus.OK,
             "Berhasil membuat Applicant Form dan Detail",

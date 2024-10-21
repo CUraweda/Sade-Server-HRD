@@ -73,15 +73,15 @@ class JobVacancyDao extends SuperDao {
         });
     }
 
-    async updateCounter(id) {
-        const dataExist = await JobVacancy.findOne({ where: { id } })
-        if (!dataExist) return {}
-        const payload = {
-            applicant_count: dataExist.applicant_count + 1,
-            ...(dataExist.applicant_count + 1 === dataExist.max_applicant && { is_open: false, status: "Pendaftaran Ditutup" })
-        }
-        return JobVacancy.update(payload, { where: { id } })
-    }
+    // async updateCounter(id) {
+    //     const dataExist = await JobVacancy.findOne({ where: { id } })
+    //     if (!dataExist) return {}
+    //     const payload = {
+    //         applicant_count: dataExist.applicant_count + 1,
+    //         ...(dataExist.applicant_count + 1 === dataExist.max_applicant && { is_open: false, status: "Pendaftaran Ditutup" })
+    //     }
+    //     return JobVacancy.update(payload, { where: { id } })
+    // }
 
     async checkAvailability(id) {
         const dataExist = await JobVacancy.findOne({ where: { id } })

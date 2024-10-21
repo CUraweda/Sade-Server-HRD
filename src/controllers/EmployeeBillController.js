@@ -55,11 +55,11 @@ class EmployeeBillController {
 
   addOne = async (req, res) => {
     try {
-      const resData = await this.employeeBillService.addOne(req.user?.employee, req.body);
-      if(resData.response.status) {
-        const { account_id, type_id  } = resData.response.data
-        const updateAccount = await this.employeeAccountService.updateTotal(account_id, type_id)
-        if(!updateAccount.response.status) return res.status(updateAccount.statusCode).send(updateAccount.response);
+      const resData = await this.employeeBillService.addOne(req.body.employee_id, req.body);
+      if (resData.response.status) {
+        const { id, account_id } = resData.response.data
+        const updateAccount = await this.employeeAccountService.updateTotal(account_id, id)
+        if (!updateAccount.response.status) return res.status(updateAccount.statusCode).send(updateAccount.response);
       }
 
       res.status(resData.statusCode).send(resData.response);
