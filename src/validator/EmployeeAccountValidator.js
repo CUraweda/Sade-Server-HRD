@@ -9,7 +9,6 @@ class EmployeeAccountValidator {
             employee_id: Joi.number().integer(),
             month_id: Joi.number().integer(),
             year: Joi.number().integer(),
-            uid: Joi.string(),
             status: Joi.string(),
             is_paid: Joi.boolean(),
             temp_total: Joi.number(),
@@ -28,7 +27,7 @@ class EmployeeAccountValidator {
         } else {
             req.body = value;
             return next();
-        }
+    }
     }
 }
 

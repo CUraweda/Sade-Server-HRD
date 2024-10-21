@@ -117,6 +117,24 @@ class EmployeeaccountDao extends SuperDao {
         })
     }
 
+    async hardUpdateCounter(id, body) {
+        let dataExist = await Employeeaccount.findOne({ where: { id } })
+        if (!dataExist) return false
+
+        let { fixed_salary, variable_salary, loan, cooperative } = dataExist
+        if (body.hasOwnProperty('fixed_salary')) fixed_salary = body.fixed_salary;
+        if (body.hasOwnProperty('variable_salary')) variable_salary = body.variable_salary;
+        if (body.hasOwnProperty('loan')) loan = body.loan;
+        if (body.hasOwnProperty('cooperative')) cooperative = body.cooperative;
+
+        let payload = {
+            temp_total: fixed_salary + variable_salary - loan - cooperative,
+            fixed_salary, variable_salary, loan, cooperative
+        }
+        console.log(payload)
+        return Employeeaccount.update(payload, { where: { id } })
+    }
+
     async getActive(employee_id) {
         const currentDate = new Date()
         const currentMonth = currentDate.getMonth() + 1

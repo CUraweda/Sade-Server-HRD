@@ -29,10 +29,11 @@ class EmployeeAccountService {
         const [currentMonth, currentYear] = [currentDate.getMonth() + 1, currentDate.getFullYear()]
         let payloadAccount = []
 
-        const employeeSalarys = await this.employeeSalaryDao.getWithEmployee()
+        let employeeSalarys = await this.employeeSalaryDao.getRangeWithEmployee(currentYear, currentMonth)
         if (employeeSalarys.length < 1) return responseHandler.returnError(httpStatus.BAD_REQUEST, "No Employee Salary to be created into Employee Account");
         for (let employeeSalary of employeeSalarys) {
-            const { employee_id, fixed_salary } = employeeSalary
+            const { employee_id, fixed_salary, employeeaccounts } = employeeSalary
+            if(employeeaccounts.length > 0) continue
             payloadAccount.push({
                 salary_id: employeeSalary.id,
                 employee_id,
@@ -42,6 +43,7 @@ class EmployeeAccountService {
                 month_id: currentMonth, year: currentYear
             })
         }
+        if (payloadAccount.length < 1) return responseHandler.returnError(httpStatus.BAD_REQUEST, "No Employee Salary to be created into Employee Account");
 
         const employeeAccountData = await this.employeeAccountDao.bulkCreate(payloadAccount);
         if (!employeeAccountData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "EmployeeAccount bulk data could not be created");
@@ -61,23 +63,25 @@ class EmployeeAccountService {
         return responseHandler.returnSuccess(httpStatus.CREATED, "Account berhasil dibayar", {});
     }
 
-    updateTotal = async (account_id, bill_id) => {
+    updateTotal = async (account_id, bill_id, remove_data = false) => {
         const billExist = await this.employeeBillDao.getWithBillType(bill_id)
         if (!billExist) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Bill Data not found");
 
         const dataExist = await this.employeeAccountDao.findById(account_id);
         if (!dataExist) return responseHandler.returnError(httpStatus.BAD_REQUEST, "EmployeeAccount data not found");
 
-        let payload = { temp_total: billExist.billtype.is_subtraction ? dataExist.temp_total - billExist.amount : dataExist.temp_total + billExist.amount }
+        let payload = { 
+             temp_total: billExist.billtype.is_subtraction ? remove_data ? dataExist.temp_total + billExist.amount : dataExist.temp_total - billExist.amount : remove_data ? dataExist.temp_total - billExist.amount : dataExist.temp_total + billExist.amount
+         }
         switch (billExist.billtype.name) {
             case "Koperasi":
-                payload["cooperative"] = dataExist.cooperative + billExist.amount
+                payload["cooperative"] = !remove_data ? dataExist.cooperative + billExist.amount : dataExist.cooperative - billExist.amount
                 break;
             case "Pinjaman":
-                payload["loan"] = dataExist.loan + billExist.amount
+                payload["loan"] = !remove_data ? dataExist.loan + billExist.amount : dataExist.loan - billExist.amount
                 break;
             case "Tunjangan":
-                payload["variable_salary"] = dataExist.variable_salary + billExist.amount
+                payload["variable_salary"] = !remove_data ? dataExist.variable_salary + billExist.amount : dataExist.variable_salary - billExist.amount
                 break;
             default:
                 return responseHandler.returnError(httpStatus.BAD_REQUEST, "Invalid Bill Type");
@@ -121,8 +125,9 @@ class EmployeeAccountService {
 
     showTotal = async (year, month) => {
         const employeeAccountData = await this.employeeAccountDao.getTotalRange(year, month)
+        console.log(employeeAccountData)
         if (!employeeAccountData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "EmployeeAccount data not found");
-    
+
         return responseHandler.returnSuccess(httpStatus.OK, "EmployeeAccount data found", employeeAccountData[0]);
     }
 
@@ -132,29 +137,29 @@ class EmployeeAccountService {
 
         const employeeAccountDatas = await this.employeeAccountDao.getRange(year)
         if (!employeeAccountDatas) return responseHandler.returnError(httpStatus.BAD_REQUEST, "EmployeeAccount data not found");
-        
-        for(let employeeAccountData of employeeAccountDatas ) monthMap[employeeAccountData.month_id].total += employeeAccountData.temp_total
+
+        for (let employeeAccountData of employeeAccountDatas) monthMap[employeeAccountData.month_id].total += employeeAccountData.temp_total
 
         return responseHandler.returnSuccess(httpStatus.OK, "EmployeeAccount data found", Object.values(monthMap));
     }
-    
+
     showDetail = async (id) => {
         if (!id) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Please Provide an ID");
         const employeeAccountData = await this.employeeAccountDao.getDetail(id)
         if (!employeeAccountData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "EmployeeAccount data not found");
-        
+
         const { employeebills } = employeeAccountData
         delete employeeAccountData.dataValues.employeebills
 
         let bills = {}
-        for(let bill of employeebills){
+        for (let bill of employeebills) {
             const { name, is_subtraction } = bill.billtype
-            if(!bills[name]) bills[name] = { name, subtraction: is_subtraction, total: 0, datas: [] }
+            if (!bills[name]) bills[name] = { name, subtraction: is_subtraction, total: 0, datas: [] }
             bills[name].total += bill.amount
             bills[name].datas.push(bill)
         }
         bills = Object.values(bills)
-        
+
         return responseHandler.returnSuccess(httpStatus.OK, "EmployeeAccount data found", { account: employeeAccountData, bills });
     }
 
