@@ -60,8 +60,7 @@ class EmployeeBillService {
             identifierChange = billExist.name
         }
         if (body.amount) {
-            console.log(body.amount, dataExist.amount )
-            const amountDiff = dataExist.type_id != body.type_id ? body.amount : dataExist.amount - body.amount
+            const amountDiff = dataExist.type_id != body.type_id ? body.amount :  body.amount - dataExist.amount
             identifierChange = this.changeNameToIdentifier(identifierChange)
             console.log(employeeaccount[identifierChange], amountDiff)
             payload[identifierChange] = employeeaccount[identifierChange] + amountDiff
