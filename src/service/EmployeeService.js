@@ -3,12 +3,16 @@ const EmployeeDao = require("../dao/EmployeeDao");
 const UserDao = require("../dao/UserDao");
 const responseHandler = require("../helper/responseHandler");
 const { response } = require("express");
+const EmployeeOutstationDao = require('../dao/EmployeeOutstationDao')
+const ApplicantFormDao = require('../dao/ApplicantFormDao')
 const EmailHelper = require("../helper/EmailHelper");
 
 class EmployeeService {
   constructor() {
     this.employeeDao = new EmployeeDao();
     this.userDao = new UserDao()
+    this.employeeOutstationDao = new EmployeeOutstationDao()
+    this.applicantFormDao = new ApplicantFormDao()
     this.emailHelper = new EmailHelper();
   }
 
@@ -206,6 +210,8 @@ class EmployeeService {
   deleteEmployee = async (id) => {
     const message = "Employee successfully deleted!";
 
+    await this.applicantFormDao.deleteByWhere({ employee_id: id })
+    await this.employeeOutstationDao.deleteByWhere({ employee_id: id })
     let dt = await this.employeeDao.deleteByWhere({ id });
 
     if (!dt) {
