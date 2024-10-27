@@ -32,9 +32,21 @@ class EmployeeJobdeskService {
     };
 
     createBulkData = async (body) => {
-        const { asessor_ids, employee_ids } = body
+        let { asessor_ids, employee_ids, all_employee, all_assesor } = body
         delete body.employee_ids
         let payload = []
+
+        if(all_employee){
+            const employeeData =  await this.employeeDao.getOnlyId({ })
+            if (!employeeData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Tidak ada data employee");
+            employee_ids = employeeData
+        }
+
+        if(all_assesor){
+            const employeeData =  await this.employeeDao.getOnlyId({ is_asessor: true })
+            if (!employeeData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Tidak ada assesor");
+            asessor_ids = employeeData
+        }
 
         if (asessor_ids) body.asessor_ids = this.formatAssesorIds(asessor_ids)
         employee_ids.forEach((employee_id) => {

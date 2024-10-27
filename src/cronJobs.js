@@ -1,5 +1,4 @@
 const cron = require('node-cron');
-const sycnReportAccessByPayment = require('./service/cron/SyncReportAccessByPaymentBills');
-
+const closeJobVacancy = require("./service/cron/CloseVacancy")
 // Sync report access by bills
-cron.schedule('*/30 * * * *', sycnReportAccessByPayment);
+cron.schedule('0 * * * *', closeJobVacancy);
