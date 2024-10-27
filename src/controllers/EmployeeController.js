@@ -112,13 +112,13 @@ class EmployeeController {
     try {
       const page = req.query.page ? req.query.page != "0" ? +req.query.page - 1 : 0 : 0
       const limit = +req.query.limit || 10;
-      const { search, division_id, status, isAssign, have_account } = req.query
+      const { search, division_id, status, isAssign, have_account, sort_name } = req.query
       const offset = limit * page;
 
       const resData = await this.employeeService.showPage(
         page,
         limit,
-        { search, isAssign, division_id, status, have_account },
+        { search, isAssign, division_id, status, have_account, sort_name },
         offset
       );
 
@@ -128,6 +128,17 @@ class EmployeeController {
       res.status(httpStatus.BAD_GATEWAY).send(e);
     }
   };
+  
+  showAttachment = async (req, res) => {
+    try {
+      const { employee } = req.user
+      const resData = await this.employeeService.showAttachmentByUser(employee?.id)
+      res.status(resData.statusCode).send(resData.response);
+    } catch (e) {
+      console.log(e)
+      res.status(httpStatus.BAD_GATEWAY).send(e);
+    }
+  }
 
   delete = async (req, res) => {
     try {

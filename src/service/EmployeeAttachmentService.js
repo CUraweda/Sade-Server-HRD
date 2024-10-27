@@ -1,10 +1,12 @@
 const httpStatus = require("http-status");
 const EmployeeAttachmentDao = require("../dao/EmployeeAttachmentDao");
 const responseHandler = require("../helper/responseHandler");
+const EmployeesDao = require("../dao/EmployeeDao");
 
 class EmployeeAttachmentService {
     constructor() {
         this.employeeAttachmentDao = new EmployeeAttachmentDao();
+        this.employeeDao = new EmployeesDao()
     }
 
     create = async (body) => {

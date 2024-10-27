@@ -3,11 +3,16 @@ const EmployeeJobdeskDao = require("../dao/EmployeeJobdeskDao");
 const responseHandler = require("../helper/responseHandler");
 const constant = require("../config/constant");
 const EmployeesDao = require("../dao/EmployeeDao");
+const e = require("express");
 
 class EmployeeJobdeskService {
     constructor() {
         this.employeeJobdeskDao = new EmployeeJobdeskDao();
         this.employeeDao = new EmployeesDao()
+    }
+
+    formatAssesorIds = (ids) => {
+        return ids.map(id => `|${id}|`).join(',');
     }
 
     addEmployeeGrade = (employee, jobdesk_grade) => {
@@ -21,6 +26,24 @@ class EmployeeJobdeskService {
 
     create = async (body) => {
         const employeeJobdeskData = await this.employeeJobdeskDao.create(body);
+        if (!employeeJobdeskData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Employee Jobdesk Gagal dibuat");
+
+        return responseHandler.returnSuccess(httpStatus.CREATED, "Data Employee Jobdesk Berhasil dibuat", employeeJobdeskData);
+    };
+
+    createBulkData = async (body) => {
+        const { asessor_ids, employee_ids } = body
+        delete body.employee_ids
+        let payload = []
+
+        if (asessor_ids) body.asessor_ids = this.formatAssesorIds(asessor_ids)
+        employee_ids.forEach((employee_id) => {
+            payload.push({
+                ...body, employee_id
+            })
+        })
+
+        const employeeJobdeskData = await this.employeeJobdeskDao.bulkCreate(payload);
         if (!employeeJobdeskData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Employee Jobdesk Gagal dibuat");
 
         return responseHandler.returnSuccess(httpStatus.CREATED, "Data Employee Jobdesk Berhasil dibuat", employeeJobdeskData);
@@ -82,9 +105,12 @@ class EmployeeJobdeskService {
     };
 
     showPage = async (page, limit, offset, filter) => {
+        if (filter.assesor_assigned) {
+            if (!filter.assesor_assigned?.is_asessor) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Anda bukan seorang assesor");
+        }
+
         const totalRows = await this.employeeJobdeskDao.getCount(filter);
         const totalPage = Math.ceil(totalRows / limit);
-
         const result = await this.employeeJobdeskDao.getPage(offset, limit, filter);
 
         return responseHandler.returnSuccess(httpStatus.OK, "Data Employee Jobdesk Berhasil diambil",

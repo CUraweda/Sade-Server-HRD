@@ -46,6 +46,12 @@ router.post(
     auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11]),
     employeeJobdeskController.createOne
 )
+router.post(
+    "/create-bulk",
+    employeeJobdeskValidator.createBulkValidator,
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11]),
+    employeeJobdeskController.createBulk
+)
 
 router.put(
     "/finish/:id",

@@ -4,6 +4,7 @@ const EmployeeAnnouncementService = require("../service/EmployeeAnnouncementServ
 class EmployeeAnnouncementController {
     constructor() {
         this.employeeAnnouncementService = new EmployeeAnnouncementService();
+
     }
 
     getAll = async (req, res) => {

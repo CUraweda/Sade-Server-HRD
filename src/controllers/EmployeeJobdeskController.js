@@ -10,15 +10,18 @@ class EmployeeJobdeskController {
         try {
             const page = +req.query.page || 0;
             const limit = +req.query.limit || 10;
-            const { search, employee_id, is_graded } = req.query;
+            let { search, employee_id, is_graded, asessor_assigned } = req.query;
 
-
+            if(asessor_assigned){
+                const { employee } = req.user
+                asessor_assigned = { id: employee.id, is_asessor: employee.is_asessor }
+            }
             const offset = limit * page;
             const resData = await this.employeeJobdeskService.showPage(
                 page,
                 limit,
                 offset,
-                { search, employee_id, is_graded}
+                { search, employee_id, is_graded, asessor_assigned}
             );
 
             res.status(resData.statusCode).send(resData.response);
@@ -89,6 +92,17 @@ class EmployeeJobdeskController {
     createOne = async (req, res) => {
         try {
             const resData = await this.employeeJobdeskService.create(req.body);
+
+            res.status(resData.statusCode).send(resData.response);
+        } catch (e) {
+            console.log(e);
+            res.status(httpStatus.BAD_GATEWAY).send(e);
+        }
+    };
+
+    createBulk = async (req, res) => {
+        try {
+            const resData = await this.employeeJobdeskService.createBulkData(req.body);
 
             res.status(resData.statusCode).send(resData.response);
         } catch (e) {

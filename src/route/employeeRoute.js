@@ -71,6 +71,11 @@ router.get(
   employeeController.showMe
 )
 router.get(
+  "/me-attachment",
+  auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11]),
+  employeeController.showAttachment
+)
+router.get(
   "/detail/:id",
   auth([1, 2, 3, 4, 5, 6]),
   employeeController.showDetail

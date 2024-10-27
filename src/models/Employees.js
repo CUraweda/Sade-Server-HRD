@@ -86,7 +86,8 @@ module.exports = (sequelize, DataTypes) => {
       is_outstation: DataTypes.BOOLEAN,
       active_outstation_id: DataTypes.INTEGER,
       is_asessor: DataTypes.BOOLEAN,
-      raw_workhour: DataTypes.INTEGER
+      raw_workhour: DataTypes.INTEGER,
+      needed_employee_files: DataTypes.STRING
     },
     {
       sequelize,

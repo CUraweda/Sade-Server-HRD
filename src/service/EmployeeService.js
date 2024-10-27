@@ -134,6 +134,17 @@ class EmployeeService {
     return responseHandler.returnSuccess(httpStatus.OK, "Succesfully finish the action", {});
   };
 
+  addEmployeeFiles = async (files, id) => {
+    if (files.length < 1) return responseHandler.returnError(httpStatus.BAD_REQUEST, "No file to be added on employee")
+    const employeeData = await this.employeeDao.findById(id)
+    if (!employeeData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Failed to find employee data")
+    employeeData.needed_employee_files = employeeData.needed_employee_files != "" ? employeeData.needed_employee_files.split(",") : []
+    const updatedData = { needed_employee_files: [...employeeData.needed_employee_files, ...files].join(",") }
+    const updatedEmployee = await this.employeeDao.updateById(updatedData, id)
+    if (!updatedEmployee) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Failed to update employee data")
+    return responseHandler.returnSuccess(httpStatus.OK, "Succesfully added new attachment", {});
+  }
+
   showEmployee = async (id) => {
     const message = "Employee successfully retrieved!";
 
@@ -148,6 +159,14 @@ class EmployeeService {
     }
 
     return responseHandler.returnSuccess(httpStatus.OK, message, dt);
+  };
+
+  showAttachmentByUser = async (id) => {
+    if (!id) return responseHandler.returnError(httpStatus.UNPROCESSABLE_ENTITY, "Tidak didapatkan data karyawan")
+    const employeeData = await this.employeeDao.findById(id);
+    if (!employeeData) return responseHandler.returnError(httpStatus.UNPROCESSABLE_ENTITY, "Tidak didapatkan data karyawan")
+    const employeeFiles = employeeData.needed_employee_files != "" ? employeeData.needed_employee_files.split(",") : []
+    return responseHandler.returnSuccess(httpStatus.OK, "Data attachment berhasil didapatkan", employeeFiles);
   };
 
   showByUser = async (data) => {
@@ -222,6 +241,20 @@ class EmployeeService {
     }
 
     return responseHandler.returnSuccess(httpStatus.OK, message, dt);
+  };
+
+  deleteAttachment = async (id, indexs) => {
+    const employeeData = await this.employeeDao.findById(id)
+    if (!employeeData) return responseHandler.returnError(httpStatus.UNPROCESSABLE_ENTITY, "Data Employee TIdak Ditemukan")
+    const attachmentData = employeeData.needed_employee_files != "" ? employeeData.needed_employee_files.split(",") : []
+    if (attachmentData.length < 1) return responseHandler.returnError(httpStatus.UNPROCESSABLE_ENTITY, "Tidak ada attachment untuk dihapus")
+    indexs.forEach(index => {
+      attachmentData.splice(index, 1);
+    });
+    const updatedEmployee = await this.employeeDao.updateById({ needed_employee_files: attachmentData.join(",") }, id)
+    if (!updatedEmployee) return responseHandler.returnError(httpStatus.UNPROCESSABLE_ENTITY, "Gagal mengupdate data")
+
+    return responseHandler.returnSuccess(httpStatus.OK, "Berhasil menghapus attachment", {});
   };
 }
 

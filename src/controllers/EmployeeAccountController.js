@@ -93,6 +93,18 @@ class EmployeeAccountController {
     }
   }
 
+
+  generateGaji = async (req, res) => {
+    try {
+      const resData = await this.employeeAccountService.generateSlipGaji();
+
+      res.status(resData.statusCode).send(resData.response);
+    } catch (e) {
+      console.log(e);
+      res.status(httpStatus.BAD_GATEWAY).send(e);
+    }
+  }
+
   createMonthly = async (req, res) => {
     try {
       const resData = await this.employeeAccountService.createMonthly(req.body);

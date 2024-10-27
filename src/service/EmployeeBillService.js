@@ -21,6 +21,8 @@ class EmployeeBillService {
                 return "loan"
             case "Tunjangan":
                 return "variable_salary"
+            case "Fasilitas":
+                return "facility"
             default:
                 return false
         }
@@ -62,12 +64,9 @@ class EmployeeBillService {
         if (body.amount) {
             const amountDiff = dataExist.type_id != body.type_id ? body.amount :  body.amount - dataExist.amount
             identifierChange = this.changeNameToIdentifier(identifierChange)
-            console.log(employeeaccount[identifierChange], amountDiff)
             payload[identifierChange] = employeeaccount[identifierChange] + amountDiff
-            console.log(employeeaccount[identifierChange], amountDiff)
         }
         if(Object.keys(payload).length > 0) {
-            console.log(payload)
             const updateAccount = await this.employeeAccountDao.hardUpdateCounter(dataExist.employeeaccount.id, payload)
             if (!updateAccount) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Employee Account Counter missmatch, please check");
         }
