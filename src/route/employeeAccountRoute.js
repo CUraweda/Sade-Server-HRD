@@ -30,13 +30,18 @@ router.get(
     employeeAccountController.getRecapYear
 )
 router.get(
+    "/generate-slip-gaji",
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]),
+    employeeAccountController.generateGaji
+)
+router.get(
     "/:id",
     auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]),
     employeeAccountController.getOne
 )
 
 router.post(
-    "/create-monthly",
+    "/create-monthly", 
     auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]),
     employeeAccountController.createMonthly
 )

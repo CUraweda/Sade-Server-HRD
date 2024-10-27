@@ -136,14 +136,14 @@ class UserDao extends SuperDao {
         [Op.or]: [
           {
             full_name: {
-              [Op.like]: "%" + search + "%",
+              [Op.like]: "%" + search + "%"
             },
           },
           {
             email: {
               [Op.like]: "%" + search + "%",
             },
-          },
+          },AZws
         ],
       },
     });

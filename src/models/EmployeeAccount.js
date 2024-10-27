@@ -31,7 +31,8 @@ module.exports = (sequelize, DataTypes) => {
             fixed_salary: DataTypes.DOUBLE,
             variable_salary: DataTypes.DOUBLE,
             loan: DataTypes.DOUBLE,
-            cooperative: DataTypes.DOUBLE
+            cooperative: DataTypes.DOUBLE,
+            facility: DataTypes.DOUBLE
         },
         {
             sequelize,

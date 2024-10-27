@@ -28,7 +28,8 @@ module.exports = (sequelize, DataTypes) => {
             finished_at: DataTypes.DATE,
             is_graded: DataTypes.BOOLEAN,
             graded_at: DataTypes.DATE,
-            grade: DataTypes.INTEGER
+            grade: DataTypes.INTEGER,
+            asessor_ids: DataTypes.STRING
         },
         {
             sequelize,

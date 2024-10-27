@@ -12,7 +12,7 @@ class EmployeeJobdeskDao extends SuperDao {
     }
 
     async getCount(filter) {
-        let { search, employee_id } = filter
+        let { search, employee_id, asessor_assigned } = filter
         if (!search) search = ""
         return EmployeeJobdesk.count({
             where: {
@@ -21,6 +21,7 @@ class EmployeeJobdeskDao extends SuperDao {
                         "$employee.full_name$": { [Op.like]: "%" + search + "%" }
                     },
                 ],
+                ...(asessor_assigned && { asessor_ids: { [Op.like]: `%|${asessor_assigned.id}|%` } }),
                 ...(employee_id && { employee_id })
             },
             include: [
@@ -39,7 +40,7 @@ class EmployeeJobdeskDao extends SuperDao {
     }
 
     async getPage(offset, limit, filter) {
-        let { search, employee_id, is_graded } = filter
+        let { search, employee_id, is_graded, asessor_assigned } = filter
         if (!search) search = ""
         if (is_graded) is_graded = is_graded != "0" ? true : false
         return EmployeeJobdesk.findAll({
@@ -49,6 +50,7 @@ class EmployeeJobdeskDao extends SuperDao {
                         "$employee.full_name$": { [Op.like]: "%" + search + "%" }
                     },
                 ],
+                ...(asessor_assigned && { asessor_ids: { [Op.like]: `%|${asessor_assigned.id}|%` } }),
                 ...(is_graded && { is_graded }),
                 ...(employee_id && { employee_id })
             },

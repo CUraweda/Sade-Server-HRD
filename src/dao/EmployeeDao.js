@@ -53,7 +53,8 @@ class EmployeesDao extends SuperDao {
   }
 
   async getEmployeesPage(filter, offset, limit) {
-    const { search, division_id, status, have_account } = filter
+    let { search, division_id, status, have_account, sort_name } = filter
+    sort_name = sort_name === "1" ? true : false
     return Employees.findAll({
       where: {
         ...(status && { employee_status: { [Op.like]: "%" + status + "%" } }),
@@ -140,7 +141,11 @@ class EmployeesDao extends SuperDao {
       ],
       offset: offset,
       limit: limit,
-      order: [["id", "DESC"]],
+      ...(sort_name ? {
+        order: [["full_name", "ASC"]]
+      } : { 
+        order: [["id", "DESC"]],
+      })
     });
   }
 
