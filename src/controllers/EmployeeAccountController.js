@@ -1,6 +1,7 @@
 const httpStatus = require("http-status");
 const EmployeeAccountService = require("../service/EmployeeAccountService");
-
+const PDFGenerator = require('../config/LaTex')
+const pdfGenerator = new PDFGenerator()
 class EmployeeAccountController {
   constructor() {
     this.employeeAccountService = new EmployeeAccountService();
@@ -96,7 +97,7 @@ class EmployeeAccountController {
 
   generateGaji = async (req, res) => {
     try {
-      const resData = await this.employeeAccountService.generateSlipGaji();
+      const resData = pdfGenerator.generateSlipGaji()
 
       res.status(resData.statusCode).send(resData.response);
     } catch (e) {

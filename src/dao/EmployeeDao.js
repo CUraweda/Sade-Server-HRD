@@ -178,6 +178,14 @@ class EmployeesDao extends SuperDao {
     })
   }
 
+  async getOnlyId(where) {
+    const employeeData = await Employees.findAll({
+      where, attributes: ['id']
+    })
+    if(employeeData.length < 1) return false
+    return employeeData.map(employee => employee.id);
+  }
+
   getMe(id) {
     return Employees.findOne({
       where: { id },
