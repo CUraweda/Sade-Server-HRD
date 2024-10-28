@@ -33,9 +33,9 @@ passport.use("jwt", jwtStrategy);
 app.get("/", async (req, res) => {
   res.status(200).send(`Congratulations! API is working in port ${process.env.PORT}`);
 });
-app.use("/stg-server1/api", routes);
-app.use("/stg-server1/public", express.static(path.join(__dirname, '../public')));
-app.use("/stg-server1/training-attendance", express.static(path.join(__dirname, '../files/attendance')));
+app.use("/api", routes);
+app.use("/public", express.static(path.join(__dirname, '../public')));
+app.use("/training-attendance", express.static(path.join(__dirname, '../files/attendance')));
 
 app.use((req, res, next) => { next(new ApiError(httpStatus.NOT_FOUND, "Not found")); });
 app.use(errorConverter);
