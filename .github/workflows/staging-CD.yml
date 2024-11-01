@@ -2,9 +2,9 @@ name: Production CD
 
 on:
   push:
-    branches: [ main ]
+    branches: [ dev ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "dev" ]
 
 jobs:
   build:
@@ -18,13 +18,13 @@ jobs:
       - name: Deploy using ssh
         uses: appleboy/ssh-action@v1.1.0
         with:
-          host: ${{ secrets.PROD_HOST }}
-          username: ${{ secrets.PROD_USERNAME }}
-          key: ${{ secrets.PROD_PRIVATE_KEY }}
+          host: ${{ secrets.STAGING_HOST }}
+          username: ${{ secrets.STAGING_USERNAME }}
+          key: ${{ secrets.STAGING_PRIVATE_KEY }}
           port: 22
           debug: true
           script: |
-            cd production/Sade-Server-HRD
+            cd staging/Sade-Server-HRD
             git pull origin main
             npx sequelize db:migrate 
             npm i
