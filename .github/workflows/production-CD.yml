@@ -7,7 +7,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    environment: Ticketing-ENV
+    environment: HRD-ENV
 
     steps:
       - name: Checkout code
