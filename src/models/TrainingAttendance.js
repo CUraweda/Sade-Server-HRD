@@ -11,7 +11,6 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // Define associations here
       this.belongsTo(models.training, { foreignKey: 'training_id' });
-      this.belongsTo(models.weekday, { foreignKey: 'day_id' });
     }
   }
   
@@ -20,10 +19,7 @@ module.exports = (sequelize, DataTypes) => {
         training_id: DataTypes.INTEGER,
         title: DataTypes.STRING,
         img_path: DataTypes.TEXT,
-        longitude: DataTypes.STRING,
-        latitude: DataTypes.STRING,
         description: DataTypes.TEXT,
-        day_id: DataTypes.INTEGER        
     },
     {
       sequelize,

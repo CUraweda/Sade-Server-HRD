@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+
+      * {
+        font-family: Inter;
+        font-weight: 600;
+      }
+
+      .container {
+        padding-inline: 3rem;
+      }
+
+      .container-style {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+        margin-top: 3rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="container-style">
+        <div>
+          <div>Yth. {{applicant_name}}</div>
+          <div>{{applicant_address}}</div>
+          <div>{{applicant_phone}}</div>
+          <div>{{applicant_email}}</div>
+        </div>
+
+        <div>Perihal: Penolakan Hasil Masa Percobaan Magang</div>
+
+        <div>Dengan Hormat,</div>
+
+        <div>
+          Setelah mengevaluasi hasil masa percobaan magang Anda di
+          {{company_name}} yang berlangsung dari {{start_date}} hingga
+          {{end_date}}, kami sangat menghargai usaha dan kontribusi yang telah
+          Anda berikan selama periode tersebut.
+        </div>
+
+        <div>
+          Namun, berdasarkan penilaian dan evaluasi yang telah kami lakukan,
+          kami memutuskan untuk tidak melanjutkan masa magang Anda ke tahap
+          berikutnya di perusahaan kami. Keputusan ini didasarkan pada beberapa
+          pertimbangan, termasuk {{reason}}.
+        </div>
+
+        <div>
+          Kami ingin menekankan bahwa keputusan ini bukan berarti Anda tidak
+          memiliki potensi. Kami percaya bahwa Anda memiliki kemampuan dan
+          keterampilan yang baik, namun saat ini mungkin belum sesuai dengan
+          kebutuhan dan standar yang kami tetapkan. Kami berharap Anda dapat
+          terus mengembangkan kemampuan Anda dan mendapatkan pengalaman berharga
+          di tempat lain.
+        </div>
+
+        <div>
+          Kami juga berterima kasih atas dedikasi dan kerjasama Anda selama masa
+          magang di {{company_name}}. Jika Anda membutuhkan surat referensi atau
+          ada hal lain yang ingin didiskusikan, jangan ragu untuk menghubungi
+          kami.
+        </div>
+
+        <div>Kami berharap yang terbaik untuk karier dan masa depan Anda.</div>
+
+        <div>
+          Hormat Kami,<br />{{sender_name}}<br />{{sender_position}}<br />{{company_name}}
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

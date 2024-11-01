@@ -11,21 +11,17 @@ module.exports = (sequelize, DataTypes) => {
         static associate(models) {
             // Define associations here
             this.belongsTo(models.division, { foreignKey: 'division_id' });
-            this.belongsTo(models.weekday, { foreignKey: 'weekday_id' });
             this.hasMany(models.employeeattendance, { foreignKey: "worktime_id" })
         }
     }
 
     Worktime.init(
         {
-            employee_id: DataTypes.INTEGER,
-            approver_id: DataTypes.INTEGER,
-            type: DataTypes.STRING,
-            status: DataTypes.STRING,
-            description: DataTypes.TEXT,
-            is_approved: DataTypes.BOOLEAN,
-            start_date: DataTypes.DATE,
-            end_date: DataTypes.DATE
+            division_id: DataTypes.INTEGER,
+            uid: DataTypes.STRING,
+            type: DataTypes.ENUM("MASUK", "KELUAR"),
+            start_time: DataTypes.TIME,
+            end_time: DataTypes.TIME
         },
         {
             sequelize,

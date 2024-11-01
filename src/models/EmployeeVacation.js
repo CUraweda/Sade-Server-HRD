@@ -10,8 +10,8 @@ module.exports = (sequelize, DataTypes) => {
          */
         static associate(models) {
             // Define associations here
-            this.belongsTo(models.employees, { foreignKey: 'employee_id' });
-            this.belongsTo(models.employees, { foreignKey: 'approver_id' });
+            this.belongsTo(models.employees, { foreignKey: 'employee_id', as: "employee" });
+            this.belongsTo(models.employees, { foreignKey: 'approver_id', as: "approver" });
         }
     }
 
@@ -23,8 +23,10 @@ module.exports = (sequelize, DataTypes) => {
             status: DataTypes.STRING,
             description: DataTypes.TEXT,
             is_approved: DataTypes.BOOLEAN,
+            file_path: DataTypes.STRING,
             start_date: DataTypes.DATE,
-            end_date: DataTypes.DATE
+            end_date: DataTypes.DATE,
+            day_differences: DataTypes.INTEGER
         },
         {
             sequelize,

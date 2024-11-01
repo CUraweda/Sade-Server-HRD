@@ -10,15 +10,47 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Employees.belongsTo(models.user, { foreignKey: "user_id" })
+      // Employees.hasMany(models.employeeoutstation, { foreignKey: "employee_id" })
       Employees.hasMany(models.formteacher, {
         foreignKey: "employee_id",
       });
       Employees.hasMany(models.formsubject, {
         foreignKey: "employee_id",
       });
+      Employees.hasMany(models.employeeattendance, {
+        foreignKey: "employee_id",
+      });
+      Employees.hasOne(models.headmaster, {
+        foreignKey: "employee_id",
+      });
+      Employees.hasMany(models.formextra, {
+        foreignKey: "employee_id",
+      });
       Employees.belongsTo(models.user, {
         foreignKey: "user_id",
       });
+      Employees.belongsTo(models.division, {
+        foreignKey: "division_id",
+      });
+      Employees.hasMany(models.employeeattendance, {
+        foreignKey: "employee_id"
+      })
+      Employees.hasMany(models.employeevacation, {
+        foreignKey: "employee_id",
+      })
+      Employees.hasMany(models.employeeattachment, {
+        foreignKey: "employee_id",
+      })
+      Employees.hasMany(models.formposition, {
+        foreignKey: "employee_id",
+      })
+      Employees.hasMany(models.training, {
+        foreignKey: "employee_id",
+      })
+      Employees.hasMany(models.employeeaccount, {
+        foreignKey: "employee_id",
+      })
+      
     }
   }
   Employees.init(
@@ -26,15 +58,18 @@ module.exports = (sequelize, DataTypes) => {
       user_id: DataTypes.INTEGER,
       employee_no: DataTypes.STRING,
       full_name: DataTypes.STRING,
-    gender: DataTypes.STRING,
+      email: DataTypes.STRING,
+      phone: DataTypes.STRING,
+      nik: DataTypes.STRING,
+      religion: DataTypes.STRING,
+      gender: DataTypes.STRING,
       pob: DataTypes.STRING,
       dob: DataTypes.DATE,
-      religion: DataTypes.STRING,
       marital_status: DataTypes.STRING,
       last_education: DataTypes.STRING,
+      major: DataTypes.STRING,
       certificate_year: DataTypes.STRING,
       is_education: DataTypes.STRING,
-      major: DataTypes.STRING,
       employee_status: DataTypes.STRING,
       work_start_date: DataTypes.STRING,
       occupation: DataTypes.STRING,
@@ -42,8 +77,17 @@ module.exports = (sequelize, DataTypes) => {
       duty: DataTypes.STRING,
       job_desc: DataTypes.STRING,
       grade: DataTypes.STRING,
-      email: DataTypes.STRING,
-      user_id: DataTypes.INTEGER,
+      raw_grade: DataTypes.INTEGER,
+      raw_finished_task: DataTypes.INTEGER,
+      still_in_probation: DataTypes.BOOLEAN,
+      probation_start_date: DataTypes.DATE,
+      probation_end_date: DataTypes.DATE,
+      division_id: DataTypes.INTEGER,
+      is_outstation: DataTypes.BOOLEAN,
+      active_outstation_id: DataTypes.INTEGER,
+      is_asessor: DataTypes.BOOLEAN,
+      raw_workhour: DataTypes.INTEGER,
+      needed_employee_files: DataTypes.STRING
     },
     {
       sequelize,

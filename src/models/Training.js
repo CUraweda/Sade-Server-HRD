@@ -1,3 +1,4 @@
+
 'use strict';
 const { Model } = require('sequelize');
 
@@ -10,8 +11,8 @@ module.exports = (sequelize, DataTypes) => {
          */
         static associate(models) {
             // Define associations here
-            this.belongsTo(models.employees, { foreignKey: 'employee_id' });
-            this.belongsTo(models.employees, { foreignKey: 'proposer_id' });
+            this.belongsTo(models.employees, { foreignKey: 'employee_id', as: "employee" });
+            this.belongsTo(models.employees, { foreignKey: 'proposer_id', as: "proposer" });
             this.hasMany(models.trainingattendance, { foreignKey: "training_id" })
         }
     }
@@ -24,10 +25,9 @@ module.exports = (sequelize, DataTypes) => {
             purpose: DataTypes.TEXT,
             status: DataTypes.STRING,
             location: DataTypes.STRING,
-            longitude: DataTypes.STRING,
-            latitude: DataTypes.STRING,
             start_date: DataTypes.DATE,
-            end_date: DataTypes.DATE
+            end_date: DataTypes.DATE,
+            is_active: DataTypes.BOOLEAN
         },
         {
             sequelize,

@@ -11,6 +11,7 @@ const Subject = models.subjects
 const FormXtra = models.formextra
 const SubjectXtra = models.subjectextra
 const Headmaster = models.headmaster
+const EmployeeOutstation = models.employeeoutstation
 
 class UserDao extends SuperDao {
   constructor() {
@@ -122,64 +123,8 @@ class UserDao extends SuperDao {
       where: { uuid },
       include: [
         { 
-          model: Employee, 
-          required: false, 
-          attributes: ["id", "full_name"],
-          include: [
-            {
-              model: Headmaster,
-              attributes: ["id"],
-              where: {
-                is_active: true
-              },
-              required: false 
-            },
-            {
-              model: FormTeacher,
-              attributes: ["id", "class_id", "academic_year"],
-              where: {
-                is_active: true
-              },
-              required: false,
-              include: [
-                {
-                  model: Class,
-                  attributes: ["id", "level", "class_name"],
-                  required: false
-                }
-              ]
-            },
-            {
-              model: FormSubject,
-              attributes: ["id", "subject_id", "academic_year"],
-              where: {
-                is_active: true
-              },  
-              required: false,
-              include: [
-                {
-                  model: Subject,
-                  attributes: ["id", "level", "name"],
-                  required: false
-                }
-              ]
-            },
-            {
-              model: FormXtra,
-              attributes: ["id"],
-              where: {
-                is_active: true
-              },  
-              required: false,
-              include: [
-                {
-                  model: SubjectXtra,
-                  attributes: ["id", "name"],
-                  required: false
-                }
-              ]
-            }
-          ]
+          model: Employee,
+          required: false,
         }
       ]
     });
@@ -191,14 +136,14 @@ class UserDao extends SuperDao {
         [Op.or]: [
           {
             full_name: {
-              [Op.like]: "%" + search + "%",
+              [Op.like]: "%" + search + "%"
             },
           },
           {
             email: {
               [Op.like]: "%" + search + "%",
             },
-          },
+          },AZws
         ],
       },
     });

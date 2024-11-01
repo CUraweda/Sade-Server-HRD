@@ -15,12 +15,13 @@ module.exports = (sequelize, DataTypes) => {
   
   EmployeePosition.init(
     {
-        name: DataTypes.STRING        
+        name: DataTypes.STRING
     },
     {
       sequelize,
       tableName: 'ref_employee_position',
       modelName: 'employeeposition',
+      timestamps: false
     }
   );
   

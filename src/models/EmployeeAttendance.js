@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
       // Define associations here
       this.belongsTo(models.worktime, { foreignKey: 'worktime_id' });
       this.belongsTo(models.employees, { foreignKey: 'employee_id' });
+      this.belongsTo(models.employeeoutstation, { foreignKey: 'outstation_id' });
     }
   }
   
@@ -22,7 +23,10 @@ module.exports = (sequelize, DataTypes) => {
         uid: DataTypes.STRING,
         description: DataTypes.STRING,
         status: DataTypes.STRING,
-        is_outstation: DataTypes.BOOLEAN        
+        outstation_id: DataTypes.INTEGER,
+        is_outstation: DataTypes.BOOLEAN,
+        file_path: DataTypes.STRING,
+        attendance_time_differences: DataTypes.INTEGER
     },
     {
       sequelize,
@@ -31,6 +35,7 @@ module.exports = (sequelize, DataTypes) => {
       timestamps: true, // Includes created_at and updated_at columns
       underscored: true, // Maps snake_case columns to camelCase properties
     }
+    
   );
   
   return EmployeeAttendance;

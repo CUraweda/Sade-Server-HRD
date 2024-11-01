@@ -21,6 +21,6 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("ref_divison")
+    await queryInterface.dropTable("ref_division")
   }
 };

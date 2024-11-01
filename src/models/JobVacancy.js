@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
          */
         static associate(models) {
             // Define associations here
-            this.belongsTo(models.division, { foreignKey: 'divison_id' });
+            this.belongsTo(models.division, { foreignKey: 'division_id' });
             this.hasMany(models.vacancydetail, { foreignKey: "vacancy_id" })
             this.hasMany(models.applicantform, { foreignKey: "vacancy_id" })
         }
@@ -26,8 +26,6 @@ module.exports = (sequelize, DataTypes) => {
             latitude: DataTypes.STRING,
             start_date: DataTypes.DATE,
             end_date: DataTypes.DATE,
-            max_applicant: DataTypes.INTEGER,
-            applicant_count: DataTypes.INTEGER,
             notes: DataTypes.TEXT,
             status: DataTypes.STRING,
             role: DataTypes.STRING,
