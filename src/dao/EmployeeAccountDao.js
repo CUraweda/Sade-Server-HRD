@@ -117,21 +117,24 @@ class EmployeeaccountDao extends SuperDao {
         })
     }
 
+
     async hardUpdateCounter(id, body) {
         let dataExist = await Employeeaccount.findOne({ where: { id } })
         if (!dataExist) return false
 
-        let { fixed_salary, variable_salary, loan, cooperative } = dataExist
+        let { fixed_salary, variable_salary, loan, cooperative, facility, other_cut, other_income } = dataExist
         if (body.hasOwnProperty('fixed_salary')) fixed_salary = body.fixed_salary;
         if (body.hasOwnProperty('variable_salary')) variable_salary = body.variable_salary;
         if (body.hasOwnProperty('loan')) loan = body.loan;
         if (body.hasOwnProperty('cooperative')) cooperative = body.cooperative;
+        if (body.hasOwnProperty('facility')) facility = body.facility;
+        if (body.hasOwnProperty('other_cut')) other_cut = body.other_cut;
+        if (body.hasOwnProperty('other_income')) other_income = body.other_income;
 
         let payload = {
-            temp_total: fixed_salary + variable_salary - loan - cooperative,
-            fixed_salary, variable_salary, loan, cooperative
+            temp_total: fixed_salary + variable_salary + facility + other_income - loan - cooperative - other_cut,
+            fixed_salary, variable_salary, loan, cooperative, facility, other_cut, other_income
         }
-        console.log(payload)
         return Employeeaccount.update(payload, { where: { id } })
     }
 
@@ -152,4 +155,4 @@ class EmployeeaccountDao extends SuperDao {
     }
 }
 
-module.exports = EmployeeaccountDao;
+module.exports = EmployeeaccountDao

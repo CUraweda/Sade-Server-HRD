@@ -25,6 +25,8 @@ yarn-debug.log*
 yarn-error.log*
 
 .idea
-
+.env
+github
+package-lock.json
 
 main.yml
