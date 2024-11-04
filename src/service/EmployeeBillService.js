@@ -13,7 +13,7 @@ class EmployeeBillService {
         this.billTypeDao = new BillTypeDao()
     }
 
-    changeNameToIdentifier = (name) => {
+    changeNameToIdentifier = (name, subtrac) => {
         switch (name) {
             case "Koperasi":
                 return "cooperative"
@@ -24,7 +24,7 @@ class EmployeeBillService {
             case "Fasilitas":
                 return "facility"
             default:
-                return false
+                return subtrac ? "other_cut" :  "other_income"
         }
     }
 
@@ -48,22 +48,22 @@ class EmployeeBillService {
     }
 
     update = async (id, body) => {
-        const dataExist = await this.employeeBillDao.getWithBillType(id);
+        const dataExist = await this.employeeBillDao.getWithBillType({ id });
         if (!dataExist) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Employee Bill data not found");
         const { employeeaccount, billtype } = dataExist
-        let payload = {}, identifierOld, identifierChange = billtype.name
-
+        let payload = {}, identifierOld, identifierChange = { name: billtype.name, is_subtraction: billtype.is_subtraction }
+        
         if (body.type_id && dataExist.type_id != body.type_id) {
             const billExist = await this.billTypeDao.findById(body.type_id)
-            if (!billExist) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Bill Type didnt exist");
-            identifierOld = this.changeNameToIdentifier(billtype.name)
+            if (!billExist) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Bill Type data not found");
+            identifierOld = this.changeNameToIdentifier(billtype.name, billtype.is_subtraction)
             payload[identifierOld] = employeeaccount[identifierOld] - dataExist.amount
 
-            identifierChange = billExist.name
+            identifierChange = { name: billExist.name, is_subtraction: billExist.is_subtraction }
         }
         if (body.amount) {
             const amountDiff = dataExist.type_id != body.type_id ? body.amount :  body.amount - dataExist.amount
-            identifierChange = this.changeNameToIdentifier(identifierChange)
+            identifierChange = this.changeNameToIdentifier(identifierChange.name, identifierChange.is_subtraction)
             payload[identifierChange] = employeeaccount[identifierChange] + amountDiff
         }
         if(Object.keys(payload).length > 0) {

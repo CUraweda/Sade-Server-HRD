@@ -22,8 +22,8 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-app.use(express.json({limit: '50mb'}));
-app.use(express.urlencoded({limit: '50mb', extended: true}));
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 // jwt authentication
 app.use(passport.initialize());
@@ -34,6 +34,13 @@ app.get("/", async (req, res) => {
   res.status(200).send(`Congratulations! API is working in port ${process.env.PORT}`);
 });
 app.use("/stg-server1/api", routes);
+
+// const PDFDocument = require('pdfkit-table');
+// const { convertToIndonesianRupiahWords } = require('./helper/utils')
+// const fs = require('fs');
+// app.get('/test-pdf', async (req, res) => {
+  
+// })
 app.use("/stg-server1/public", express.static(path.join(__dirname, '../public')));
 app.use("/stg-server1/training-attendance", express.static(path.join(__dirname, '../files/attendance')));
 
