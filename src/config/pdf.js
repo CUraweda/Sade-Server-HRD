@@ -1,18 +1,20 @@
 const PDFDocument = require('pdfkit-table');
 const { convertToIndonesianRupiahWords } = require('../helper/utils')
 const fs = require('fs');
-const constantData = require('../config/constant')
+const constantData = require('../config/constant');
+const path = require('path');
 
 class PDFGenerator {
     constructor() {
-        this.storageUrl = '/public/files/pdf'
+        this.storageUrl = path.join(__dirname, '../../public/files/pdf');
         if (!fs.existsSync(this.storageUrl)) fs.mkdirSync(this.storageUrl, { recursive: true });
     }
 
     async generateSlipGaji(accountData, billData) {
         const doc = new PDFDocument({ margin: 60 });
         const documentFixed = { xStart: doc.opt.margin, yStart: doc.opt.margin, xEnd: doc.page.width - doc.opt.margin, yEnd: doc.page.width - doc.opt.margin }
-        const urlToSave = `Slip-Gaji_${accountData.id}_${accountData.month_id}_${accountData.year}.pdf`
+        const urlToSave = path.join(this.storageUrl, `Slip-Gaji_${accountData.id}_${accountData.month_id}_${accountData.year}.pdf`);
+        console.log(urlToSave)
         const writeStream = fs.createWriteStream(urlToSave);
         const monthConstant = constantData.monthList
 
@@ -130,7 +132,7 @@ class PDFGenerator {
 
         doc.end();
 
-        await writeStream.on('finish', () => { });
+        await new Promise((resolve) => writeStream.on('finish', resolve));
         return urlToSave
     }
 }
