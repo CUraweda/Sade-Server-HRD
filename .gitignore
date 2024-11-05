@@ -13,7 +13,10 @@
 
 #certs
 /src/certs
+.env
+package-lock.json
 
+github
 # misc
 .DS_Store
 .env.local
@@ -25,8 +28,5 @@ yarn-debug.log*
 yarn-error.log*
 
 .idea
-
-github
-package-lock.json
 
 main.yml

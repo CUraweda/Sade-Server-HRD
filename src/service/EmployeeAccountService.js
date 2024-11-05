@@ -199,7 +199,7 @@ class EmployeeAccountService {
         return responseHandler.returnSuccess(httpStatus.OK, "EmployeeAccount data found", Object.values(monthMap));
     }
 
-    showDetail = async (id) => {
+showDetail = async (id) => {
         if (!id) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Please Provide an ID");
         const employeeAccountData = await this.employeeAccountDao.getDetail(id)
         if (!employeeAccountData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "EmployeeAccount data not found");
