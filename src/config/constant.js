@@ -10,6 +10,10 @@ module.exports = {
         success: "Lulus",
         fail: "Gugur"
     },
+    trainingSuqqence: {
+        success: "Diterima",
+        fail: "Tidak Diterima"
+    },
     monthList: [
         "Januari",
         "Februari",

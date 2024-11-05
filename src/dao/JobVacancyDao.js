@@ -63,6 +63,7 @@ class JobVacancyDao extends SuperDao {
                     where: { ...(user_id && { user_id }) },
                     include: {
                         model: User,
+                        attributes: ["full_name", "email", "id"],
                         required: false
                     }
                 }

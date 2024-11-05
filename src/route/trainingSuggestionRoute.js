@@ -34,6 +34,13 @@ router.post(
 )
 
 router.put(
+    "/approve/:id",
+    trainingSuggestionValidator.approveValidator,
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11]),
+    trainingSuggestionController.approveRequest
+)
+
+router.put(
     "/update/:id",
     trainingSuggestionValidator.createUpdateValidator,
     auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11]),
