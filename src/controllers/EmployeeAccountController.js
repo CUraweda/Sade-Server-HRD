@@ -1,7 +1,5 @@
 const httpStatus = require("http-status");
 const EmployeeAccountService = require("../service/EmployeeAccountService");
-const PDFGenerator = require('../config/LaTex')
-const pdfGenerator = new PDFGenerator()
 class EmployeeAccountController {
   constructor() {
     this.employeeAccountService = new EmployeeAccountService();
@@ -86,18 +84,6 @@ class EmployeeAccountController {
   createOne = async (req, res) => {
     try {
       const resData = await this.employeeAccountService.create(req.body);
-
-      res.status(resData.statusCode).send(resData.response);
-    } catch (e) {
-      console.log(e);
-      res.status(httpStatus.BAD_GATEWAY).send(e);
-    }
-  }
-
-
-  generateGaji = async (req, res) => {
-    try {
-      const resData = pdfGenerator.generateSlipGaji()
 
       res.status(resData.statusCode).send(resData.response);
     } catch (e) {

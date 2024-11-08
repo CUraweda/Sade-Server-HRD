@@ -36,6 +36,28 @@ var readHTMLFile = function (path, callback) {
 };
 
 class EmailHelper {
+  constructor() {
+    this.email = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_ACCOUNT,
+        pass: process.env.PASSWORD
+      }
+    })
+  }
+
+  async sendSlipGaji(to, attachment){
+    try{
+      const currentDate = new Date().toISOString().split('T')[0]
+      await this.email.sendMail(
+        { from: process.env.EMAIL_FROM, to, subject: `Slip Gaji - ${currentDate}` },
+        attachment
+      )
+    }catch(e){
+      console.log(e)
+    }
+  }
+
   async sendEmail(
     webUrl,
     from,

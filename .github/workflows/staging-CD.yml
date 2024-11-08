@@ -25,7 +25,7 @@ jobs:
           debug: true
           script: |
             cd staging/Sade-Server-HRD
-            git pull origin main
+            git pull origin dev
             npx sequelize db:migrate 
             npm i
             pm2 restart 1

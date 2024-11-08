@@ -58,6 +58,7 @@ class EmployeeBillController {
       const resData = await this.employeeBillService.addOne(req.body.employee_id, req.body);
       if (resData.response.status) {
         const { id, account_id } = resData.response.data
+        console.log(id)
         const updateAccount = await this.employeeAccountService.updateTotal(account_id, id)
         if (!updateAccount.response.status) return res.status(updateAccount.statusCode).send(updateAccount.response);
       }

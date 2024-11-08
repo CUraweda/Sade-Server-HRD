@@ -61,6 +61,7 @@ class EmployeeJobdeskDao extends SuperDao {
                     include: [
                         {
                             model: User,
+                            attributes: ["full_name", "email", "id"],
                             required: false
                         }
                     ],
