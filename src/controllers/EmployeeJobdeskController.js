@@ -12,7 +12,7 @@ class EmployeeJobdeskController {
             const limit = +req.query.limit || 10;
             let { search, employee_id, is_graded, asessor_assigned } = req.query;
 
-            if(asessor_assigned){
+            if (asessor_assigned) {
                 const { employee } = req.user
                 asessor_assigned = { id: employee.id, is_asessor: employee.is_asessor }
             }
@@ -21,7 +21,7 @@ class EmployeeJobdeskController {
                 page,
                 limit,
                 offset,
-                { search, employee_id, is_graded, asessor_assigned}
+                { search, employee_id, is_graded, asessor_assigned }
             );
 
             res.status(resData.statusCode).send(resData.response);
@@ -35,7 +35,7 @@ class EmployeeJobdeskController {
         try {
             const id = +req.params.id
             const resData = await this.employeeJobdeskService.showDifferencesDay(id)
-            
+
             res.status(resData.statusCode).send(resData.response);
         } catch (e) {
             console.log(e);
@@ -112,15 +112,15 @@ class EmployeeJobdeskController {
     };
 
     updateFinish = async (req, res) => {
-        try{
+        try {
             const id = +req.params.id;
             const { employee } = req.user
             if (!id) res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Tolong sertakan ID");
-            
+
             const resData = await this.employeeJobdeskService.updateFinish(id, employee);
-        
+
             res.status(resData.statusCode).send(resData.response);
-        }catch(e){
+        } catch (e) {
             console.log(e);
             res.status(httpStatus.BAD_GATEWAY).send(e);
         }
