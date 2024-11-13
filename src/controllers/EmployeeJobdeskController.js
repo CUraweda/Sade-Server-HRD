@@ -115,7 +115,7 @@ class EmployeeJobdeskController {
         try {
             const id = +req.params.id;
             const { employee } = req.user
-            if (!id) res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Tolong sertakan ID");
+            if (!id) return res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Tolong sertakan ID");
 
             const resData = await this.employeeJobdeskService.updateFinish(id, employee);
 
