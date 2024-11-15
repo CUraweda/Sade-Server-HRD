@@ -64,7 +64,7 @@ class TrainingSuggestionService {
     };
 
     showPage = async (page, limit, offset, filter) => {
-        const totalRows = await this.trainingSuggestionDao.getCount(filter);
+    const totalRows = await this.trainingSuggestionDao.getCount(filter);
         const totalPage = Math.ceil(totalRows / limit);
 
         const result = await this.trainingSuggestionDao.getPage(offset, limit, filter);

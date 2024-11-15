@@ -24,7 +24,7 @@ class EmployeeBillService {
             case "Fasilitas":
                 return "facility"
             default:
-                return subtrac ? "other_cut" :  "other_income"
+                return subtrac ? "other_cut" : "other_income"
         }
     }
 
@@ -35,12 +35,15 @@ class EmployeeBillService {
         return responseHandler.returnSuccess(httpStatus.CREATED, "Employee Bill data successfully created", employeeBillData);
     };
 
-    addOne = async (employee_id, body) => {
-        if (!employee_id) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Not an employee");
-        const activeAccount = await this.employee_idAccountDao.getActive(employee_id)
-        if (!activeAccount) return responseHandler.returnError(httpStatus.BAD_REQUEST, "No active account from this employee");
-
-        body.account_id = activeAccount.id
+    addOne = async (identifier, body) => {
+        const { employee_id } = identifier
+        
+        if(employee_id){
+            if (!employee_id) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Not an employee");
+            const activeAccount = await this.employee_idAccountDao.getActive(employee_id)
+            if (!activeAccount) return responseHandler.returnError(httpStatus.BAD_REQUEST, "No active account from this employee");
+            body.account_id = activeAccount.id
+        }
         const employeeBillData = await this.employeeBillDao.create(body);
         if (!employeeBillData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Employee Bill data could not be created");
 
@@ -52,7 +55,7 @@ class EmployeeBillService {
         if (!dataExist) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Employee Bill data not found");
         const { employeeaccount, billtype } = dataExist
         let payload = {}, identifierOld, identifierChange = { name: billtype.name, is_subtraction: billtype.is_subtraction }
-        
+
         if (body.type_id && dataExist.type_id != body.type_id) {
             const billExist = await this.billTypeDao.findById(body.type_id)
             if (!billExist) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Bill Type data not found");
@@ -62,11 +65,11 @@ class EmployeeBillService {
             identifierChange = { name: billExist.name, is_subtraction: billExist.is_subtraction }
         }
         if (body.amount) {
-            const amountDiff = dataExist.type_id != body.type_id ? body.amount :  body.amount - dataExist.amount
+            const amountDiff = dataExist.type_id != body.type_id ? body.amount : body.amount - dataExist.amount
             identifierChange = this.changeNameToIdentifier(identifierChange.name, identifierChange.is_subtraction)
             payload[identifierChange] = employeeaccount[identifierChange] + amountDiff
         }
-        if(Object.keys(payload).length > 0) {
+        if (Object.keys(payload).length > 0) {
             const updateAccount = await this.employeeAccountDao.hardUpdateCounter(dataExist.employeeaccount.id, payload)
             if (!updateAccount) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Employee Account Counter missmatch, please check");
         }

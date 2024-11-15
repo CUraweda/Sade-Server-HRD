@@ -25,6 +25,7 @@ class EmployeeBillValidator {
 
     async addValidator(req, res, next) {
         const schema = Joi.object({
+            account_id: Joi.number().integer(),
             employee_id: Joi.number().integer(),
             type_id: Joi.number().integer().required(),
             description: Joi.string(),
