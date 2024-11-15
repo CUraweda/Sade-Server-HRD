@@ -35,9 +35,9 @@ class EmployeeBillService {
         return responseHandler.returnSuccess(httpStatus.CREATED, "Employee Bill data successfully created", employeeBillData);
     };
 
-    addOne = async (employee, body) => {
-        if (!employee) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Not an employee");
-        const activeAccount = await this.employeeAccountDao.getActive(employee)
+    addOne = async (employee_id, body) => {
+        if (!employee_id) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Not an employee");
+        const activeAccount = await this.employee_idAccountDao.getActive(employee_id)
         if (!activeAccount) return responseHandler.returnError(httpStatus.BAD_REQUEST, "No active account from this employee");
 
         body.account_id = activeAccount.id
