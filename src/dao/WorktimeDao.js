@@ -131,7 +131,8 @@ class WorktimeDao extends SuperDao {
                     },
                     required: false
                 }
-            ]
+            ],
+            order: [['start_time', 'ASC']]
         })
     }
 
