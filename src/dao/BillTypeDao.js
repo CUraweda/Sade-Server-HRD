@@ -34,7 +34,7 @@ class BillTypeDao extends SuperDao {
             },
             offset: offset,
             limit: limit,
-            order: [["id", "DESC"]],
+            order: [["id", "ASC"]],
         });
     }
 }
