@@ -63,7 +63,7 @@ class TrainingService {
     }
 
     showOne = async (id) => {
-        const trainingData = await this.trainingDao.findById(id);
+        const trainingData = await this.trainingDao.getByIdWithEmployee(id)
         if (!trainingData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Training record not found");
 
         return responseHandler.returnSuccess(httpStatus.OK, "Training record found", trainingData);
