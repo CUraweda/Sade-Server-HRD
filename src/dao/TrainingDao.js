@@ -68,6 +68,24 @@ class TrainingDao extends SuperDao {
         })
     }
 
+    async getByIdWithEmployee(id){
+        return Training.findOne({
+            where: { id },
+            include: [
+                {
+                    model: Employees,
+                    as: "proposer",
+                    required: false
+                },
+                {
+                    model: Employees,
+                    as: "employee",
+                    required: false
+                }
+            ],
+        })
+    }
+
     async getClosestActive(employee_id, currentTime) {
         return Training.findAll({
             where: {
