@@ -16,7 +16,7 @@ class EmployeeAttendanceDao extends SuperDao {
     }
 
     async getCount(filter) {
-        let { search, outstation, type, status, division_id, date, employee_id, start_date, end_date } = filter
+        let { search, outstation, type, status, division_id, date, employee_id } = filter
         if (!search) search = ""
 
         return EmployeeAttendance.count({
@@ -42,12 +42,12 @@ class EmployeeAttendanceDao extends SuperDao {
                     },
                 ],
                 ...(employee_id && { employee_id }),
-                ...(date && { created_at: { [Op.startsWith]: date } }),
+                ...(date && { created_at: { [Op.between]: [date.start_date, date.end_date] } }),
                 ...(division_id && { "$worktime.division_id$": division_id }),
                 ...(type && { "$worktime.type$": { [Op.like]: `%${type}%` } }),
                 ...(status && { status }),
                 ...(outstation && { is_outstation: outstation != "1" ? false : true }),
-                ...((start_date && end_date) && { created_at: { [Op.between]: [start_date, end_date] } })
+                // ...((start_date && end_date) && { created_at: { [Op.between]: [start_date, end_date] } })
             },
             include: [
                 {
@@ -69,7 +69,7 @@ class EmployeeAttendanceDao extends SuperDao {
     }
 
     async getPage(offset, limit, filter) {
-        let { search, outstation, type, status, division_id, date, employee_id, start_date, end_date } = filter
+        let { search, outstation, type, status, division_id, date, employee_id,} = filter
         if (!search) search = ""
         return EmployeeAttendance.findAll({
             where: {
@@ -94,12 +94,12 @@ class EmployeeAttendanceDao extends SuperDao {
                     },
                 ],
                 ...(employee_id && { employee_id }),
-                ...(date && { created_at: { [Op.startsWith]: date } }),
+                ...(date && { created_at: { [Op.between]: [date.start_date, date.end_date] } }),
                 ...(division_id && { "$worktime.division_id$": division_id }),
                 ...(type && { "$worktime.type$": { [Op.like]: `%${type}%` } }),
                 ...(status && { status }),
                 ...(outstation && { is_outstation: outstation != "1" ? false : true }),
-                ...((start_date && end_date) && { created_at: { [Op.between]: [start_date, end_date] } })
+                // ...((start_date && end_date) && { created_at: { [Op.between]: [start_date, end_date] } })
             },
             include: [
                 {
@@ -189,14 +189,14 @@ class EmployeeAttendanceDao extends SuperDao {
 
     async deleteAndReduceWorkhour(id) {
         const dataExist = await EmployeeAttendance.findOne({
-            where: { id }, 
+            where: { id },
             include: [{ model: Employee, required: false }]
         })
         if (!dataExist) return false
 
         const deleteData = await EmployeeAttendance.destroy({ where: { id: dataExist.id } })
         if (!deleteData) return false
-        
+
         const raw_workhour = dataExist.employee.raw_workhour - dataExist.attendance_time_differences
         const updateEmployee = await Employee.update({ raw_workhour }, { where: { id: dataExist.employee.id } })
         if (!updateEmployee) return false
@@ -206,13 +206,13 @@ class EmployeeAttendanceDao extends SuperDao {
 
     async totalAttendanceWorktimeRange(start_date, end_date) {
         return EmployeeAttendance.findAll({
-            where: {  
+            where: {
                 attendance_time_differences: { [Op.not]: 0 },
                 createdAt: { [Op.between]: [start_date, end_date] }
             },
             attributes: [
                 [models.sequelize.fn('SUM', models.sequelize.col('attendance_time_differences')), "total_worktime"]
-            ],    
+            ],
 
         })
     }
