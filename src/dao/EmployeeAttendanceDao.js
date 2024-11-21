@@ -1,6 +1,6 @@
 const SuperDao = require("./SuperDao");
 const models = require("../models");
-const { Op, fn, col } = require("sequelize");
+const { Op, fn, col, literal } = require("sequelize");
 const Employees = require("../models/Employees");
 
 const EmployeeAttendance = models.employeeattendance;
@@ -69,7 +69,7 @@ class EmployeeAttendanceDao extends SuperDao {
     }
 
     async getPage(offset, limit, filter) {
-        let { search, outstation, type, status, division_id, date, employee_id,} = filter
+        let { search, outstation, type, status, division_id, date, employee_id, } = filter
         if (!search) search = ""
         return EmployeeAttendance.findAll({
             where: {
@@ -158,32 +158,50 @@ class EmployeeAttendanceDao extends SuperDao {
             include: [
                 {
                     model: EmployeeAttendance,
-                    attributes: [[fn('COUNT', col('employeeattendances.id')), 'attendance_count']],
                     where: {
                         created_at: {
                             [Op.between]: [start_date, end_date]
                         }
                     },
-                    required: false // Use LEFT JOIN to include employees with no attendance records
+                    required: false
                 },
                 {
                     model: EmployeeVacation,
-                    attributes: [[fn('COUNT', col('employeevacations.id')), 'vacation_count']],
                     where: {
-                        start_date: {
-                            [Op.between]: [start_date, end_date]
-                        }
+                        [Op.or]: [
+                            {
+                                start_date: {
+                                    [Op.between]: [start_date, end_date]
+                                }
+                            },
+                            {
+                                end_date: {
+                                    [Op.between]: [start_date, end_date]
+                                }
+                            }
+                        ]
                     },
-                    required: false // Use LEFT JOIN to include employees with no vacation records
+                    required: false
                 }
             ],
-            group: ['employees.id'], // Group by employee to get the correct counts
+            order: [['id', "ASC"]]
         }).then(results => {
-            return results.map(result => ({
-                full_name: result.full_name,
-                attendance: result.employeeattendances[0]?.get('attendance_count') || 0,
-                vacation: result.employeevacations[0]?.get('vacation_count') || 0
-            }));
+            return results.map(result => {
+                const attendanceCount = result.employeeattendances ? result.employeeattendances.length : 0;
+
+                let cutiCount = 0, izinCount = 0
+                if(result.employeevacations.length > 0){
+                    cutiCount = result.employeevacations.filter(vacation => vacation.type === 'CUTI').length
+                    izinCount = result.employeevacations.filter(vacation => vacation.type === 'IZIN').length
+                }
+        
+                return {
+                    full_name: result.full_name,
+                    attendance_count: attendanceCount,
+                    cuti_count: cutiCount,
+                    izin_count: izinCount
+                }
+            })
         });
     }
 
