@@ -113,6 +113,7 @@ class WorktimeDao extends SuperDao {
     }
 
     async getTodayEmployee(employee) {
+        console.log(employee)
         const current = new Date().toISOString().split('T')[0]
         const startDate = `${current}T00:00:00.000Z`
         const endDate = `${current}T23:59:59.999Z`
@@ -153,6 +154,7 @@ class WorktimeDao extends SuperDao {
                     },
                 }
             ],
+            order: [['start_time', 'ASC']]
         })
     }
 }
