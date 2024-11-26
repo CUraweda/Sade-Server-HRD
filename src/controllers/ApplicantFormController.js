@@ -1,5 +1,6 @@
 const httpStatus = require("http-status");
 const ApplicantFormService = require("../service/ApplicantFormService");
+const { string } = require("joi");
 
 class ApplicantFormController {
     constructor() {
@@ -116,6 +117,32 @@ class ApplicantFormController {
         } catch (e) {
             console.log(e);
             res.status(httpStatus.BAD_GATEWAY).send(e);
+        }
+    }
+
+    evaluateSelection = async (req, res) => {
+        try {
+            const id = +req.params.id
+            const { condition } = req.params
+            const resData = await this.applicantFormService.evaluateApplication(id, condition.toString().toLowerCase(), "Selection")
+            
+            res.status(resData.statusCode).send(resData.response);
+        } catch (e) {
+            console.log(e);
+            res.status(httpStatus.BAD_GATEWAY).send({ error: e.message });
+        }
+    }
+
+    evaluatePsychology = async (req, res) => {
+        try {
+            const id = +req.params.id
+            const { condition } = req.params
+            const resData = await this.applicantFormService.evaluateApplication(id, condition.toString().toLowerCase(), "Psychology")
+            
+            res.status(resData.statusCode).send(resData.response);
+        } catch (e) {
+            console.log(e);
+            res.status(httpStatus.BAD_GATEWAY).send({ error: e.message });
         }
     }
 
