@@ -2,6 +2,14 @@ module.exports = {
     firstApplicantFormStatus: "Pendaftaran",
     attendDescription: "Presensi dibuat secara otomatis",
     closeVacancy: "Ditutup",
+    applicantSelectionEvaluation: {
+        success: "Memasuki Test Psikotes",
+        fail: "Gugur"
+    },
+    applicantPsychologyEvaluation: {
+        success: "Menunggu Interview",
+        fail: "Gugur"
+    },
     applicantFirstEvaluation: {
         success: "Memasuki Interview",
         fail: "Gugur"
