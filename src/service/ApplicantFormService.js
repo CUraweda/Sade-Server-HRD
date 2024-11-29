@@ -33,18 +33,32 @@ class ApplicantFormService {
 
     create = async (body) => {
         const applicantFormData = await this.applicantFormDao.create(body);
-        if (!applicantFormData)
-            return responseHandler.returnError(
-                httpStatus.BAD_REQUEST,
-                "Failed to create applicant form"
-            );
+        if (!applicantFormData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Failed to create applicant form");
 
-        return responseHandler.returnSuccess(
-            httpStatus.CREATED,
-            "Applicant form created successfully",
-            applicantFormData
-        );
+        return responseHandler.returnSuccess(httpStatus.CREATED, "Applicant form created successfully", applicantFormData);
     };
+
+    evaluateApplication = async (id, condition, identifier) => {
+        condition = condition != "lulus" ? false : true
+
+        let body = {}
+        switch (identifier) {
+            case "Selection":
+                body["is_passed_selection"] = condition
+                body["status"] = condition ? constant.applicantSelectionEvaluation.success : constant.applicantSelectionEvaluation.fail
+                break;
+            case "Psychology":
+                body["is_passed_psychological_test"] = condition
+                body["status"] = condition ? constant.applicantPsychologyEvaluation.success : constant.applicantPsychologyEvaluation.fail
+                break
+            default:
+                return responseHandler.returnError(httpStatus.BAD_REQUEST, "Identifier tidak sesuai");
+        }
+
+        const updatedData = await this.applicantFormDao.updateById(body, id)
+        if (!updatedData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Anda tidak termasuk karyawan");
+        return responseHandler.returnSuccess(httpStatus.CREATED, "Seleksi berhasil dicatat", {});
+    }
 
     createInterview = async (body, id, condition, employee) => {
         if (!employee)

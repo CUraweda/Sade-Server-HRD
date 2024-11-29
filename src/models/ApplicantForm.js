@@ -41,8 +41,10 @@ module.exports = (sequelize, DataTypes) => {
       applicant_question: DataTypes.TEXT,
       status: DataTypes.STRING,
       employee_id: DataTypes.INTEGER,
-      is_passed: DataTypes.BOOLEAN,
+      is_passed_selection: DataTypes.BOOLEAN,
+      is_passed_psychological_test: DataTypes.BOOLEAN,
       is_passed_interview: DataTypes.BOOLEAN,
+      is_passed: DataTypes.BOOLEAN,
       file_path: DataTypes.STRING
     },
     {

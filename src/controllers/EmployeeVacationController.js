@@ -12,14 +12,14 @@ class EmployeeVacationController {
         try {
             const page = +req.query.page || 0;
             const limit = +req.query.limit || 10;
-            const { search, type, status, date, division_id, employee_id } = req.query;
+            const { search, type, status, date, division_id, employee_id, iteration } = req.query;
 
             const offset = limit * page;
             const resData = await this.employeeVacationService.showPage(
                 page,
                 limit,
                 offset,
-                { search, type, status, date, division_id, employee_id }
+                { search, type, status, date, division_id, employee_id, iteration }
             );
 
             res.status(resData.statusCode).send(resData.response);
