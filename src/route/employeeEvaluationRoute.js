@@ -15,10 +15,22 @@ router.get(
 );
 
 router.get(
+    "/detail/:id",
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]),
+    employeeEvaluationController.getDetail
+);
+
+router.get(
     "/:id",
     auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]),
     employeeEvaluationController.getOne
 );
+
+router.post(
+    "/generate-month",
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]),
+    employeeEvaluationController.createByMonth
+)
 
 router.post(
     "/create",

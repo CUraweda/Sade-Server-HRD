@@ -35,6 +35,30 @@ class EmployeeEvaluationController {
         }
     };
 
+    getDetail = async (req, res) => {
+        try {
+            const id = +req.params.id;
+            if (!id) res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Please provide an ID");
+            const resData = await this.employeeEvaluationService.showDetail(id);
+
+            res.status(resData.statusCode).send(resData.response);
+        } catch (e) {
+            console.log(e);
+            res.status(httpStatus.BAD_GATEWAY).send(e);
+        }
+    };
+
+    createByMonth = async (req, res) => {
+        try {
+            const resData = await this.employeeEvaluationService.createMonthly(req.body)
+
+            res.status(resData.statusCode).send(resData.response);
+        } catch (e) {
+            console.log(e);
+            res.status(httpStatus.BAD_GATEWAY).send(e);
+        }
+    }
+
     createOne = async (req, res) => {
         try {
             const resData = await this.employeeEvaluationService.create(req.body);

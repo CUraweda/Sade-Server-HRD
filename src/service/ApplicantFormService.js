@@ -286,7 +286,7 @@ class ApplicantFormService {
             extra["division_id"] = jobvacancy.division_id;
         }
 
-        userData['role_id'] = jobvacancy.role != "GURU" ? 6 : 11
+        userData['role_id'] = jobvacancy.role != "GURU" ? 6 : 11 //TODO: DJSANJKDAJKNJK
 
         const { user_id, full_name, email, phone, nik, pob, dob, religion, martial_status } = applicantData.dataValues
         const payload = {

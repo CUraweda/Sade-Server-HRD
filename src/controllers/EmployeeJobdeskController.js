@@ -10,18 +10,19 @@ class EmployeeJobdeskController {
         try {
             const page = +req.query.page || 0;
             const limit = +req.query.limit || 10;
-            let { search, employee_id, is_graded, asessor_assigned } = req.query;
+            let { search, employee_id, is_graded, asessor_assigned, partner_assigned } = req.query;
 
-            if (asessor_assigned) {
+            if (asessor_assigned || partner_assigned) {
                 const { employee } = req.user
                 asessor_assigned = { id: employee.id, is_asessor: employee.is_asessor }
+                partner_assigned = { id: employee.id }
             }
             const offset = limit * page;
             const resData = await this.employeeJobdeskService.showPage(
                 page,
                 limit,
                 offset,
-                { search, employee_id, is_graded, asessor_assigned }
+                { search, employee_id, is_graded, asessor_assigned, partner_assigned }
             );
 
             res.status(resData.statusCode).send(resData.response);

@@ -37,6 +37,16 @@ class JobdeskGradeDao extends SuperDao {
             order: [["id", "DESC"]],
         });
     }
+
+    async checkUID(uids){
+        const { grade_uid, indicator_uid } = uids
+        return Jobdesk.findOne({
+            where: {
+                ...(grade_uid && {  grade_uid }),
+                ...(indicator_uid && {  indicator_uid })
+            }
+        })
+    }
 }
 
 module.exports = JobdeskGradeDao;
