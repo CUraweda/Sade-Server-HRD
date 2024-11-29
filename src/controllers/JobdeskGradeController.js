@@ -46,6 +46,19 @@ class JobdeskGradeController {
         }
     };
 
+    addOne = async (req, res) => {
+        try {
+            req.body.grade_uid = `${req.body.group_id}|${req.body.grade}`
+            req.body.indicator_uid = `${req.body.group_id}|${req.body.indicator}`
+            const resData = await this.jobdeskGradeService.addOne(req.body);
+
+            res.status(resData.statusCode).send(resData.response);
+        } catch (e) {
+            console.log(e);
+            res.status(httpStatus.BAD_GATEWAY).send(e);
+        }
+    };
+ 
     update = async (req, res) => {
         try {
             const id = +req.params.id;

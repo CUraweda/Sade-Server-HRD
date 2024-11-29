@@ -1,13 +1,27 @@
 const httpStatus = require("http-status");
 const JobdeskGradeDao = require("../dao/JobdeskGradeDao");
+const JobdeskGroupGradeDao = require("../dao/JobdeskGroupGradeDao");
 const responseHandler = require("../helper/responseHandler");
 
 class JobdeskGradeService {
     constructor() {
         this.jobdeskGradeDao = new JobdeskGradeDao();
+        this.jobdeskGradeGroupDao = new JobdeskGroupGradeDao()
     }
 
     create = async (body) => {
+        const jobdeskGradeData = await this.jobdeskGradeDao.create(body);
+        if (!jobdeskGradeData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Failed to create jobdesk grade");
+
+        return responseHandler.returnSuccess(httpStatus.CREATED, "Jobdesk grade created successfully", jobdeskGradeData);
+    };
+
+    addOne = async (body) => {
+        const alreadyExist = await this.jobdeskGradeDao.checkExist(body)
+        if (alreadyExist) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Cant create data because already exist");
+        const groupExist = await this.jobdeskGradeGroupDao.findById(body.group_id)
+        if (!groupExist) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Group didn't exist");
+        
         const jobdeskGradeData = await this.jobdeskGradeDao.create(body);
         if (!jobdeskGradeData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Failed to create jobdesk grade");
 

@@ -11,10 +11,10 @@ class ApplicantFormController {
         try {
             const page = +req.query.page || 0;
             const limit = +req.query.limit || 10;
-            const { search } = req.query;
+            const { search, status } = req.query;
 
             const offset = limit * page;
-            const resData = await this.applicantFormService.showPage(page, limit, offset, { search });
+            const resData = await this.applicantFormService.showPage(page, limit, offset, { search, status });
 
             res.status(resData.statusCode).send(resData.response);
         } catch (e) {
@@ -35,7 +35,7 @@ class ApplicantFormController {
             res.status(httpStatus.BAD_GATEWAY).send(e);
         }
     };
-
+    
     getDetail = async (req, res) => {
         try {
             const id = +req.params.id;

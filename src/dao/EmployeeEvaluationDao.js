@@ -3,6 +3,8 @@ const models = require("../models");
 const { Op } = require("sequelize");
 
 const EmployeeEvaluation = models.employeeevaluation;
+const EmployeeJobdesk = models.employeejobdesk;
+const JobdeskUnit = models.jobdeskunit
 
 class EmployeeEvaluationDao extends SuperDao {
     constructor() {
@@ -36,6 +38,24 @@ class EmployeeEvaluationDao extends SuperDao {
             limit: limit,
             order: [["id", "DESC"]],
         });
+    }
+
+    async getDetail(id){
+        return EmployeeEvaluation.findOne({
+            where: { id },
+            include: [
+                {
+                    model: EmployeeJobdesk,
+                    include: [
+                        {
+                            model: JobdeskUnit,
+                            required: false
+                        }
+                    ],
+                    required: false
+                }
+            ]
+        })
     }
 }
 

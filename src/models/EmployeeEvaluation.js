@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
       // Define associations here
       this.belongsTo(models.employees, { foreignKey: 'employee_id' });
       this.belongsTo(models.division, { foreignKey: 'division_id' });
+      this.hasMany(models.employeejobdesk, { foreignKey: 'evaluation_id' });
     }
   }
   
@@ -28,7 +29,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
-      tableName: 'tbl_employee_evaluation',
+    tableName: 'tbl_employee_evaluation',
       modelName: 'employeeevaluation',
       timestamps: false,
       underscored: true, // Maps snake_case columns to camelCase properties

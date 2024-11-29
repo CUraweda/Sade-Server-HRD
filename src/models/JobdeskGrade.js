@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
         grade: DataTypes.STRING,
         indicator: DataTypes.INTEGER,
         group_id: DataTypes.INTEGER,
-        group_uid: DataTypes.STRING,
+        grade_uid: DataTypes.STRING,
         indicator_uid: DataTypes.STRING
     },
     {
