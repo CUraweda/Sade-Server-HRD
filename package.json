@@ -36,6 +36,7 @@
     "pdfkit-table": "^0.1.99",
     "sequelize": "^6.37.3",
     "sequelize-cli": "^6.6.2",
-    "winston": "^3.13.1"
+    "winston": "^3.13.1",
+    "xlsx": "^0.18.5"
   }
 }
