@@ -86,7 +86,8 @@ class ApplicantFormDao extends SuperDao {
     }
 
     async getByVacancy(vacancy_id, filter) {
-        const { search,is_passed, is_passed_interview, status } = filter
+        let { search,is_passed, is_passed_interview, status } = filter
+        if (!search) search = ""
          return ApplicantForm.findAll({
             where: {
                 vacancy_id,
