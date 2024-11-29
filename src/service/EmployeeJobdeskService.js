@@ -14,6 +14,10 @@ class EmployeeJobdeskService {
     formatAssesorIds = (ids) => {
         return ids.map(id => `|${id}|`).join(',');
     }
+    
+    formatPartnerIds = (ids) => {
+        return ids.map(id => `|${id}|`).join(',');
+    }
 
     addEmployeeGrade = (employee, jobdesk_grade) => {
         let { grade, raw_grade, raw_finished_task } = employee

@@ -19,10 +19,11 @@ class ApplicantFormDao extends SuperDao {
     }
 
     async getCount(filter) {
-        let { search } = filter
+        let { search, status } = filter
         if (!search) search = ""
         return ApplicantForm.count({
             where: {
+                status,
                 [Op.or]: [
                     {
                         full_name: { [Op.like]: "%" + search + "%" },
@@ -36,10 +37,11 @@ class ApplicantFormDao extends SuperDao {
     }
 
     async getPage(offset, limit, filter) {
-        let { search } = filter
+        let { search, status } = filter
         if (!search) search = ""
         return ApplicantForm.findAll({
             where: {
+                status,
                 [Op.or]: [
                     {
                         full_name: { [Op.like]: "%" + search + "%" },

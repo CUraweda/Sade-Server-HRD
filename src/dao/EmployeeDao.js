@@ -12,6 +12,7 @@ const EmployeeAccount = models.employeeaccount
 const EmployeeAttachment = models.employeeattachment
 const FormPosistion = models.formposition
 const Training = models.training
+const EmployeeEvaluation = models.employeeevaluation
 class EmployeesDao extends SuperDao {
   constructor() {
     super(Employees);
@@ -197,6 +198,22 @@ class EmployeesDao extends SuperDao {
           required: false
         }
       ]
+    })
+  }
+
+  async getEmployeeForEvaluation(filter, month_id){
+    const  { division_id } = filter
+    return Employees.findAll({
+      where: { division_id, current_evaluation_id: null },
+      include: [
+        {
+          model: EmployeeEvaluation,
+          required: false,
+          where: {
+            month_start: month_id,
+          },
+        },
+      ],
     })
   }
 
