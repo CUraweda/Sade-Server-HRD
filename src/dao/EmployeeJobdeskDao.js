@@ -106,27 +106,27 @@ class EmployeeJobdeskDao extends SuperDao {
         })
     }
 
-    async getStartEnd(start, end, filter = {}) {
-        return EmployeeJobdesk.findAll({
-            where: {
-                ...filter,
-                finished_at: { [Op.between]: [start, end] }
-            }
-        })
-    }
+    // async getStartEnd(start, end, filter = {}) {
+    //     return EmployeeJobdesk.findAll({
+    //         where: {
+    //             ...filter,
+    //             finished_at: { [Op.between]: [start, end] }
+    //         }
+    //     })
+    // }
 
-    async countRawGradeRange(start, end, filter = {}) {
-        return EmployeeJobdesk.findAll({
-            where: {
-                ...filter,
-                finished_at: { [Op.between]: [start, end] }
-            },
-            attributes: [
-                [fn("COUNT", col('id')), "count"],
-                [fn("SUM", col('grade')), "raw_grade"]
-            ]
-        });
-    }
+    // async countRawGradeRange(start, end, filter = {}) {
+    //     return EmployeeJobdesk.findAll({
+    //         where: {
+    //             ...filter,
+    //             finished_at: { [Op.between]: [start, end] }
+    //         },
+    //         attributes: [
+    //             [fn("COUNT", col('id')), "count"],
+    //             [fn("SUM", col('grade')), "raw_grade"]
+    //         ]
+    //     });
+    // }
 }
 
 

@@ -23,7 +23,7 @@ class ApplicantFormDao extends SuperDao {
         if (!search) search = ""
         return ApplicantForm.count({
             where: {
-                status,
+            ...(status && { status }),
                 [Op.or]: [
                     {
                         full_name: { [Op.like]: "%" + search + "%" },
@@ -35,13 +35,13 @@ class ApplicantFormDao extends SuperDao {
             },
         });
     }
-
+    
     async getPage(offset, limit, filter) {
         let { search, status } = filter
         if (!search) search = ""
         return ApplicantForm.findAll({
             where: {
-                status,
+                ...(status && { status }),
                 [Op.or]: [
                     {
                         full_name: { [Op.like]: "%" + search + "%" },
@@ -86,10 +86,11 @@ class ApplicantFormDao extends SuperDao {
     }
 
     async getByVacancy(vacancy_id, filter) {
-        const { search,is_passed, is_passed_interview } = filter
+        const { search,is_passed, is_passed_interview, status } = filter
          return ApplicantForm.findAll({
             where: {
                 vacancy_id,
+                ...(status && { status }),
                 ...(is_passed != undefined && { is_passed } ),
                 ...(is_passed_interview != undefined && { is_passed_interview } ),
                 [Op.and]: [

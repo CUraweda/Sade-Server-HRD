@@ -63,11 +63,11 @@ class ApplicantFormController {
     getByVacancy = async (req, res) => {
         try {
             const id = +req.params.id;
-            let { search, is_passed_interview, is_passed } = req.query
+            let { search, is_passed_interview, is_passed, status } = req.query
             if(is_passed_interview) is_passed_interview = is_passed_interview != "1" ? false : true
             if(is_passed) is_passed = is_passed != "1" ? false : true
             if (!id) res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Tolong Sertakan ID");
-            const resData = await this.applicantFormService.showByVacancy(id, { search, is_passed_interview, is_passed })
+            const resData = await this.applicantFormService.showByVacancy(id, { search, is_passed_interview, is_passed, status })
 
             res.status(resData.statusCode).send(resData.response);
         } catch (e) {
