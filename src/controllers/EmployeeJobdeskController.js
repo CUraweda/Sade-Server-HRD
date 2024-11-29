@@ -32,50 +32,50 @@ class EmployeeJobdeskController {
         }
     };
 
-    getDifferenceDay = async (req, res) => {
-        try {
-            const id = +req.params.id
-            const resData = await this.employeeJobdeskService.showDifferencesDay(id)
+    // getDifferenceDay = async (req, res) => {
+    //     try {
+    //         const id = +req.params.id
+    //         const resData = await this.employeeJobdeskService.showDifferencesDay(id)
 
-            res.status(resData.statusCode).send(resData.response);
-        } catch (e) {
-            console.log(e);
-            res.status(httpStatus.BAD_GATEWAY).send(e);
-        }
-    }
+    //         res.status(resData.statusCode).send(resData.response);
+    //     } catch (e) {
+    //         console.log(e);
+    //         res.status(httpStatus.BAD_GATEWAY).send(e);
+    //     }
+    // }
 
-    getWeekRecap = async (req, res) => {
-        try {
-            const id = +req.params.id
-            const resData = await this.employeeJobdeskService.showRecapWeekEID(id)
-            res.status(resData.statusCode).send(resData.response);
-        } catch (e) {
-            console.log(e);
-            res.status(httpStatus.BAD_GATEWAY).send(e);
-        }
-    }
+    // getWeekRecap = async (req, res) => {
+    //     try {
+    //         const id = +req.params.id
+    //         const resData = await this.employeeJobdeskService.showRecapWeekEID(id)
+    //         res.status(resData.statusCode).send(resData.response);
+    //     } catch (e) {
+    //         console.log(e);
+    //         res.status(httpStatus.BAD_GATEWAY).send(e);
+    //     }
+    // }
 
-    getMonthRecap = async (req, res) => {
-        try {
-            const id = +req.params.id
-            const resData = await this.employeeJobdeskService.showRecapMonhEID(id)
-            res.status(resData.statusCode).send(resData.response);
-        } catch (e) {
-            console.log(e);
-            res.status(httpStatus.BAD_GATEWAY).send(e);
-        }
-    }
+    // getMonthRecap = async (req, res) => {
+    //     try {
+    //         const id = +req.params.id
+    //         const resData = await this.employeeJobdeskService.showRecapMonhEID(id)
+    //         res.status(resData.statusCode).send(resData.response);
+    //     } catch (e) {
+    //         console.log(e);
+    //         res.status(httpStatus.BAD_GATEWAY).send(e);
+    //     }
+    // }
 
-    getYearRecap = async (req, res) => {
-        try {
-            const id = +req.params.id
-            const resData = await this.employeeJobdeskService.showRecapYearEID(id)
-            res.status(resData.statusCode).send(resData.response);
-        } catch (e) {
-            console.log(e);
-            res.status(httpStatus.BAD_GATEWAY).send(e);
-        }
-    }
+    // getYearRecap = async (req, res) => {
+    //     try {
+    //         const id = +req.params.id
+    //         const resData = await this.employeeJobdeskService.showRecapYearEID(id)
+    //         res.status(resData.statusCode).send(resData.response);
+    //     } catch (e) {
+    //         console.log(e);
+    //         res.status(httpStatus.BAD_GATEWAY).send(e);
+    //     }
+    // }
 
     getOne = async (req, res) => {
         try {
@@ -101,38 +101,14 @@ class EmployeeJobdeskController {
         }
     };
 
-    createBulk = async (req, res) => {
-        try {
-            const resData = await this.employeeJobdeskService.createBulkData(req.body);
-
-            res.status(resData.statusCode).send(resData.response);
-        } catch (e) {
-            console.log(e);
-            res.status(httpStatus.BAD_GATEWAY).send(e);
-        }
-    };
-
-    updateFinish = async (req, res) => {
-        try {
-            const id = +req.params.id;
-            const { employee } = req.user
-            if (!id) return res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Tolong sertakan ID");
-
-            const resData = await this.employeeJobdeskService.updateFinish(id, employee);
-
-            res.status(resData.statusCode).send(resData.response);
-        } catch (e) {
-            console.log(e);
-            res.status(httpStatus.BAD_GATEWAY).send(e);
-        }
-    }
     updateGrade = async (req, res) => {
         try {
             const id = +req.params.id;
             const { employee } = req.user
             if (!id) res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Tolong sertakan ID");
 
-            const resData = await this.employeeJobdeskService.updateGrade(id, employee, req.body.grade);
+            console.log(req.body)
+            const resData = await this.employeeJobdeskService.updateGrade(id, employee, req.body);
 
             res.status(resData.statusCode).send(resData.response);
         } catch (e) {

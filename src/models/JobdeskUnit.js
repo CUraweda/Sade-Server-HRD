@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // Define associations here
       this.belongsTo(models.division, { foreignKey: 'division_id' });
+      this.hasMany(models.employeejobdesk, { foreignKey: "unit_id" })
     }
   }
   

@@ -70,6 +70,19 @@ class EmployeeEvaluationController {
         }
     };
 
+    calculateEvaluation = async (req, res) => {
+        try {
+            const id = +req.params.id;
+            if (!id) res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Please provide an ID");
+            const resData = await this.employeeEvaluationService.create(req.body);
+
+            res.status(resData.statusCode).send(resData.response);
+        } catch (e) {
+            console.log(e);
+            res.status(httpStatus.BAD_GATEWAY).send(e);
+        }
+    };
+
     update = async (req, res) => {
         try {
             const id = +req.params.id;

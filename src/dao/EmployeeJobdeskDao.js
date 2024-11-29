@@ -81,9 +81,22 @@ class EmployeeJobdeskDao extends SuperDao {
         });
     }
 
-    async checkDataGrade(id) {
+    async checkDataGrade(data) {
+        let { id, employee, identifier } = data
+        switch (identifier) {
+            case "PARTNER":
+                identifier = { partner_ids: { [Op.like]: `|${employee.id}|` } }
+                break
+            case "SUPERVISOR":
+                identifier = { asessor_ids: { [Op.like]: `|${employee.id}|` } }
+                break
+            default:
+                identifier = { employee_id: employee.id }
+                break
+        }
+        console
         return EmployeeJobdesk.findOne({
-            where: { id }, include: [
+            where: { id, ...identifier }, include: [
                 {
                     as: "employee",
                     model: Employees,
@@ -93,27 +106,27 @@ class EmployeeJobdeskDao extends SuperDao {
         })
     }
 
-    async getStartEnd(start, end, filter = {}) {
-        return EmployeeJobdesk.findAll({
-            where: {
-                ...filter,
-                finished_at: { [Op.between]: [start, end] }
-            }
-        })
-    }
+    // async getStartEnd(start, end, filter = {}) {
+    //     return EmployeeJobdesk.findAll({
+    //         where: {
+    //             ...filter,
+    //             finished_at: { [Op.between]: [start, end] }
+    //         }
+    //     })
+    // }
 
-    async countRawGradeRange(start, end, filter = {}) {
-        return EmployeeJobdesk.findAll({
-            where: {
-                ...filter,
-                finished_at: { [Op.between]: [start, end] }
-            },
-            attributes: [
-                [fn("COUNT", col('id')), "count"],
-                [fn("SUM", col('grade')), "raw_grade"]
-            ]
-        });
-    }
+    // async countRawGradeRange(start, end, filter = {}) {
+    //     return EmployeeJobdesk.findAll({
+    //         where: {
+    //             ...filter,
+    //             finished_at: { [Op.between]: [start, end] }
+    //         },
+    //         attributes: [
+    //             [fn("COUNT", col('id')), "count"],
+    //             [fn("SUM", col('grade')), "raw_grade"]
+    //         ]
+    //     });
+    // }
 }
 
 

@@ -31,6 +31,11 @@ router.post(
     auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]),
     employeeEvaluationController.createByMonth
 )
+router.post(
+    "/calculate/:id",
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]),
+    employeeEvaluationController.calculateEvaluation
+)
 
 router.post(
     "/create",
