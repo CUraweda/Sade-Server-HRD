@@ -81,9 +81,22 @@ class EmployeeJobdeskDao extends SuperDao {
         });
     }
 
-    async checkDataGrade(id) {
+    async checkDataGrade(data) {
+        let { id, employee, identifier } = data
+        switch (identifier) {
+            case "PARTNER":
+                identifier = { partner_ids: { [Op.like]: `|${employee.id}|` } }
+                break
+            case "SUPERVISOR":
+                identifier = { asessor_ids: { [Op.like]: `|${employee.id}|` } }
+                break
+            default:
+                identifier = { employee_id: employee.id }
+                break
+        }
+        console
         return EmployeeJobdesk.findOne({
-            where: { id }, include: [
+            where: { id, ...identifier }, include: [
                 {
                     as: "employee",
                     model: Employees,

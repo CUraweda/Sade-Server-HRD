@@ -14,7 +14,7 @@ class EmployeeJobdeskService {
     formatAssesorIds = (ids) => {
         return ids.map(id => `|${id}|`).join(',');
     }
-    
+
     formatPartnerIds = (ids) => {
         return ids.map(id => `|${id}|`).join(',');
     }
@@ -40,14 +40,14 @@ class EmployeeJobdeskService {
         delete body.employee_ids
         let payload = []
 
-        if(all_employee){
-            const employeeData =  await this.employeeDao.getOnlyId({ })
+        if (all_employee) {
+            const employeeData = await this.employeeDao.getOnlyId({})
             if (!employeeData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Tidak ada data employee");
             employee_ids = employeeData
         }
 
-        if(all_assesor){
-            const employeeData =  await this.employeeDao.getOnlyId({ is_asessor: true })
+        if (all_assesor) {
+            const employeeData = await this.employeeDao.getOnlyId({ is_asessor: true })
             if (!employeeData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Tidak ada assesor");
             asessor_ids = employeeData
         }
@@ -91,24 +91,33 @@ class EmployeeJobdeskService {
         return responseHandler.returnSuccess(httpStatus.CREATED, "Data Employee Jobdesk Berhasil diperbaharui", {});
     }
 
-    updateGrade = async (id, employee, grade) => {
+    updateGrade = async (id, employee, body) => {
+        const { grade, identifier } = body
         if (!employee) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Anda tidak termasuk sebagai karyawan");
-        if (!employee.is_asessor) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Anda tidak termasuk sebagai assesor");
-        const dataExist = await this.employeeJobdeskDao.checkDataGrade(id);
-        if (!dataExist) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Employee Jobdesk Tidak Ada");
-        if (!dataExist.is_finish) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Jobdesk belum selesai dikerjakan");
+        if (!employee.is_asessor && identifier === "SUPERVISOR") return responseHandler.returnError(httpStatus.BAD_REQUEST, "Anda tidak termasuk sebagai assesor");
+        const dataExist = await this.employeeJobdeskDao.checkDataGrade({ id, employee, identifier });
+        if (!dataExist) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Employee Jobdesk Tidak Ada atau anda tidak terasign ke jobdesk ini");
 
-        const updateEmployeePayload = this.addEmployeeGrade(dataExist.employee, grade)
-        const payload = {
-            status: "Selesai Dinilai",
-            grader_id: employee.id,
-            graded_at: new Date(),
-            is_graded: true, grade
+        let payload = {status: "Dinilai"}
+        switch (identifier) {
+            case "PERSONAL":
+                payload["personal_grade"] = grade
+                payload['personal_grade_at'] = new Date()
+                break
+            case "PARTNER":
+                payload["partner_grade"] = grade
+                payload['partner_grade_at'] = new Date()
+                payload['partner_id'] = employee.id
+                break
+            case "SUPERVISOR":
+                payload["assesor_grade"] = grade
+                payload['assesor_grade_at'] = new Date()
+                payload['grader_id'] = employee.id
+                break
         }
+        
         const employeeJobdeskData = await this.employeeJobdeskDao.updateWhere(payload, { id });
         if (!employeeJobdeskData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Employee Jobdesk Gagal diperbaharui");
-        const updateEmployee = await this.employeeDao.updateById(updateEmployeePayload, dataExist.employee.id)
-        if (!updateEmployee) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Employee Grade Gagal diperbaharui");
 
         return responseHandler.returnSuccess(httpStatus.CREATED, "Data Employee Jobdesk Berhasil diperbaharui", {});
     };

@@ -132,7 +132,8 @@ class EmployeeJobdeskController {
             const { employee } = req.user
             if (!id) res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Tolong sertakan ID");
 
-            const resData = await this.employeeJobdeskService.updateGrade(id, employee, req.body.grade);
+            console.log(req.body)
+            const resData = await this.employeeJobdeskService.updateGrade(id, employee, req.body);
 
             res.status(resData.statusCode).send(resData.response);
         } catch (e) {

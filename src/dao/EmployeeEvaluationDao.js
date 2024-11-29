@@ -5,6 +5,8 @@ const { Op } = require("sequelize");
 const EmployeeEvaluation = models.employeeevaluation;
 const EmployeeJobdesk = models.employeejobdesk;
 const JobdeskUnit = models.jobdeskunit
+const JobdeskGrade = models.jobdeskgrading
+const JobdeskGroupGrade = models.jobdeskgroupgrading
 
 class EmployeeEvaluationDao extends SuperDao {
     constructor() {
@@ -53,6 +55,31 @@ class EmployeeEvaluationDao extends SuperDao {
                         }
                     ],
                     required: false
+                }
+            ]
+        })
+    }
+
+    async getDetailCalculation(id){
+        return JobdeskUnit.findOne({
+            where: { disabled: false },
+            include: [
+                {
+                    model: EmployeeJobdesk,
+                    required: false,
+                    where: { evaluation_id: id },
+                    include: [
+                        {
+                            model: JobdeskGroupGrade,
+                            required: true,
+                            include: [
+                                {
+                                    model: JobdeskGrade,
+                                    required: true
+                                }
+                            ]
+                        }
+                    ]
                 }
             ]
         })
