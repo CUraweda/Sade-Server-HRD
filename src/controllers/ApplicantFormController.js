@@ -35,7 +35,7 @@ class ApplicantFormController {
             res.status(httpStatus.BAD_GATEWAY).send(e);
         }
     };
-    
+
     getDetail = async (req, res) => {
         try {
             const id = +req.params.id;
@@ -183,7 +183,7 @@ class ApplicantFormController {
             res.status(resData.statusCode).send(resData.response);
         } catch (e) {
             console.log(e);
-            res.status(httpStatus.BAD_GATEWAY).send({ error: e.message });
+            res.status(hottpStatus.BAD_GATEWAY).send({ error: e.message });
         }
     };
 
