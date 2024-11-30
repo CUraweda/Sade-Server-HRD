@@ -3,39 +3,39 @@ const EmployeeEvaluationDao = require("../dao/EmployeeEvaluationDao");
 const EmployeeDao = require("../dao/EmployeeDao");
 const AcademicYearDao = require('../dao/AcademicYearDao')
 const responseHandler = require("../helper/responseHandler");
-const xlsx = require('xlsx');
+// const xlsx = require('xlsx');
 
-// Data for the Excel file
-const data = [
-    ["ID", "Name", "Age", "City"],    // Row 1
-    [null, null, null, null],         // Row 2 (will be merged with Row 1)
-    [1, "John Doe", 28, "New York"],  // Data row 3
-    [2, "Jane Smith", 34, "Los Angeles"],
-    [3, "Sam Brown", 22, "Chicago"]
-];
+// // Data for the Excel file
+// const data = [
+//     ["ID", "Name", "Age", "City"],    // Row 1
+//     [null, null, null, null],         // Row 2 (will be merged with Row 1)
+//     [1, "John Doe", 28, "New York"],  // Data row 3
+//     [2, "Jane Smith", 34, "Los Angeles"],
+//     [3, "Sam Brown", 22, "Chicago"]
+// ];
 
-// Create a new workbook
-const workbook = xlsx.utils.book_new();
+// // Create a new workbook
+// const workbook = xlsx.utils.book_new();
 
-// Convert the data to a worksheet
-const worksheet = xlsx.utils.aoa_to_sheet(data);
+// // Convert the data to a worksheet
+// const worksheet = xlsx.utils.aoa_to_sheet(data);
 
-// Define merge ranges
-worksheet['!merges'] = [
-    { s: { r: 0, c: 0 }, e: { r: 1, c: 0 } }, // Merge Column A (ID) for Rows 1-2
-    { s: { r: 0, c: 1 }, e: { r: 1, c: 1 } }, // Merge Column B (Name) for Rows 1-2
-    { s: { r: 0, c: 2 }, e: { r: 1, c: 2 } }, // Merge Column C (Age) for Rows 1-2
-    { s: { r: 0, c: 3 }, e: { r: 1, c: 3 } }  // Merge Column D (City) for Rows 1-2
-];
+// // Define merge ranges
+// worksheet['!merges'] = [
+//     { s: { r: 0, c: 0 }, e: { r: 1, c: 0 } }, // Merge Column A (ID) for Rows 1-2
+//     { s: { r: 0, c: 1 }, e: { r: 1, c: 1 } }, // Merge Column B (Name) for Rows 1-2
+//     { s: { r: 0, c: 2 }, e: { r: 1, c: 2 } }, // Merge Column C (Age) for Rows 1-2
+//     { s: { r: 0, c: 3 }, e: { r: 1, c: 3 } }  // Merge Column D (City) for Rows 1-2
+// ];
 
-// Append the worksheet to the workbook
-xlsx.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+// // Append the worksheet to the workbook
+// xlsx.utils.book_append_sheet(workbook, worksheet, "Sheet1");
 
-// Write the workbook to a file
-const filePath = "./merged_rows.xlsx";
-xlsx.writeFile(workbook, filePath);
+// // Write the workbook to a file
+// const filePath = "./merged_rows.xlsx";
+// xlsx.writeFile(workbook, filePath);
 
-console.log(`Excel file with merged rows created at: ${filePath}`);
+// console.log(`Excel file with merged rows created at: ${filePath}`);
 
 
 class EmployeeEvaluationService {
@@ -65,8 +65,8 @@ class EmployeeEvaluationService {
 
     calculateOne = async (data) => {
         const { id } = data
-        const employeeEvaluationData = await this.employeeEvaluationDao.findById(id);
-        if (!employeeEvaluationData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Failed to create employee evaluations");
+        const calculationEvaluationDatas = await this.employeeEvaluationDao.getDetailCalculation(id);
+        if (!calculationEvaluationDatas) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Failed to create employee evaluations");
 
 
         return responseHandler.returnSuccess(httpStatus.CREATED, "Employee evaluations created successfully", employeeEvaluationData);

@@ -42,7 +42,7 @@ class EmployeeEvaluationDao extends SuperDao {
         });
     }
 
-    async getDetail(id){
+    async getDetail(id) {
         return EmployeeEvaluation.findOne({
             where: { id },
             include: [
@@ -60,7 +60,7 @@ class EmployeeEvaluationDao extends SuperDao {
         })
     }
 
-    async getDetailCalculation(id){
+    async getDetailCalculation(id) {
         return JobdeskUnit.findOne({
             where: { disabled: false },
             include: [

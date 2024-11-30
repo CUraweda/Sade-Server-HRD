@@ -5,6 +5,8 @@ module.exports = (sequelize, DataTypes) => {
     class Division extends Model {
         static associate(models) {
             this.hasMany(models.jobvacancy, { foreignKey: 'division_id' })
+            this.hasMany(models.worktime, { foreignKey: 'division_id' })
+            this.hasMany(models.employees, { foreignKey: "division_id" })
         }
     }
     Division.init(
