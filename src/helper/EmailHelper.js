@@ -64,6 +64,26 @@ class EmailHelper {
       console.log(e)
     }
   }
+  
+  async sendExcelEvaluation(to, data = {}) {
+    try {
+      const { employee, path } = data
+      const currentMonth = new Date().getMonth()  + 1
+      await this.email.sendMail(
+        {
+          from: process.env.EMAIL_FROM, to, subject: `Evaluasi Penilaian - ${employee.full_name}`,
+          attachments: [
+            {
+              filename: `Evaluasi ${employee.full_name} Bulan ${currentMonth}.xlsx`,
+              path
+            }
+          ]
+        },
+      )
+    } catch (e) {
+      console.log(e)
+    }
+  }
 
   async sendApplicantEmail(
     dynamic,

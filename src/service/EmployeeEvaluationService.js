@@ -2,46 +2,17 @@ const httpStatus = require("http-status");
 const EmployeeEvaluationDao = require("../dao/EmployeeEvaluationDao");
 const EmployeeDao = require("../dao/EmployeeDao");
 const AcademicYearDao = require('../dao/AcademicYearDao')
+const EmployeeJobdeskDao = require('../dao/EmployeeJobdeskDao')
 const responseHandler = require("../helper/responseHandler");
-const xlsx = require('xlsx');
-
-// Data for the Excel file
-const data = [
-    ["ID", "Name", "Age", "City"],    // Row 1
-    [null, null, null, null],         // Row 2 (will be merged with Row 1)
-    [1, "John Doe", 28, "New York"],  // Data row 3
-    [2, "Jane Smith", 34, "Los Angeles"],
-    [3, "Sam Brown", 22, "Chicago"]
-];
-
-// Create a new workbook
-const workbook = xlsx.utils.book_new();
-
-// Convert the data to a worksheet
-const worksheet = xlsx.utils.aoa_to_sheet(data);
-
-// Define merge ranges
-worksheet['!merges'] = [
-    { s: { r: 0, c: 0 }, e: { r: 1, c: 0 } }, // Merge Column A (ID) for Rows 1-2
-    { s: { r: 0, c: 1 }, e: { r: 1, c: 1 } }, // Merge Column B (Name) for Rows 1-2
-    { s: { r: 0, c: 2 }, e: { r: 1, c: 2 } }, // Merge Column C (Age) for Rows 1-2
-    { s: { r: 0, c: 3 }, e: { r: 1, c: 3 } }  // Merge Column D (City) for Rows 1-2
-];
-
-// Append the worksheet to the workbook
-xlsx.utils.book_append_sheet(workbook, worksheet, "Sheet1");
-
-// Write the workbook to a file
-const filePath = "./merged_rows.xlsx";
-xlsx.writeFile(workbook, filePath);
-
-console.log(`Excel file with merged rows created at: ${filePath}`);
-
-
+const ExcelJS = require('exceljs');
+const fs = require('fs')
+const EmailHelper = require('../helper/EmailHelper')
+const emailHelper = new EmailHelper()
 class EmployeeEvaluationService {
     constructor() {
         this.employeeDao = new EmployeeDao()
         this.academicYearDao = new AcademicYearDao()
+        this.employeeJobdeskDao = new EmployeeJobdeskDao()
         this.employeeEvaluationDao = new EmployeeEvaluationDao();
     }
 
@@ -63,14 +34,193 @@ class EmployeeEvaluationService {
         return responseHandler.returnSuccess(httpStatus.CREATED, "Employee evaluations created successfully", employeeEvaluationData);
     };
 
-    calculateOne = async (data) => {
-        const { id } = data
-        const employeeEvaluationData = await this.employeeEvaluationDao.findById(id);
-        if (!employeeEvaluationData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Failed to create employee evaluations");
+    chooseGradeForJobdesk = (jobdesk, listGrade = []) => {
+        if (listGrade.length < 1) return false
+        const { personal_grade, partner_grade, assesor_grade } = jobdesk
 
+        const grades = [personal_grade, partner_grade, assesor_grade].filter(grade => grade !== null);
+        const averageGrade = grades.reduce((sum, grade) => sum + grade, 0) / grades.length
+        let choosenGrade = listGrade[listGrade.length - 1]
+        for (let grade of listGrade) if (grade.indicator <= averageGrade) { choosenGrade = grade; break }
 
-        return responseHandler.returnSuccess(httpStatus.CREATED, "Employee evaluations created successfully", employeeEvaluationData);
+        return { overall_grade_raw: averageGrade, overall_grade: choosenGrade.grade, choosen_grade_id: choosenGrade.id }
+    }
+
+    calculateOne = async (id) => {
+        const evaluationData = await this.employeeEvaluationDao.getDetail(id)
+        if (!evaluationData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Failed to create employee evaluations");
+
+        const calculationEvaluationDatas = await this.employeeEvaluationDao.getDetailCalculation(id);
+        if (!calculationEvaluationDatas) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Failed to create employee evaluations");
+
+        const updateJobdeskData = []
+        for (let unitIndex in calculationEvaluationDatas) {
+            const jobdeskUnit = calculationEvaluationDatas[unitIndex]
+            if (jobdeskUnit.employeejobdesks.length < 1) continue
+            for (let jobdeskIndex in jobdeskUnit.employeejobdesks) {
+                const employeeJobdesk = jobdeskUnit.employeejobdesks[jobdeskIndex]
+                if (employeeJobdesk.choosen_grade_id) continue
+                const gradingData = this.chooseGradeForJobdesk(employeeJobdesk, employeeJobdesk.jobdeskgroupgrading.jobdeskgradings)
+                updateJobdeskData.push(this.employeeJobdeskDao.updateById(gradingData, employeeJobdesk.id))
+                calculationEvaluationDatas[unitIndex].employeejobdesks[jobdeskIndex] = { ...employeeJobdesk, ...gradingData }
+            }
+        }
+        await Promise.all(updateJobdeskData)
+        const excelPath = await this.createExcelEvaluation(evaluationData, calculationEvaluationDatas)
+        if (!excelPath) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Failed to create excel data");
+        await this.employeeEvaluationDao.updateById({ file_path: excelPath }, evaluationData.id)
+
+        const employeeData = evaluationData.employee
+        if (employeeData.email) {
+            setImmediate(async () => {
+                await emailHelper.sendExcelEvaluation(employeeData.email, { employee: employeeData, path: excelPath })
+            })
+        }
+
+        return responseHandler.returnSuccess(httpStatus.CREATED, "Employee evaluations created successfully", calculationEvaluationDatas);
     };
+
+    createExcelEvaluation = async (evalData, data) => {
+        const workbook = new ExcelJS.Workbook();
+        const sheet = workbook.addWorksheet('Evaluasi');
+
+        const employeeData = evalData.employee
+        sheet.addRow(["NAMA", employeeData.full_name.toUpperCase(), employeeData.name, employeeData.name, "PLANNING MANAGEMENT"])
+        sheet.mergeCells(1, 2, 1, 4)
+        sheet.addRow([`PENILAIAN ${evalData.division.name.toUpperCase()}`, null, null, null, "SIGN KEPALA SEKOLAH: "])
+        sheet.mergeCells(2, 1, 2, 4)
+        const changeHeight2 = sheet.getRow(2)
+        changeHeight2.height = 30
+        const imageId = workbook.addImage({
+            filename: 'Sade Logo.png',
+            extension: 'png',
+        });
+
+        sheet.addImage(imageId, {
+            tl: { col: 5, row: 1.3 },
+            ext: { height: 50, width: 60 }
+        });
+
+
+        const row2Cells = [sheet.getCell(2, 1), sheet.getCell(2, 2), sheet.getCell(2, 3), sheet.getCell(2, 4)];
+        row2Cells.forEach(cell => {
+            cell.font = {
+                name: 'Arial',
+                size: 14,
+                bold: true
+            };
+        });
+
+        const currentDate = new Intl.DateTimeFormat('id-ID', {
+            year: "numeric",
+            month: "numeric",
+            day: "numeric",
+            timeZone: 'Asia/Jakarta',
+        }).format(new Date())
+
+        sheet.addRow(["TAHUN AJARAN", null, evalData.academic_year, null, `tanggal: ${currentDate}`, null, null, "PERSONAL", "PARTNER", "SUPERVISOR", "TOTAL"])
+        sheet.mergeCells(3, 1, 3, 2)
+        sheet.mergeCells(3, 3, 3, 4)
+        sheet.addRow([])
+
+        const headerRow = sheet.addRow(["ITEMS", "JOBDESK", null, null, "PENILAIAN", "NILAI", "POINT", "PERSONAL", "PARTNER", "SUPERVISOR", "TOTAL"]);
+        headerRow.eachCell(cell => {
+            cell.alignment = { vertical: 'middle', horizontal: 'left' };
+        });
+        sheet.mergeCells(5, 2, 5, 4)
+        sheet.mergeCells(3, 8, 5, 8)
+        sheet.mergeCells(3, 9, 5, 9)
+        sheet.mergeCells(3, 10, 5, 10)
+        sheet.mergeCells(3, 11, 5, 11)
+        for (let i = 8; i <= 11; i++) {
+            const cell = sheet.getCell(3, i);
+            cell.alignment = { textRotation: 90, vertical: 'middle', horizontal: 'center' };
+        }
+
+        const smallSizes = [sheet.getCell(3, 8), sheet.getCell(3, 9), sheet.getCell(3, 10), sheet.getCell(3, 11)]
+        smallSizes.forEach(cell => {
+            cell.font = {
+                name: "Arial",
+                size: 5
+            }
+        })
+
+        let row = 6;
+        data.forEach(unit => {
+            const unitStart = row;
+            unit.employeejobdesks.forEach(jobdesk => {
+                const jobdeskStart = row;
+                jobdesk.jobdeskgroupgrading.jobdeskgradings.forEach(grade => {
+                    sheet.addRow([unit.name, jobdesk.name, null, null, grade.name, grade.grade, grade.indicator, jobdesk.personal_grade || 0, jobdesk.partner_grade || 0, jobdesk.assesor_grade || 0, jobdesk.overall_grade]);
+                    row++;
+                });
+                sheet.mergeCells(jobdeskStart, 2, row - 1, 4)
+                sheet.mergeCells(jobdeskStart, 8, row - 1, 8)
+                sheet.mergeCells(jobdeskStart, 9, row - 1, 9)
+                sheet.mergeCells(jobdeskStart, 10, row - 1, 10)
+                sheet.mergeCells(jobdeskStart, 11, row - 1, 11)
+
+                const jobdeskCell = sheet.getCell(jobdeskStart, 2)
+                jobdeskCell.alignment = { vertical: 'middle', horizontal: "left" }
+
+                for (let col of [8, 9, 10, 11]) {
+                    const cell = sheet.getCell(jobdeskStart, col);
+                    cell.alignment = { vertical: 'middle', horizontal: 'center' };
+                }
+            });
+            sheet.mergeCells(unitStart, 1, row - 1, 1);
+        });
+
+        sheet.getColumn(1).width = 7
+        sheet.getColumn(2).alignment = { wrapText: true, vertical: "middle" }
+        sheet.getColumn(6).width = 6
+        sheet.getColumn(7).width = 6
+        sheet.getColumn(8).width = 5
+        sheet.getColumn(9).width = 5
+        sheet.getColumn(10).width = 5
+        sheet.getColumn(11).width = 5
+
+        for (let i = 6; i < row; i++) {
+            const cell = sheet.getCell(i, 1);
+            cell.alignment = { textRotation: 90, vertical: 'middle', horizontal: 'center' };
+        }
+
+        sheet.columns.forEach((column, index) => {
+            let maxLength = 10;
+            const maxAllowedWidth = 30;
+            if (![0, 5, 6, 7, 8, 9, 10].includes(index)) {
+                column.eachCell({ includeEmpty: true }, cell => {
+                    const cellValue = cell.value ? cell.value.toString() : "";
+                    maxLength = Math.max(maxLength, cellValue.length);
+                });
+                column.width = Math.min(maxLength + 2, maxAllowedWidth);
+            }
+        });
+
+        const startRow = headerRow.number;
+        const endRow = row - 1;
+        for (let r = startRow; r <= endRow; r++) {
+            const currentRow = sheet.getRow(r);
+            currentRow.eachCell({ includeEmpty: true }, cell => {
+                cell.border = {
+                    top: { style: 'double' },
+                    left: { style: 'double' },
+                    bottom: { style: 'double' },
+                    right: { style: 'double' }
+                };
+            });
+        }
+
+        const excelPath = "files/excel-evaluation"
+        if (!fs.existsSync(excelPath)) fs.mkdirSync(excelPath, { recursive: true });
+
+        const pathWorkbook = `${excelPath}/${evalData.id}-${evalData.employee_id}-${new Date().getMonth() + 1}.xlsx`
+        workbook.xlsx.writeFile(pathWorkbook).then(() => {
+            console.log('Excel Evaluation finished');
+        });
+
+        return pathWorkbook
+    }
 
     createMonthly = async (data) => {
         let { month_id, division_id } = data
@@ -99,9 +249,9 @@ class EmployeeEvaluationService {
         if (!employeeEvaluationDatas) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Failed to generate employee evaluations");
         await Promise.all(
             employeeEvaluationDatas.map((evaluation) =>
-              this.employeeDao.updateById({ current_evaluation_id: evaluation.id }, evaluation.employee_id)
+                this.employeeDao.updateById({ current_evaluation_id: evaluation.id }, evaluation.employee_id)
             )
-          );          
+        );
         return responseHandler.returnSuccess(httpStatus.OK, "Employee evaluation generated successfully", employeeEvaluationDatas);
     }
 
@@ -143,7 +293,7 @@ class EmployeeEvaluationService {
 
         return responseHandler.returnSuccess(httpStatus.OK, "Employee evaluation found", employeeEvaluationData);
     };
-    
+
     showDetail = async (id) => {
         const employeeEvaluationData = await this.employeeEvaluationDao.getDetail(id);
         if (!employeeEvaluationData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Employee evaluation not found");
