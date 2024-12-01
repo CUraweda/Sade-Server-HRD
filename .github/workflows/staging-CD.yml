@@ -18,9 +18,9 @@ jobs:
       - name: Deploy using ssh
         uses: appleboy/ssh-action@v1.1.0
         with:
-          host: ${{ secrets.STAGING_HOST }}
-          username: ${{ secrets.STAGING_USERNAME }}
-          key: ${{ secrets.STAGING_PRIVATE_KEY }}
+          host: ${{ secrets.PROD_HOST }}
+          username: ${{ secrets.PROD_USERNAME }}
+          key: ${{ secrets.PROD_PRIVATE_KEY }}
           port: 22
           debug: true
           script: |
@@ -28,4 +28,4 @@ jobs:
             git pull origin dev
             npx sequelize db:migrate 
             npm i
-            pm2 restart 1
+            pm2 restart 4
