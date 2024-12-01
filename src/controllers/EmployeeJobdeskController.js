@@ -10,18 +10,19 @@ class EmployeeJobdeskController {
         try {
             const page = +req.query.page || 0;
             const limit = +req.query.limit || 10;
-            let { search, employee_id, is_graded, asessor_assigned } = req.query;
+            let { search, employee_id, is_graded, asessor_assigned, partner_assigned } = req.query;
 
-            if(asessor_assigned){
+            if (asessor_assigned || partner_assigned) {
                 const { employee } = req.user
                 asessor_assigned = { id: employee.id, is_asessor: employee.is_asessor }
+                partner_assigned = { id: employee.id }
             }
             const offset = limit * page;
             const resData = await this.employeeJobdeskService.showPage(
                 page,
                 limit,
                 offset,
-                { search, employee_id, is_graded, asessor_assigned}
+                { search, employee_id, is_graded, asessor_assigned, partner_assigned }
             );
 
             res.status(resData.statusCode).send(resData.response);
@@ -31,50 +32,50 @@ class EmployeeJobdeskController {
         }
     };
 
-    getDifferenceDay = async (req, res) => {
-        try {
-            const id = +req.params.id
-            const resData = await this.employeeJobdeskService.showDifferencesDay(id)
-            
-            res.status(resData.statusCode).send(resData.response);
-        } catch (e) {
-            console.log(e);
-            res.status(httpStatus.BAD_GATEWAY).send(e);
-        }
-    }
+    // getDifferenceDay = async (req, res) => {
+    //     try {
+    //         const id = +req.params.id
+    //         const resData = await this.employeeJobdeskService.showDifferencesDay(id)
 
-    getWeekRecap = async (req, res) => {
-        try {
-            const id = +req.params.id
-            const resData = await this.employeeJobdeskService.showRecapWeekEID(id)
-            res.status(resData.statusCode).send(resData.response);
-        } catch (e) {
-            console.log(e);
-            res.status(httpStatus.BAD_GATEWAY).send(e);
-        }
-    }
+    //         res.status(resData.statusCode).send(resData.response);
+    //     } catch (e) {
+    //         console.log(e);
+    //         res.status(httpStatus.BAD_GATEWAY).send(e);
+    //     }
+    // }
 
-    getMonthRecap = async (req, res) => {
-        try {
-            const id = +req.params.id
-            const resData = await this.employeeJobdeskService.showRecapMonhEID(id)
-            res.status(resData.statusCode).send(resData.response);
-        } catch (e) {
-            console.log(e);
-            res.status(httpStatus.BAD_GATEWAY).send(e);
-        }
-    }
+    // getWeekRecap = async (req, res) => {
+    //     try {
+    //         const id = +req.params.id
+    //         const resData = await this.employeeJobdeskService.showRecapWeekEID(id)
+    //         res.status(resData.statusCode).send(resData.response);
+    //     } catch (e) {
+    //         console.log(e);
+    //         res.status(httpStatus.BAD_GATEWAY).send(e);
+    //     }
+    // }
 
-    getYearRecap = async (req, res) => {
-        try {
-            const id = +req.params.id
-            const resData = await this.employeeJobdeskService.showRecapYearEID(id)
-            res.status(resData.statusCode).send(resData.response);
-        } catch (e) {
-            console.log(e);
-            res.status(httpStatus.BAD_GATEWAY).send(e);
-        }
-    }
+    // getMonthRecap = async (req, res) => {
+    //     try {
+    //         const id = +req.params.id
+    //         const resData = await this.employeeJobdeskService.showRecapMonhEID(id)
+    //         res.status(resData.statusCode).send(resData.response);
+    //     } catch (e) {
+    //         console.log(e);
+    //         res.status(httpStatus.BAD_GATEWAY).send(e);
+    //     }
+    // }
+
+    // getYearRecap = async (req, res) => {
+    //     try {
+    //         const id = +req.params.id
+    //         const resData = await this.employeeJobdeskService.showRecapYearEID(id)
+    //         res.status(resData.statusCode).send(resData.response);
+    //     } catch (e) {
+    //         console.log(e);
+    //         res.status(httpStatus.BAD_GATEWAY).send(e);
+    //     }
+    // }
 
     getOne = async (req, res) => {
         try {
@@ -100,38 +101,14 @@ class EmployeeJobdeskController {
         }
     };
 
-    createBulk = async (req, res) => {
-        try {
-            const resData = await this.employeeJobdeskService.createBulkData(req.body);
-
-            res.status(resData.statusCode).send(resData.response);
-        } catch (e) {
-            console.log(e);
-            res.status(httpStatus.BAD_GATEWAY).send(e);
-        }
-    };
-
-    updateFinish = async (req, res) => {
-        try{
-            const id = +req.params.id;
-            const { employee } = req.user
-            if (!id) res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Tolong sertakan ID");
-            
-            const resData = await this.employeeJobdeskService.updateFinish(id, employee);
-        
-            res.status(resData.statusCode).send(resData.response);
-        }catch(e){
-            console.log(e);
-            res.status(httpStatus.BAD_GATEWAY).send(e);
-        }
-    }
     updateGrade = async (req, res) => {
         try {
             const id = +req.params.id;
             const { employee } = req.user
             if (!id) res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Tolong sertakan ID");
 
-            const resData = await this.employeeJobdeskService.updateGrade(id, employee, req.body.grade);
+            console.log(req.body)
+            const resData = await this.employeeJobdeskService.updateGrade(id, employee, req.body);
 
             res.status(resData.statusCode).send(resData.response);
         } catch (e) {

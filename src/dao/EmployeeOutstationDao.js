@@ -1,9 +1,12 @@
 const SuperDao = require("./SuperDao");
 const models = require("../models");
 const { Op } = require("sequelize");
+const { required } = require("joi");
 
 const EmployeeOutstation = models.employeeoutstation;
 const Employees = models.employees
+const Division = models.division
+const Worktime = models.worktime
 
 class EmployeeOutstationDao extends SuperDao {
     constructor() {
@@ -36,6 +39,30 @@ class EmployeeOutstationDao extends SuperDao {
             limit: limit,
             order: [["id", "DESC"]],
         });
+    }
+
+    async getAllActiveForAutoAttend(){
+        return EmployeeOutstation.findAll({
+            where: { is_active: true },
+            include: [
+                {
+                    model: Employees,
+                    required: true,
+                    include: [
+                        {
+                            model: Division,
+                            required: true,
+                            include: [
+                                {
+                                    model: Worktime,
+                                    required: true
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        })
     }
 
     async unActiveAllExcept(id) {

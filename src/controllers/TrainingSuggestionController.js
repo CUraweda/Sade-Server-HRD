@@ -62,6 +62,19 @@ class TrainingSuggestionController {
         }
     }
 
+    approveRequest = async (req, res) => {
+        try {
+            const { id } = req.params
+            const { employee } = req.user
+            req.body.employee = employee
+            const resData = await this.trainingSuggestionService.approveOne(id, req.body)
+            res.status(resData.statusCode).send(resData.response);
+        } catch (e) {
+            console.log(e);
+            res.status(httpStatus.BAD_GATEWAY).send(e);
+        }
+    }
+
     update = async (req, res) => {
         try {
             const id = +req.params.id;

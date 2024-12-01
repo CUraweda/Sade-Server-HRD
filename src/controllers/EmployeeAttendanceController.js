@@ -14,14 +14,14 @@ class EmployeeAttendanceController {
         try {
             const page = +req.query.page || 0;
             const limit = +req.query.limit || 10;
-            const { search, outstation, type, status, division_id, date, employee_id } = req.query;
+            const { search, outstation, type, status, division_id, date, employee_id, iteration } = req.query;
 
             const offset = limit * page;
             const resData = await this.employeeAttendanceService.showPage(
                 page,
                 limit,
                 offset,
-                { search, outstation, type, status, division_id, date, employee_id }
+                { search, outstation, type, status, division_id, date, employee_id, iteration }
             );
 
             res.status(resData.statusCode).send(resData.response);

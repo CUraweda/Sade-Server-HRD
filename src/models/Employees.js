@@ -26,6 +26,9 @@ module.exports = (sequelize, DataTypes) => {
       Employees.hasMany(models.formextra, {
         foreignKey: "employee_id",
       });
+      Employees.hasMany(models.employeeevaluation, {
+        foreignKey: "employee_id",
+      });
       Employees.belongsTo(models.user, {
         foreignKey: "user_id",
       });
@@ -48,6 +51,9 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "employee_id",
       })
       Employees.hasMany(models.employeeaccount, {
+        foreignKey: "employee_id",
+      })
+      Employees.hasMany(models.employeeoutstation, {
         foreignKey: "employee_id",
       })
       
@@ -87,6 +93,7 @@ module.exports = (sequelize, DataTypes) => {
       active_outstation_id: DataTypes.INTEGER,
       is_asessor: DataTypes.BOOLEAN,
       raw_workhour: DataTypes.INTEGER,
+      current_evaluation_id: DataTypes.INTEGER,
       needed_employee_files: DataTypes.STRING
     },
     {

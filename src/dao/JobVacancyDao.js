@@ -14,7 +14,7 @@ class JobVacancyDao extends SuperDao {
     }
 
     async getCount(filter) {
-        let { search, division_id, only_open} = filter
+        let { search, division_id, only_open } = filter
         if (!search) search = ""
         return JobVacancy.count({
             where: {
@@ -63,6 +63,7 @@ class JobVacancyDao extends SuperDao {
                     where: { ...(user_id && { user_id }) },
                     include: {
                         model: User,
+                        attributes: ["full_name", "email", "id"],
                         required: false
                     }
                 }
@@ -85,7 +86,7 @@ class JobVacancyDao extends SuperDao {
 
     async checkAvailability(id) {
         const dataExist = await JobVacancy.findOne({ where: { id } })
-        if(!dataExist) return false
+        if (!dataExist) return false
         return dataExist.is_open
     }
 }
