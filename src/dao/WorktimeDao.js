@@ -5,6 +5,8 @@ const SuperDao = require("./SuperDao");
 const Worktime = models.worktime;
 const Division = models.division
 const Weekday = models.weekday
+const Employees = models.employees
+const EmployeeOutstation = models.employeeoutstation
 const EmployeeAttendance = models.employeeattendance
 
 class WorktimeDao extends SuperDao {
@@ -156,6 +158,46 @@ class WorktimeDao extends SuperDao {
             ],
             order: [['start_time', 'ASC']]
         })
+    }
+
+    async getForAutoAttend() {
+        const currentTime = new Intl.DateTimeFormat('id-ID', {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false,
+            timeZone: 'Asia/Jakarta',
+        }).format(new Date()).replace(/\./g, ':')
+        return Worktime.findAll({
+            where: {
+                [Op.and]: [
+                    { start_time: { [Op.lte]: currentTime } },
+                    { end_time: { [Op.gte]: currentTime } }
+                ]
+            },
+            include:
+            {
+                model: Division,
+                required: true,
+                include: [
+                    {
+                        model: Employees,
+                        required: true,
+                        include: [
+                            {
+                                model: EmployeeAttendance,
+                                required: false
+                            },
+                            {
+                                model: EmployeeOutstation,
+                                where: { is_active: true },
+                                required: true,
+                            }
+                        ]
+                    }
+                ]
+            }
+        });
     }
 }
 

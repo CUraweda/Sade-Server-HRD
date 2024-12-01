@@ -74,7 +74,7 @@ class EmployeeEvaluationController {
         try {
             const id = +req.params.id;
             if (!id) res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Please provide an ID");
-            const resData = await this.employeeEvaluationService.create(req.body);
+            const resData = await this.employeeEvaluationService.calculateOne(id);
 
             res.status(resData.statusCode).send(resData.response);
         } catch (e) {
