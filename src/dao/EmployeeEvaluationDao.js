@@ -2,11 +2,13 @@ const SuperDao = require("./SuperDao");
 const models = require("../models");
 const { Op } = require("sequelize");
 
+const Employees = models.employees
 const EmployeeEvaluation = models.employeeevaluation;
 const EmployeeJobdesk = models.employeejobdesk;
 const JobdeskUnit = models.jobdeskunit
 const JobdeskGrade = models.jobdeskgrading
 const JobdeskGroupGrade = models.jobdeskgroupgrading
+const Division = models.division
 
 class EmployeeEvaluationDao extends SuperDao {
     constructor() {
@@ -47,6 +49,14 @@ class EmployeeEvaluationDao extends SuperDao {
             where: { id },
             include: [
                 {
+                    model: Employees,
+                    required: false,
+                },
+                {
+                    model: Division,
+                    required: false
+                },
+                {
                     model: EmployeeJobdesk,
                     include: [
                         {
@@ -61,27 +71,33 @@ class EmployeeEvaluationDao extends SuperDao {
     }
 
     async getDetailCalculation(id) {
-        return JobdeskUnit.findOne({
+        return JobdeskUnit.findAll({
             where: { disabled: false },
             include: [
                 {
                     model: EmployeeJobdesk,
                     required: false,
-                    where: { evaluation_id: id },
+                    where: { evaluation_id: id, grading_id: { [Op.not]: null } },
                     include: [
                         {
                             model: JobdeskGroupGrade,
-                            required: true,
+                            required: false,
                             include: [
                                 {
                                     model: JobdeskGrade,
-                                    required: true
+                                    required: true,
+                                    order: [["indicator", "DESC"]]
                                 }
                             ]
+                        },
+                        {
+                            model: JobdeskGrade,
+                            required: false
                         }
                     ]
                 }
             ]
+
         })
     }
 }
