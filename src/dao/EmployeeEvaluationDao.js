@@ -40,10 +40,6 @@ class EmployeeEvaluationDao extends SuperDao {
             },
             include: [
                 {
-                    model: JobdeskUnit,
-                    required: false
-                },
-                {
                     model: Employees,
                     required: false
                 }
