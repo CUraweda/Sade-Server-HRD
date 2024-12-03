@@ -1,9 +1,11 @@
 const WorktimeDao = require("../../dao/WorktimeDao")
 const constant = require('../../config/constant')
 const EmployeeAttendanceDao = require("../../dao/EmployeeAttendanceDao")
+const EmployeeOutstationDao = require("../../dao/EmployeeOutstationDao")
 
 const worktimeDao = new WorktimeDao()
 const employeeAttendanceDao = new EmployeeAttendanceDao()
+const employeeOutstationDao = new EmployeeOutstationDao()
 
 module.exports = async function autoAttendOutstation() {
     const worktimeDatas = await worktimeDao.getForAutoAttend()
@@ -32,6 +34,8 @@ module.exports = async function autoAttendOutstation() {
             }
         }
     }
+
+    await employeeOutstationDao.updateWhere({ is_active: false }, { is_active: true, end_date: { [Op.lte]: currentDate } })
 
     await employeeAttendanceDao.bulkCreate(attendances).then((data) => {
         console.log(`========== Finish Auto Attend, ${data.length} recorded` )
