@@ -38,6 +38,16 @@ class EmployeeEvaluationDao extends SuperDao {
                     { uid: { [Op.like]: "%" + search + "%" } },
                 ],
             },
+            include: [
+                {
+                    model: JobdeskUnit,
+                    required: false
+                },
+                {
+                    model: Employees,
+                    required: false
+                }
+            ],
             offset: offset,
             limit: limit,
             order: [["id", "DESC"]],

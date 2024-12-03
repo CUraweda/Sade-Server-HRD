@@ -5,6 +5,7 @@ const { Op, fn, col } = require("sequelize");
 const EmployeeJobdesk = models.employeejobdesk;
 const Employees = models.employees
 const User = models.user
+const JobdeskUnit = models.jobdeskunit
 
 class EmployeeJobdeskDao extends SuperDao {
     constructor() {
@@ -74,6 +75,15 @@ class EmployeeJobdeskDao extends SuperDao {
                     as: "grader",
                     required: false
                 },
+                {
+                    model: Employees,
+                    as: "partner",
+                    required: false
+                },
+                {
+                    model: JobdeskUnit,
+                    required: false
+                }
             ],
             offset: offset,
             limit: limit,
