@@ -3,6 +3,7 @@ const models = require("../models");
 const { Op } = require("sequelize");
 
 const JobdeskGroupGrade = models.jobdeskgroupgrading;
+const JobdeskUnit = models.jobdeskunit
 
 class JobdeskGroupGradeDao extends SuperDao {
     constructor() {
@@ -30,6 +31,12 @@ class JobdeskGroupGradeDao extends SuperDao {
                     { identifier: { [Op.like]: "%" + search + "%" } },
                 ],
             },
+            include: [
+                {
+                    model: JobdeskUnit,
+                    required: false
+                }
+            ],
             offset: offset,
             limit: limit,
             order: [["id", "DESC"]],
