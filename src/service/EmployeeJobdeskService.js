@@ -56,16 +56,16 @@ class EmployeeJobdeskService {
         switch (identifier) {
             case "PERSONAL":
                 payload["personal_grade"] = grade
-                payload['personal_grade_at'] = new Date()
+                payload['personal_graded_at'] = new Date()
                 break
             case "PARTNER":
                 payload["partner_grade"] = grade
-                payload['partner_grade_at'] = new Date()
+                payload['partner_graded_at'] = new Date()
                 payload['partner_id'] = employee.id
                 break
             case "SUPERVISOR":
                 payload["assesor_grade"] = grade
-                payload['assesor_grade_at'] = new Date()
+                payload['assesor_graded_at'] = new Date()
                 payload['grader_id'] = employee.id
                 break
         }
