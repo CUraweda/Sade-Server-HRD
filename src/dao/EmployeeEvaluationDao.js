@@ -42,6 +42,10 @@ class EmployeeEvaluationDao extends SuperDao {
                 {
                     model: Employees,
                     required: false
+                },
+                {
+                    model: Division,
+                    required: false
                 }
             ],
             offset: offset,
