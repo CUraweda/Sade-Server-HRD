@@ -34,6 +34,7 @@ class EmployeeEvaluationDao extends SuperDao {
         return EmployeeEvaluation.findAll({
             where: {
                 [Op.or]: [
+                    { "$employee.full_name$": { [Op.like]: "%" + search + "%" } },
                     { academic_year: { [Op.like]: "%" + search + "%" } },
                     { uid: { [Op.like]: "%" + search + "%" } },
                 ],
