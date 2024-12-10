@@ -10,10 +10,10 @@ class JobdeskGradeController {
         try {
             const page = +req.query.page || 0;
             const limit = +req.query.limit || 10;
-            const { search } = req.query;
+            const { search, group_id } = req.query;
 
             const offset = limit * page;
-            const resData = await this.jobdeskGradeService.showPage(page, limit, offset, { search });
+            const resData = await this.jobdeskGradeService.showPage(page, limit, offset, { search, group_id });
 
             res.status(resData.statusCode).send(resData.response);
         } catch (e) {

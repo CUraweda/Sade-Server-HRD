@@ -73,6 +73,9 @@ class EmployeeVacationDao extends SuperDao {
             where: {
                 [Op.or]: [
                     {
+                        "$employee.full_name$": { [Op.like]: "%" + search + "%" } 
+                    },
+                    {
                         employee_id: { [Op.like]: "%" + search + "%" },
                     },
                     {
