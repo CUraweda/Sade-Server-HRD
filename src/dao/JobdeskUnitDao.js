@@ -3,6 +3,7 @@ const models = require("../models");
 const { Op } = require("sequelize");
 
 const JobdeskUnit = models.jobdeskunit;
+const Division = models.division
 
 class JobdeskUnitDao extends SuperDao {
     constructor() {
@@ -30,6 +31,12 @@ class JobdeskUnitDao extends SuperDao {
                     { name: { [Op.like]: "%" + search + "%" } },
                 ],
             },
+            include: [
+                {
+                    model: Division,
+                    required: false
+                }
+            ],
             offset: offset,
             limit: limit,
             order: [["id", "DESC"]],
