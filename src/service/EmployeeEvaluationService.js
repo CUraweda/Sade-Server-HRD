@@ -265,7 +265,10 @@ class EmployeeEvaluationService {
                 itemEvaluationDatas.map((data) => (
                     jobdeskDatas.push(
                         {
-                            ...data,
+                            name: data.name,
+                            description: data.description,
+                            unit_id: data.unit_id,
+                            division_id: data.division_id,
                             uid: `${evaluation.id}|${data.id}`,
                             evaluation_id: evaluation.id,
                             employee_id: evaluation.employee_id
@@ -274,8 +277,6 @@ class EmployeeEvaluationService {
                 ));
             })
         )
-        console.log(jobdeskDatas)
-
         const itemEvaluationDatasCreated = await this.employeeJobdeskDao.bulkCreate(jobdeskDatas)
         if (!itemEvaluationDatasCreated) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Failed to create jobdesk");
         return responseHandler.returnSuccess(httpStatus.OK, "Employee evaluation generated successfully", employeeEvaluationDatas);
