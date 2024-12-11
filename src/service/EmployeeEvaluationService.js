@@ -73,14 +73,8 @@ class EmployeeEvaluationService {
         const excelPath = await this.createExcelEvaluation(evaluationData, calculationEvaluationDatas)
         if (!excelPath) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Failed to create excel data");
         await this.employeeEvaluationDao.updateById({ file_path: excelPath }, evaluationData.id)
-
         const employeeData = evaluationData.employee
-        if (employeeData.email) {
-            setImmediate(async () => {
-                await emailHelper.sendExcelEvaluation(employeeData.email, { employee: employeeData, path: excelPath })
-            })
-        }
-
+        if (employeeData.email) await emailHelper.sendExcelEvaluation(employeeData.email, { employee: employeeData, path: excelPath })
         return responseHandler.returnSuccess(httpStatus.CREATED, "Employee evaluations created successfully", calculationEvaluationDatas);
     };
 
