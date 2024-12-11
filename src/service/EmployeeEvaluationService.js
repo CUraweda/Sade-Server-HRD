@@ -40,6 +40,7 @@ class EmployeeEvaluationService {
         if (listGrade.length < 1) return false
         const { personal_grade, partner_grade, assesor_grade } = jobdesk
 
+        console.log(jobdesk)
         const grades = [personal_grade, partner_grade, assesor_grade].filter(grade => grade !== null);
         const averageGrade = grades.reduce((sum, grade) => sum + grade, 0) / grades.length
         let choosenGrade = listGrade[listGrade.length - 1]
@@ -56,6 +57,7 @@ class EmployeeEvaluationService {
         if (!calculationEvaluationDatas) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Failed to get calculation data");
 
         const updateJobdeskData = []
+
         for (let unitIndex in calculationEvaluationDatas) {
             const jobdeskUnit = calculationEvaluationDatas[unitIndex]
             if (jobdeskUnit.employeejobdesks.length < 1) continue
@@ -269,6 +271,7 @@ class EmployeeEvaluationService {
                             description: data.description,
                             unit_id: data.unit_id,
                             division_id: data.division_id,
+                            grading_id: data.grading_id,
                             uid: `${evaluation.id}|${data.id}`,
                             evaluation_id: evaluation.id,
                             employee_id: evaluation.employee_id

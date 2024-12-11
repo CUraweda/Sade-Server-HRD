@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
       // Define associations here
       this.belongsTo(models.jobdeskunit, { foreignKey: 'unit_id' });
       this.belongsTo(models.division, { foreignKey: 'division_id' });
+      this.belongsTo(models.jobdeskgroupgrading, { foreignKey: 'grading_id' })
     }
   }
   
@@ -20,6 +21,7 @@ module.exports = (sequelize, DataTypes) => {
         division_id: DataTypes.INTEGER,
         name: DataTypes.STRING,
         description: DataTypes.TEXT,
+        grading_id: DataTypes.INTEGER,
         unit_id: DataTypes.INTEGER
     },
     {
