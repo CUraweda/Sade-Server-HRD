@@ -8,6 +8,7 @@ class EmployeeEvaluationItemValidator {
             division_id: Joi.number().required(),
             name: Joi.string().required(),
             description: Joi.string().required(),
+            grading_id: Joi.number().integer().required(),
             unit_id: Joi.number().required(),
         });
 
