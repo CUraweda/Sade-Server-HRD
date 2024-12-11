@@ -12,14 +12,14 @@ class EmployeeBillController {
     try {
       const page = +req.query.page || 0;
       const limit = +req.query.limit || 10;
-      const { search, account_id } = req.query;
+      const { search, account_id, current_month } = req.query;
 
       const offset = limit * page;
       const resData = await this.employeeBillService.showPage(
         page,
         limit,
         offset,
-        { search, account_id }
+        { search, account_id, current_month }
       );
 
       res.status(resData.statusCode).send(resData.response);
