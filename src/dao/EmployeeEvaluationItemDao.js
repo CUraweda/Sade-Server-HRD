@@ -51,6 +51,12 @@ class EmployeeEvaluationItemDao extends SuperDao {
             order: [["id", "DESC"]],
         });
     }
+
+    async getForCalculate(division_id) {
+        return EmployeeEvaluationItem.findAll({
+            where: { division_id }
+        })
+    }
 }
 
 module.exports = EmployeeEvaluationItemDao;

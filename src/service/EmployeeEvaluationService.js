@@ -6,7 +6,8 @@ const EmployeeJobdeskDao = require('../dao/EmployeeJobdeskDao')
 const responseHandler = require("../helper/responseHandler");
 const ExcelJS = require('exceljs');
 const fs = require('fs')
-const EmailHelper = require('../helper/EmailHelper')
+const EmailHelper = require('../helper/EmailHelper');
+const EmployeeEvaluationItemDao = require("../dao/EmployeeEvaluationItemDao");
 const emailHelper = new EmailHelper()
 class EmployeeEvaluationService {
     constructor() {
@@ -14,6 +15,7 @@ class EmployeeEvaluationService {
         this.academicYearDao = new AcademicYearDao()
         this.employeeJobdeskDao = new EmployeeJobdeskDao()
         this.employeeEvaluationDao = new EmployeeEvaluationDao();
+        this.employeeEvaluationItemDao = new EmployeeEvaluationItemDao()
     }
 
     generateUID = (employee_id, academic_year, month_id) => {
@@ -48,10 +50,10 @@ class EmployeeEvaluationService {
 
     calculateOne = async (id) => {
         const evaluationData = await this.employeeEvaluationDao.getDetail(id)
-        if (!evaluationData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Failed to create employee evaluations");
+        if (!evaluationData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Failed to get detail data");
 
         const calculationEvaluationDatas = await this.employeeEvaluationDao.getDetailCalculation(id);
-        if (!calculationEvaluationDatas) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Failed to create employee evaluations");
+        if (!calculationEvaluationDatas) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Failed to get calculation data");
 
         const updateJobdeskData = []
         for (let unitIndex in calculationEvaluationDatas) {
@@ -66,16 +68,16 @@ class EmployeeEvaluationService {
             }
         }
         await Promise.all(updateJobdeskData)
-        const excelPath = await this.createExcelEvaluation(evaluationData, calculationEvaluationDatas)
-        if (!excelPath) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Failed to create excel data");
-        await this.employeeEvaluationDao.updateById({ file_path: excelPath }, evaluationData.id)
+        // const excelPath = await this.createExcelEvaluation(evaluationData, calculationEvaluationDatas)
+        // if (!excelPath) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Failed to create excel data");
+        // await this.employeeEvaluationDao.updateById({ file_path: excelPath }, evaluationData.id)
 
-        const employeeData = evaluationData.employee
-        if (employeeData.email) {
-            setImmediate(async () => {
-                await emailHelper.sendExcelEvaluation(employeeData.email, { employee: employeeData, path: excelPath })
-            })
-        }
+        // const employeeData = evaluationData.employee
+        // if (employeeData.email) {
+        //     setImmediate(async () => {
+        //         await emailHelper.sendExcelEvaluation(employeeData.email, { employee: employeeData, path: excelPath })
+        //     })
+        // }
 
         return responseHandler.returnSuccess(httpStatus.CREATED, "Employee evaluations created successfully", calculationEvaluationDatas);
     };
@@ -232,6 +234,9 @@ class EmployeeEvaluationService {
         if (!currentAcademicYear) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Failed to fetch current academic year employee evaluations");
         currentAcademicYear = currentAcademicYear.name
 
+        const itemEvaluationDatas = await this.employeeEvaluationItemDao.getForCalculate(division_id)
+        if (!itemEvaluationDatas) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Failed to get calculation data");
+
         const createdEvaluation = []
         for (let employee of employeeData) {
             if (employee.employeeevaluations.length > 0) continue
@@ -247,11 +252,29 @@ class EmployeeEvaluationService {
 
         const employeeEvaluationDatas = await this.employeeEvaluationDao.bulkCreate(createdEvaluation)
         if (!employeeEvaluationDatas) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Failed to generate employee evaluations");
+        const jobdeskDatas = []
         await Promise.all(
-            employeeEvaluationDatas.map((evaluation) =>
-                this.employeeDao.updateById({ current_evaluation_id: evaluation.id }, evaluation.employee_id)
-            )
-        );
+            employeeEvaluationDatas.map(async (evaluation) => {
+                await this.employeeDao.updateById(
+                    { current_evaluation_id: evaluation.id },
+                    evaluation.employee_id
+                );
+
+                itemEvaluationDatas.map((data) => (
+                    jobdeskDatas.push(
+                        {
+                            ...data,
+                            uid: `${evaluation.id}|${data.id}`,
+                            evaluation_id: evaluation.id,
+                            employee_id: evaluation.employee_id
+                        }
+                    )
+                ));
+            })
+        )
+
+        const itemEvaluationDatasCreated = await this.employeeJobdeskDao.bulkCreate(jobdeskDatas)
+        if (!itemEvaluationDatasCreated) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Failed to create jobdesk");
         return responseHandler.returnSuccess(httpStatus.OK, "Employee evaluation generated successfully", employeeEvaluationDatas);
     }
 
