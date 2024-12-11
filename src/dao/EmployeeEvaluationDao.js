@@ -96,7 +96,7 @@ class EmployeeEvaluationDao extends SuperDao {
                     include: [
                         {
                             model: JobdeskGroupGrade,
-                            required: true,
+                            required: false,
                             include: [
                                 {
                                     model: JobdeskGrade,
