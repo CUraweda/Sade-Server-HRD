@@ -58,7 +58,6 @@ class EmployeeEvaluationService {
         let checkerData = []
         for (let unitIndex in calculationEvaluationDatas) {
             const jobdeskUnit = calculationEvaluationDatas[unitIndex]
-            return responseHandler.returnError(httpStatus.BAD_REQUEST, {jobdeskUnit});
             if (jobdeskUnit.employeejobdesks.length < 1) continue
             for (let jobdeskIndex in jobdeskUnit.employeejobdesks) {
                 const employeeJobdesk = jobdeskUnit.employeejobdesks[jobdeskIndex]
@@ -70,9 +69,6 @@ class EmployeeEvaluationService {
                 calculationEvaluationDatas[unitIndex].employeejobdesks[jobdeskIndex] = { ...employeeJobdesk, ...gradingData }
             }
         }
-        return responseHandler.returnError(httpStatus.BAD_REQUEST, {
-            checkerData
-        });
         this.employeeDao.updateById({ current_evaluation_id: null }, evaluationData.employee_id)
         this.employeeEvaluationDao.updateById({ month_end: new Date().getMonth() + 1 }, id)
         const excelPath = await this.createExcelEvaluation(evaluationData, calculationEvaluationDatas)
