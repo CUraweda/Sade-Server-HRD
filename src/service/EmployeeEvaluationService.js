@@ -69,6 +69,7 @@ class EmployeeEvaluationService {
         }
         await Promise.all(updateJobdeskData)
         this.employeeDao.updateById({ current_evaluation_id: null }, evaluationData.employee_id)
+        this.employeeEvaluationDao.updateById({ month_end: new Date().getMonth() + 1 }, id)
         // const excelPath = await this.createExcelEvaluation(evaluationData, calculationEvaluationDatas)
         // if (!excelPath) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Failed to create excel data");
         // await this.employeeEvaluationDao.updateById({ file_path: excelPath }, evaluationData.id)
