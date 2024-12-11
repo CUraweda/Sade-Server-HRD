@@ -12,10 +12,13 @@ class EmployeeBillDao extends SuperDao {
     }
 
     async getCount(filter) {
-        let { search, account_id } = filter
+        let { search, account_id, current_month } = filter
         if (!search) search = ""
         return EmployeeBill.count({
             where: {
+                ...(current_month == 'y' && {
+                    createdAt: {[Op.between]: [startDate, currentDate]}
+                }),
                 [Op.or]: [
                     { description: { [Op.like]: "%" + search + "%" } },
                     { amount: { [Op.like]: "%" + search + "%" } }
@@ -26,10 +29,16 @@ class EmployeeBillDao extends SuperDao {
     }
 
     async getPage(offset, limit, filter) {
-        let { search, account_id } = filter
+        let { search, account_id, current_month } = filter
         if (!search) search = ""
+        let currentDate = new Date()
+        let startDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+
         return EmployeeBill.findAll({
             where: {
+                ...(current_month == 'y' && {
+                    createdAt: {[Op.between]: [startDate, currentDate]}
+                }),
                 [Op.or]: [
                     { description: { [Op.like]: "%" + search + "%" } },
                     { amount: { [Op.like]: "%" + search + "%" } }
