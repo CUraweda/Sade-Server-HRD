@@ -16,10 +16,12 @@ class EmployeeEvaluationDao extends SuperDao {
     }
 
     async getCount(filter) {
-        let { search } = filter;
+        let { search, month, division } = filter;
         if (!search) search = "";
         return EmployeeEvaluation.count({
             where: {
+                ...(month && { month_start: +month }),
+                ...(division && { division_id: +division }),
                 [Op.or]: [
                     { academic_year: { [Op.like]: "%" + search + "%" } },
                     { uid: { [Op.like]: "%" + search + "%" } },
@@ -29,10 +31,12 @@ class EmployeeEvaluationDao extends SuperDao {
     }
 
     async getPage(offset, limit, filter) {
-        let { search } = filter;
+        let { search, month, division } = filter;
         if (!search) search = "";
         return EmployeeEvaluation.findAll({
             where: {
+                ...(month && { month_start: +month }),
+                ...(division && { division_id: +division }),
                 [Op.or]: [
                     { "$employee.full_name$": { [Op.like]: "%" + search + "%" } },
                     { academic_year: { [Op.like]: "%" + search + "%" } },

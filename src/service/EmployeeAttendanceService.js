@@ -214,7 +214,6 @@ class EmployeeAttendanceService {
             }
             filter.date = { start_date, end_date }
         }
-        console.log(filter)
         const totalRows = await this.employeeAttendanceDao.getCount(filter);
         const totalPage = Math.ceil(totalRows / limit);
 
