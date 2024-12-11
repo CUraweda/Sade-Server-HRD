@@ -53,7 +53,7 @@ class EmployeeEvaluationService {
         if (!evaluationData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Failed to get detail data");
 
         const calculationEvaluationDatas = await this.employeeEvaluationDao.getDetailCalculation(id);
-        if (!calculationEvaluationDatas) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Failed to get calculation data");
+        if (!calculationEvaluationDatas) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Failed to get calculation data", calculationEvaluationDatas);
         
         let checkerData = []
         for (let unitIndex in calculationEvaluationDatas) {

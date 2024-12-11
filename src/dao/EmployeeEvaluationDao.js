@@ -92,7 +92,7 @@ class EmployeeEvaluationDao extends SuperDao {
                 {
                     model: EmployeeJobdesk,
                     required: false,
-                    where: { evaluation_id: id, grading_id: { [Op.not]: null } },
+                    where: { evaluation_id: id },
                     include: [
                         {
                             model: JobdeskGroupGrade,
