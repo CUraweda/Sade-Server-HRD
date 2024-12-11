@@ -40,7 +40,6 @@ class EmployeeEvaluationService {
         if (listGrade.length < 1) return false
         const { personal_grade, partner_grade, assesor_grade } = jobdesk
 
-        console.log(jobdesk)
         const grades = [personal_grade, partner_grade, assesor_grade].filter(grade => grade !== null);
         const averageGrade = grades.reduce((sum, grade) => sum + grade, 0) / grades.length
         let choosenGrade = listGrade[listGrade.length - 1]
@@ -56,8 +55,6 @@ class EmployeeEvaluationService {
         const calculationEvaluationDatas = await this.employeeEvaluationDao.getDetailCalculation(id);
         if (!calculationEvaluationDatas) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Failed to get calculation data");
 
-        const updateJobdeskData = []
-
         for (let unitIndex in calculationEvaluationDatas) {
             const jobdeskUnit = calculationEvaluationDatas[unitIndex]
             if (jobdeskUnit.employeejobdesks.length < 1) continue
@@ -65,11 +62,10 @@ class EmployeeEvaluationService {
                 const employeeJobdesk = jobdeskUnit.employeejobdesks[jobdeskIndex]
                 if (employeeJobdesk.choosen_grade_id) continue
                 const gradingData = this.chooseGradeForJobdesk(employeeJobdesk, employeeJobdesk.jobdeskgroupgrading.jobdeskgradings)
-                updateJobdeskData.push(this.employeeJobdeskDao.updateById(gradingData, employeeJobdesk.id))
+                await this.employeeJobdeskDao.updateById(gradingData, employeeJobdesk.id)
                 calculationEvaluationDatas[unitIndex].employeejobdesks[jobdeskIndex] = { ...employeeJobdesk, ...gradingData }
             }
         }
-        await Promise.all(updateJobdeskData)
         this.employeeDao.updateById({ current_evaluation_id: null }, evaluationData.employee_id)
         this.employeeEvaluationDao.updateById({ month_end: new Date().getMonth() + 1 }, id)
         const excelPath = await this.createExcelEvaluation(evaluationData, calculationEvaluationDatas)
