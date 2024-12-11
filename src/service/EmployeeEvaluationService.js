@@ -62,7 +62,6 @@ class EmployeeEvaluationService {
             for (let jobdeskIndex in jobdeskUnit.employeejobdesks) {
                 const employeeJobdesk = jobdeskUnit.employeejobdesks[jobdeskIndex]
                 if (employeeJobdesk.choosen_grade_id) continue
-                if (!employeeJobdesk.jobdeskgroupgrading.jobdeskgradings.length < 1) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Failed to get calculation data");
                 const gradingData = this.chooseGradeForJobdesk(employeeJobdesk, employeeJobdesk.jobdeskgroupgrading.jobdeskgradings)
                 await this.employeeJobdeskDao.updateById(gradingData, employeeJobdesk.id)
                 checkerData.push(gradingData)
