@@ -36,7 +36,7 @@ class JobdeskGradeDao extends SuperDao {
             },
             offset: offset,
             limit: limit,
-            order: [["id", "DESC"]],
+            order: [["indicator", "DESC"]],
         });
     }
 
