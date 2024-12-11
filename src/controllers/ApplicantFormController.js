@@ -124,7 +124,9 @@ class ApplicantFormController {
         try {
             const id = +req.params.id
             const { condition } = req.params
-            const resData = await this.applicantFormService.evaluateApplication(id, condition.toString().toLowerCase(), "Selection")
+            const resData = await this.applicantFormService.evaluateApplication(id, condition.toString().toLowerCase(), "Selection", {
+                employee: req.user.employee
+            })
             
             res.status(resData.statusCode).send(resData.response);
         } catch (e) {
@@ -137,7 +139,9 @@ class ApplicantFormController {
         try {
             const id = +req.params.id
             const { condition } = req.params
-            const resData = await this.applicantFormService.evaluateApplication(id, condition.toString().toLowerCase(), "Psychology")
+            const resData = await this.applicantFormService.evaluateApplication(id, condition.toString().toLowerCase(), "Psychology", {
+                employee: req.user.employee
+            })
             
             res.status(resData.statusCode).send(resData.response);
         } catch (e) {
