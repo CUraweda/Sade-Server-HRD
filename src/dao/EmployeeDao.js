@@ -157,7 +157,7 @@ class EmployeesDao extends SuperDao {
       include: [
         {
           model: User,
-          attributes: ["full_name", "email", "id"],
+          attributes: ["full_name", "email", "id", 'avatar'],
           required: false
         },
         {
