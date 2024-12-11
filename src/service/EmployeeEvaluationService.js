@@ -70,11 +70,17 @@ class EmployeeEvaluationService {
         await Promise.all(updateJobdeskDao)
         this.employeeDao.updateById({ current_evaluation_id: null }, evaluationData.employee_id)
         this.employeeEvaluationDao.updateById({ month_end: new Date().getMonth() + 1 }, id)
-        const excelPath = await this.createExcelEvaluation(evaluationData, calculationEvaluationDatas)
-        if (!excelPath) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Failed to create excel data");
-        await this.employeeEvaluationDao.updateById({ file_path: excelPath }, evaluationData.id)
+        
         const employeeData = evaluationData.employee
-        if (employeeData.email) await emailHelper.sendExcelEvaluation(employeeData.email, { employee: employeeData, path: excelPath })
+        if (employeeData.email) {
+            setImmediate(async () => {
+                const excelPath = await this.createExcelEvaluation(evaluationData, calculationEvaluationDatas)
+                // if (!excelPath) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Failed to create excel data");
+                await this.employeeEvaluationDao.updateById({ file_path: excelPath }, evaluationData.id)
+                await emailHelper.sendExcelEvaluation(employeeData.email, { employee: employeeData, path: excelPath })
+            })
+        }
+
         return responseHandler.returnSuccess(httpStatus.CREATED, "Employee evaluations created successfully", calculationEvaluationDatas);
     };
 
