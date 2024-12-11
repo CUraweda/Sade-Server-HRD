@@ -20,8 +20,8 @@ class EmployeeEvaluationDao extends SuperDao {
         if (!search) search = "";
         return EmployeeEvaluation.count({
             where: {
-                ...(month && { month_start: +month }),
-                ...(division && { division_id: +division }),
+                ...(month && { month_start: month }),
+                ...(division && { division_id: division }),
                 [Op.or]: [
                     { academic_year: { [Op.like]: "%" + search + "%" } },
                     { uid: { [Op.like]: "%" + search + "%" } },
