@@ -320,9 +320,9 @@ class ApplicantFormService {
         if (!employeeData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Gagal membuat data employee")
         const updatedApplicant = await this.applicantFormDao.updateById({ employee_id: employeeData.id }, id)
         if (!updatedApplicant) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Gagal mengupdate data applicant")
-        const updatedUser = await this.userDao.updateById({ avatar: applicantData.file_path }, applicantData.user_id)
+        const updatedUser = await this.userDao.updateById({ avatar: applicantData.file_path,  }, applicantData.user_id)
         if (!updatedUser) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Gagal mengupdate data user")
-        await this.userDao.updateById(applicantData.user_id, userData)
+        await this.userDao.updateById(userData, applicantData.user_id)
         return responseHandler.returnSuccess(httpStatus.OK, "Berhasil Aggregasi Applicant", updatedApplicant)
     }
 
