@@ -70,16 +70,16 @@ class EmployeeEvaluationService {
         await Promise.all(updateJobdeskData)
         this.employeeDao.updateById({ current_evaluation_id: null }, evaluationData.employee_id)
         this.employeeEvaluationDao.updateById({ month_end: new Date().getMonth() + 1 }, id)
-        // const excelPath = await this.createExcelEvaluation(evaluationData, calculationEvaluationDatas)
-        // if (!excelPath) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Failed to create excel data");
-        // await this.employeeEvaluationDao.updateById({ file_path: excelPath }, evaluationData.id)
+        const excelPath = await this.createExcelEvaluation(evaluationData, calculationEvaluationDatas)
+        if (!excelPath) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Failed to create excel data");
+        await this.employeeEvaluationDao.updateById({ file_path: excelPath }, evaluationData.id)
 
-        // const employeeData = evaluationData.employee
-        // if (employeeData.email) {
-        //     setImmediate(async () => {
-        //         await emailHelper.sendExcelEvaluation(employeeData.email, { employee: employeeData, path: excelPath })
-        //     })
-        // }
+        const employeeData = evaluationData.employee
+        if (employeeData.email) {
+            setImmediate(async () => {
+                await emailHelper.sendExcelEvaluation(employeeData.email, { employee: employeeData, path: excelPath })
+            })
+        }
 
         return responseHandler.returnSuccess(httpStatus.CREATED, "Employee evaluations created successfully", calculationEvaluationDatas);
     };
@@ -215,7 +215,7 @@ class EmployeeEvaluationService {
             });
         }
 
-        const excelPath = "files/excel-evaluation"
+        const excelPath = "public/files/excel-evaluation"
         if (!fs.existsSync(excelPath)) fs.mkdirSync(excelPath, { recursive: true });
 
         const pathWorkbook = `${excelPath}/${evalData.id}-${evalData.employee_id}-${new Date().getMonth() + 1}.xlsx`
