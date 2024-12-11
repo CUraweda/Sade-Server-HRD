@@ -43,7 +43,7 @@ class EmployeeEvaluationService {
         const grades = [personal_grade, partner_grade, assesor_grade].filter(grade => grade !== null);
         const averageGrade = grades.reduce((sum, grade) => sum + grade, 0) / grades.length
         let choosenGrade = listGrade[listGrade.length - 1]
-        for (let grade of listGrade) if (grade.indicator <= averageGrade) { choosenGrade = grade; break }
+        if (averageGrade > 0) for (let grade of listGrade) if (averageGrade >= grade.indicator) { choosenGrade = grade; break }
 
         return { overall_grade_raw: averageGrade, overall_grade: choosenGrade.grade, choosen_grade_id: choosenGrade.id }
     }
