@@ -68,6 +68,7 @@ class EmployeeEvaluationService {
             }
         }
         await Promise.all(updateJobdeskData)
+        this.employeeDao.updateById({ current_evaluation_id: null }, evaluationData.employee_id)
         // const excelPath = await this.createExcelEvaluation(evaluationData, calculationEvaluationDatas)
         // if (!excelPath) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Failed to create excel data");
         // await this.employeeEvaluationDao.updateById({ file_path: excelPath }, evaluationData.id)
@@ -272,6 +273,7 @@ class EmployeeEvaluationService {
                 ));
             })
         )
+        console.log(jobdeskDatas)
 
         const itemEvaluationDatasCreated = await this.employeeJobdeskDao.bulkCreate(jobdeskDatas)
         if (!itemEvaluationDatasCreated) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Failed to create jobdesk");
