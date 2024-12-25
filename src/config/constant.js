@@ -42,6 +42,7 @@ module.exports = {
         "Selasa",
         "Rabu",
         "Kamis",
+        "Jumat",
         "Sabtu",
     ]
 };

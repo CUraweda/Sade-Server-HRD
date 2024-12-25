@@ -42,10 +42,16 @@ class JobdeskGradeDao extends SuperDao {
 
     async checkUID(uids){
         const { grade_uid, indicator_uid } = uids
-        return Jobdesk.findOne({
+        return JobdeskGrade.findOne({
             where: {
-                ...(grade_uid && {  grade_uid }),
-                ...(indicator_uid && {  indicator_uid })
+                [Op.or]: [
+                    {
+                        ...(grade_uid && {  grade_uid }),
+                    },
+                    {
+                        ...(indicator_uid && {  indicator_uid })
+                    }
+                ]
             }
         })
     }

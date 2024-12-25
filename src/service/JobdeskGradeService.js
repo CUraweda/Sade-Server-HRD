@@ -17,7 +17,7 @@ class JobdeskGradeService {
     };
 
     addOne = async (body) => {
-        const alreadyExist = await this.jobdeskGradeDao.checkExist(body)
+        const alreadyExist = await this.jobdeskGradeDao.checkUID(body)
         if (alreadyExist) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Cant create data because already exist");
         const groupExist = await this.jobdeskGradeGroupDao.findById(body.group_id)
         if (!groupExist) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Group didn't exist");

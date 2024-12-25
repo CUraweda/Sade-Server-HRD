@@ -22,6 +22,7 @@ class JobVacancyService {
         if (!details || details.length < 1) return responseHandler.returnError(httpStatus.BAD_REQUEST, "No Detail to create");
         delete body.detail
 
+        body['is_open'] = true
         const jobVacancyData = await this.jobVacancyDao.create(body);
         if (!jobVacancyData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Failed to create job vacancy");
 
