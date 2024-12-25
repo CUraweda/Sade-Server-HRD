@@ -32,6 +32,12 @@ const employeeAsessorRoute = require("./employeeAsessorRoute");
 const employeeAttachmentRoute = require('./employeeAttachmentRoute')
 const employeeOutstationRoute = require("./employeeOutstationRoute")
 const downloadRoute = require('./downloadRoute')
+const employeeEvaluationRoute = require('./employeeEvaluationRoute')
+const employeeEvaluationItemRoute = require('./employeeEvaluationItemRoute')
+const jobdeskUnitRoute = require('./jobdeskUnitRoute')
+const jobdeskGradeGroupRoute = require('./jobdeskGroupGradeRoute')
+const jobdeskGradeRoute = require('./jobdeskGradeRoute')
+
 // const authRoute = require('./authRoute')
 const router = express.Router();
 
@@ -247,6 +253,26 @@ const defaultRoutes = [
   {
     path: "/download",
     route: downloadRoute,
+  },
+    {
+      path: "/employee-evaluation",
+      route: employeeEvaluationRoute,
+    },
+  {
+    path: "/evaluation-item",
+    route: employeeEvaluationItemRoute,
+  },
+  {
+    path: "/jobdesk-unit",
+    route: jobdeskUnitRoute,
+  },
+  {
+    path: "/jobdesk-grade",
+    route: jobdeskGradeRoute,
+  },
+  {
+    path: "/jobdesk-group-grade",
+    route: jobdeskGradeGroupRoute,
   },
   { path: "/face", route: faceRoute },
   { path: "/location", route: locationRoute}

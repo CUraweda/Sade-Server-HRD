@@ -12,14 +12,14 @@ class EmployeeBillController {
     try {
       const page = +req.query.page || 0;
       const limit = +req.query.limit || 10;
-      const { search, account_id } = req.query;
+      const { search, account_id, current_month } = req.query;
 
       const offset = limit * page;
       const resData = await this.employeeBillService.showPage(
         page,
         limit,
         offset,
-        { search, account_id }
+        { search, account_id, current_month }
       );
 
       res.status(resData.statusCode).send(resData.response);
@@ -55,11 +55,12 @@ class EmployeeBillController {
 
   addOne = async (req, res) => {
     try {
-      const resData = await this.employeeBillService.addOne(req.user?.employee, req.body);
-      if(resData.response.status) {
-        const { account_id, type_id  } = resData.response.data
-        const updateAccount = await this.employeeAccountService.updateTotal(account_id, type_id)
-        if(!updateAccount.response.status) return res.status(updateAccount.statusCode).send(updateAccount.response);
+      const resData = await this.employeeBillService.addOne({ employee_id: req.body.employee_id, account_id: req.body.account_id }, req.body);
+      if (resData.response.status) {
+        const { id, account_id } = resData.response.data
+        console.log(resData.response.data)
+        const updateAccount = await this.employeeAccountService.updateTotal(account_id, id)
+        if (!updateAccount.response.status) return res.status(updateAccount.statusCode).send(updateAccount.response);
       }
 
       res.status(resData.statusCode).send(resData.response);

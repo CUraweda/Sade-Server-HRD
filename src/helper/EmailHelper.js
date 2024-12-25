@@ -5,6 +5,7 @@ const nodemailer = require("nodemailer");
 const handlebars = require("handlebars");
 const fs = require("fs");
 const path = require("path");
+const { error } = require("console");
 
 const transporter = nodemailer.createTransport({
   //? GMAIL CONFIG
@@ -36,6 +37,57 @@ var readHTMLFile = function (path, callback) {
 };
 
 class EmailHelper {
+  constructor() {
+    this.email = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_ACCOUNT,
+        pass: process.env.PASSWORD
+      }
+    })
+  }
+
+  async sendSlipGaji(to, slipGajiPath) {
+    try {
+      const currentDate = new Date().toISOString().split('T')[0]
+      await this.email.sendMail(
+        {
+          from: process.env.EMAIL_FROM, to, subject: `Slip Gaji - ${currentDate}`,
+          attachments: [
+            {
+              filename: 'slip-gaji.pdf',
+              path: slipGajiPath
+            }
+          ]
+        },
+      )
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+  async sendExcelEvaluation(to, data = {}) {
+    try {
+      const { employee, path } = data
+      const currentMonth = new Date().getMonth() + 1
+      await this.email.sendMail(
+        {
+          from: process.env.EMAIL_FROM, to, subject: `Evaluasi Penilaian - ${employee.full_name}`,
+          attachments: [
+            {
+              filename: `Evaluasi ${employee.full_name} Bulan ${currentMonth}.xlsx`,
+              path
+            }
+          ]
+        },
+      )
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+
+
   async sendApplicantEmail(
     dynamic,
     to,
@@ -94,6 +146,34 @@ class EmailHelper {
     } catch (err) {
       console.log(err);
       return false;
+    }
+  }
+
+  async sendEvaluationEmail(to, data) {
+    try {
+      readHTMLFile(path.resolve(__dirname, '../views/appplicant_success.html'), function (err, html) {
+        if (err) {
+          console.log(err)
+          return false
+        }
+
+        const template = handlebars.compile(html)
+        data['company_name'] = 'Sekolah Alam Depok'
+        const htmlToSend = template(data)
+        const mOpts = {
+          from: config.email.account, to, subject: "Hasil Seleksi - Sekolah Alam Depok",
+          html: htmlToSend
+        }
+
+        transporter.sendMail(mailOptions, (err, res) => {
+          if (err) return false
+        })
+
+        return true
+      })
+    } catch (e) {
+      console.log(e)
+      return false
     }
   }
 }

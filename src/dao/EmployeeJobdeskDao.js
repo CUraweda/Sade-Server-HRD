@@ -5,6 +5,7 @@ const { Op, fn, col } = require("sequelize");
 const EmployeeJobdesk = models.employeejobdesk;
 const Employees = models.employees
 const User = models.user
+const JobdeskUnit = models.jobdeskunit
 
 class EmployeeJobdeskDao extends SuperDao {
     constructor() {
@@ -12,7 +13,7 @@ class EmployeeJobdeskDao extends SuperDao {
     }
 
     async getCount(filter) {
-        let { search, employee_id } = filter
+        let { search, employee_id, asessor_assigned, partner_assigned } = filter
         if (!search) search = ""
         return EmployeeJobdesk.count({
             where: {
@@ -21,6 +22,8 @@ class EmployeeJobdeskDao extends SuperDao {
                         "$employee.full_name$": { [Op.like]: "%" + search + "%" }
                     },
                 ],
+                ...(partner_assigned && { partner_ids: { [Op.like]: `%|${partner_assigned.id}|%` } }),
+                ...(asessor_assigned && { asessor_ids: { [Op.like]: `%|${asessor_assigned.id}|%` } }),
                 ...(employee_id && { employee_id })
             },
             include: [
@@ -39,7 +42,7 @@ class EmployeeJobdeskDao extends SuperDao {
     }
 
     async getPage(offset, limit, filter) {
-        let { search, employee_id, is_graded } = filter
+        let { search, employee_id, is_graded, asessor_assigned, partner_assigned } = filter
         if (!search) search = ""
         if (is_graded) is_graded = is_graded != "0" ? true : false
         return EmployeeJobdesk.findAll({
@@ -49,6 +52,8 @@ class EmployeeJobdeskDao extends SuperDao {
                         "$employee.full_name$": { [Op.like]: "%" + search + "%" }
                     },
                 ],
+                ...(partner_assigned && { partner_ids: { [Op.like]: `%|${partner_assigned.id}|%` } }),
+                ...(asessor_assigned && { asessor_ids: { [Op.like]: `%|${asessor_assigned.id}|%` } }),
                 ...(is_graded && { is_graded }),
                 ...(employee_id && { employee_id })
             },
@@ -59,6 +64,7 @@ class EmployeeJobdeskDao extends SuperDao {
                     include: [
                         {
                             model: User,
+                            attributes: ["full_name", "email", "id"],
                             required: false
                         }
                     ],
@@ -69,6 +75,15 @@ class EmployeeJobdeskDao extends SuperDao {
                     as: "grader",
                     required: false
                 },
+                {
+                    model: Employees,
+                    as: "partner",
+                    required: false
+                },
+                {
+                    model: JobdeskUnit,
+                    required: false
+                }
             ],
             offset: offset,
             limit: limit,
@@ -76,9 +91,22 @@ class EmployeeJobdeskDao extends SuperDao {
         });
     }
 
-    async checkDataGrade(id) {
+    async checkDataGrade(data) {
+        let { id, employee, identifier } = data
+        switch (identifier) {
+            case "PARTNER":
+                identifier = { partner_ids: { [Op.like]: `|${employee.id}|` } }
+                break
+            case "SUPERVISOR":
+                identifier = { asessor_ids: { [Op.like]: `|${employee.id}|` } }
+                break
+            default:
+                identifier = { employee_id: employee.id }
+                break
+        }
+        console
         return EmployeeJobdesk.findOne({
-            where: { id }, include: [
+            where: { id, ...identifier }, include: [
                 {
                     as: "employee",
                     model: Employees,
@@ -88,27 +116,27 @@ class EmployeeJobdeskDao extends SuperDao {
         })
     }
 
-    async getStartEnd(start, end, filter = {}) {
-        return EmployeeJobdesk.findAll({
-            where: {
-                ...filter,
-                finished_at: { [Op.between]: [start, end] }
-            }
-        })
-    }
+    // async getStartEnd(start, end, filter = {}) {
+    //     return EmployeeJobdesk.findAll({
+    //         where: {
+    //             ...filter,
+    //             finished_at: { [Op.between]: [start, end] }
+    //         }
+    //     })
+    // }
 
-    async countRawGradeRange(start, end, filter = {}) {
-        return EmployeeJobdesk.findAll({
-            where: {
-                ...filter,
-                finished_at: { [Op.between]: [start, end] }
-            },
-            attributes: [
-                [fn("COUNT", col('id')), "count"],
-                [fn("SUM", col('grade')), "raw_grade"]
-            ]
-        });
-    }
+    // async countRawGradeRange(start, end, filter = {}) {
+    //     return EmployeeJobdesk.findAll({
+    //         where: {
+    //             ...filter,
+    //             finished_at: { [Op.between]: [start, end] }
+    //         },
+    //         attributes: [
+    //             [fn("COUNT", col('id')), "count"],
+    //             [fn("SUM", col('grade')), "raw_grade"]
+    //         ]
+    //     });
+    // }
 }
 
 

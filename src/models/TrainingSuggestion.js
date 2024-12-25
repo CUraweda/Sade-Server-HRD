@@ -23,7 +23,8 @@ module.exports = (sequelize, DataTypes) => {
             notes: DataTypes.TEXT,
             start_date: DataTypes.DATE,
             end_date: DataTypes.DATE,
-            is_approved: DataTypes.BOOLEAN
+            is_approved: DataTypes.BOOLEAN,
+            location: DataTypes.STRING
         },
         {
             sequelize,

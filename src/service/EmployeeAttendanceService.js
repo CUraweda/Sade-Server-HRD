@@ -127,7 +127,7 @@ class EmployeeAttendanceService {
 
         if (!division_id) return responseHandler.returnError(httpStatus.UNPROCESSABLE_ENTITY, "Anda tidak terdaftar pada divisi apapun")
         const { outstation_id, is_outstation } = await this.checkOutstation(employee)
-        if (is_outstation && !file) return responseHandler.returnError(httpStatus.UNPROCESSABLE_ENTITY, "Anda sedang Dinas Luar, mohon sertakan gambar")
+        // if (is_outstation && !file) return responseHandler.returnError(httpStatus.UNPROCESSABLE_ENTITY, "Anda sedang Dinas Luar, mohon sertakan gambar")
 
         const currentTime = new Date()
         const endTime = `${currentTime.toISOString().split('T')[0]}T23:59:59.999Z`
@@ -184,6 +184,36 @@ class EmployeeAttendanceService {
     };
 
     showPage = async (page, limit, offset, filter) => {
+        const { date, iteration } = filter
+        if (iteration && date) {
+            let start_date = new Date(date)
+            let end_date = new Date(date)
+            switch (iteration) {
+                case "week":
+                    const dayOfWeek = start_date.getDay();
+                    const diffToMonday = (dayOfWeek === 0 ? -6 : 1) - dayOfWeek;
+                    start_date.setDate(start_date.getDate() + diffToMonday);
+                    start_date.setHours(0, 0, 0, 0);
+                    end_date = new Date(start_date);
+                    end_date.setDate(start_date.getDate() + 6);
+                    end_date.setHours(23, 59, 59, 999);
+                    break;
+
+                case "month":
+                    start_date.setDate(1);
+                    start_date.setHours(0, 0, 0, 0);
+                    end_date = new Date(start_date);
+                    end_date.setMonth(start_date.getMonth() + 1);
+                    end_date.setDate(0);
+                    end_date.setHours(23, 59, 59, 999);
+                    break;
+                default:
+                    start_date.setHours(0, 0, 0, 0);
+                    end_date.setHours(23, 59, 59, 999);
+                    break
+            }
+            filter.date = { start_date, end_date }
+        }
         const totalRows = await this.employeeAttendanceDao.getCount(filter);
         const totalPage = Math.ceil(totalRows / limit);
 

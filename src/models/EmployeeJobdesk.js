@@ -12,6 +12,13 @@ module.exports = (sequelize, DataTypes) => {
             // Define associations here
             this.belongsTo(models.employees, { foreignKey: 'employee_id', as: "employee" });
             this.belongsTo(models.employees, { foreignKey: 'grader_id', as: "grader" });
+            this.belongsTo(models.employees, { foreignKey: 'partner_id', as: "partner" });
+            this.belongsTo(models.jobdeskunit, { foreignKey: 'unit_id'});
+            this.belongsTo(models.jobdeskgroupgrading, { foreignKey: 'grading_id' });
+            this.belongsTo(models.jobdeskgrading, { foreignKey: 'choosen_grade_id' });
+            this.belongsTo(models.employeeevaluation, { foreignKey: 'evaluation_id'});
+            this.belongsTo(models.evaluationitems, { foreignKey: 'evaluation_items_id'});
+            this.belongsTo(models.division, { foreignKey: 'division_id'});
         }
     }
 
@@ -19,16 +26,27 @@ module.exports = (sequelize, DataTypes) => {
         {
             employee_id: DataTypes.INTEGER,
             grader_id: DataTypes.INTEGER,
+            partner_id: DataTypes.INTEGER,
             name: DataTypes.STRING,
             description: DataTypes.TEXT,
-            due_date: DataTypes.DATE,
-            priority: DataTypes.INTEGER,
-            priority_label: DataTypes.STRING,
-            is_finish: DataTypes.BOOLEAN,
-            finished_at: DataTypes.DATE,
-            is_graded: DataTypes.BOOLEAN,
-            graded_at: DataTypes.DATE,
-            grade: DataTypes.INTEGER
+            asessor_ids: DataTypes.STRING,
+            partner_ids: DataTypes.STRING,
+            status: DataTypes.STRING,
+            uid: DataTypes.STRING,
+            personal_grade: DataTypes.INTEGER,
+            personal_graded_at: DataTypes.DATE,
+            partner_grade: DataTypes.INTEGER,
+            partner_graded_at: DataTypes.DATE,
+            assesor_grade: DataTypes.INTEGER,
+            assesor_graded_at: DataTypes.DATE,
+            overall_grade_raw: DataTypes.INTEGER,
+            overall_grade: DataTypes.STRING,
+            grading_id: DataTypes.INTEGER,
+            choosen_grade_id: DataTypes.INTEGER,
+            unit_id: DataTypes.INTEGER,
+            evaluation_id: DataTypes.INTEGER,
+            evaluation_items_id: DataTypes.INTEGER,
+            division_id: DataTypes.INTEGER,
         },
         {
             sequelize,

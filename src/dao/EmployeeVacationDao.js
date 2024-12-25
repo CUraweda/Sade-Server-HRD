@@ -11,7 +11,7 @@ class EmployeeVacationDao extends SuperDao {
     }
 
     async getCount(filter) {
-        let { search, type, status, date, division_id, employee_id, start_date, end_date } = filter
+        let { search, type, status, date, division_id, employee_id } = filter
         if (!search) search = ""
         return EmployeeVacation.count({
             where: {
@@ -32,34 +32,20 @@ class EmployeeVacationDao extends SuperDao {
                         description: { [Op.like]: "%" + search + "%" },
                     },
                 ],
-                ...(date && {
-                    [Op.or]: [
-                        {
-                            start_date: {
-                                [Op.startsWith]: date
-                            }
-                        },
-                        {
-                            end_date: {
-                                [Op.startsWith]: date
-                            }
-                        },
-                    ]
-                }),
                 ...(employee_id && { employee_id }),
                 ...(division_id && { "$employee.division_id$": division_id }),
                 ...(type && { type }),
                 ...(status && { status }),
-                ...((start_date && end_date) && {
+                ...(date && {
                     [Op.or]: [
                         {
                             start_date: {
-                                [Op.between]: [start_date, end_date]
+                                [Op.between]: [date.start_date, date.end_date]
                             }
                         },
                         {
                             end_date: {
-                                [Op.between]: [start_date, end_date]
+                                [Op.between]: [date.start_date, date.end_date]
                             }
                         }
                     ]
@@ -87,6 +73,9 @@ class EmployeeVacationDao extends SuperDao {
             where: {
                 [Op.or]: [
                     {
+                        "$employee.full_name$": { [Op.like]: "%" + search + "%" } 
+                    },
+                    {
                         employee_id: { [Op.like]: "%" + search + "%" },
                     },
                     {
@@ -106,34 +95,20 @@ class EmployeeVacationDao extends SuperDao {
                     [Op.or]: [
                         {
                             start_date: {
-                                [Op.startsWith]: date
+                                [Op.between]: [date.start_date, date.end_date]
                             }
                         },
                         {
                             end_date: {
-                                [Op.startsWith]: date
+                                [Op.between]: [date.start_date, date.end_date]
                             }
-                        },
+                        }
                     ]
                 }),
                 ...(employee_id && { employee_id }),
                 ...(division_id && { "$employee.division_id$": division_id }),
                 ...(type && { type }),
-                ...(status && { status }),
-                ...((start_date && end_date) && {
-                    [Op.or]: [
-                        {
-                            start_date: {
-                                [Op.between]: [start_date, end_date]
-                            }
-                        },
-                        {
-                            end_date: {
-                                [Op.between]: [start_date, end_date]
-                            }
-                        }
-                    ]
-                })
+                ...(status && { status })
             },
             include: [
                 {

@@ -1,5 +1,6 @@
 const httpStatus = require("http-status");
 const ApplicantFormService = require("../service/ApplicantFormService");
+const { string } = require("joi");
 
 class ApplicantFormController {
     constructor() {
@@ -10,10 +11,10 @@ class ApplicantFormController {
         try {
             const page = +req.query.page || 0;
             const limit = +req.query.limit || 10;
-            const { search } = req.query;
+            const { search, status } = req.query;
 
             const offset = limit * page;
-            const resData = await this.applicantFormService.showPage(page, limit, offset, { search });
+            const resData = await this.applicantFormService.showPage(page, limit, offset, { search, status });
 
             res.status(resData.statusCode).send(resData.response);
         } catch (e) {
@@ -62,11 +63,11 @@ class ApplicantFormController {
     getByVacancy = async (req, res) => {
         try {
             const id = +req.params.id;
-            let { search, is_passed_interview, is_passed } = req.query
+            let { search, is_passed_interview, is_passed, status } = req.query
             if(is_passed_interview) is_passed_interview = is_passed_interview != "1" ? false : true
             if(is_passed) is_passed = is_passed != "1" ? false : true
             if (!id) res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Tolong Sertakan ID");
-            const resData = await this.applicantFormService.showByVacancy(id, { search, is_passed_interview, is_passed })
+            const resData = await this.applicantFormService.showByVacancy(id, { search, is_passed_interview, is_passed, status })
 
             res.status(resData.statusCode).send(resData.response);
         } catch (e) {
@@ -119,6 +120,36 @@ class ApplicantFormController {
         }
     }
 
+    evaluateSelection = async (req, res) => {
+        try {
+            const id = +req.params.id
+            const { condition } = req.params
+            const resData = await this.applicantFormService.evaluateApplication(id, condition.toString().toLowerCase(), "Selection", {
+                employee: req.user.employee
+            })
+            
+            res.status(resData.statusCode).send(resData.response);
+        } catch (e) {
+            console.log(e);
+            res.status(httpStatus.BAD_GATEWAY).send({ error: e.message });
+        }
+    }
+
+    evaluatePsychology = async (req, res) => {
+        try {
+            const id = +req.params.id
+            const { condition } = req.params
+            const resData = await this.applicantFormService.evaluateApplication(id, condition.toString().toLowerCase(), "Psychology", {
+                employee: req.user.employee
+            })
+            
+            res.status(resData.statusCode).send(resData.response);
+        } catch (e) {
+            console.log(e);
+            res.status(httpStatus.BAD_GATEWAY).send({ error: e.message });
+        }
+    }
+
     evaluateFirst = async (req, res) => {
         try {
             const id = +req.params.id
@@ -156,7 +187,7 @@ class ApplicantFormController {
             res.status(resData.statusCode).send(resData.response);
         } catch (e) {
             console.log(e);
-            res.status(httpStatus.BAD_GATEWAY).send({ error: e.message });
+            res.status(hottpStatus.BAD_GATEWAY).send({ error: e.message });
         }
     };
 

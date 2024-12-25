@@ -26,8 +26,6 @@ module.exports = (sequelize, DataTypes) => {
             latitude: DataTypes.STRING,
             start_date: DataTypes.DATE,
             end_date: DataTypes.DATE,
-            max_applicant: DataTypes.INTEGER,
-            applicant_count: DataTypes.INTEGER,
             notes: DataTypes.TEXT,
             status: DataTypes.STRING,
             role: DataTypes.STRING,

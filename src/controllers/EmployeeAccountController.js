@@ -1,6 +1,5 @@
 const httpStatus = require("http-status");
 const EmployeeAccountService = require("../service/EmployeeAccountService");
-
 class EmployeeAccountController {
   constructor() {
     this.employeeAccountService = new EmployeeAccountService();

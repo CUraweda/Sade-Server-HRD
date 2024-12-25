@@ -33,18 +33,55 @@ class ApplicantFormService {
 
     create = async (body) => {
         const applicantFormData = await this.applicantFormDao.create(body);
-        if (!applicantFormData)
-            return responseHandler.returnError(
-                httpStatus.BAD_REQUEST,
-                "Failed to create applicant form"
-            );
+        if (!applicantFormData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Failed to create applicant form");
 
-        return responseHandler.returnSuccess(
-            httpStatus.CREATED,
-            "Applicant form created successfully",
-            applicantFormData
-        );
+        return responseHandler.returnSuccess(httpStatus.CREATED, "Applicant form created successfully", applicantFormData);
     };
+
+    evaluateApplication = async (id, condition, identifier, args) => {
+        const { employee } = args
+        if (!employee) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Anda tidak termasuk karyawan");
+        condition = condition != "lulus" ? false : true
+
+        let body = {}
+        switch (identifier) {
+            case "Selection":
+                body["is_passed_selection"] = condition
+                body["status"] = condition ? constant.applicantSelectionEvaluation.success : constant.applicantSelectionEvaluation.fail
+                break;
+            case "Psychology":
+                body["is_passed_psychological_test"] = condition
+                body["status"] = condition ? constant.applicantPsychologyEvaluation.success : constant.applicantPsychologyEvaluation.fail
+                break
+            default:
+                return responseHandler.returnError(httpStatus.BAD_REQUEST, "Identifier tidak sesuai");
+        }
+
+        const applicantExist = await this.applicantFormDao.findById(id)
+        if (!applicantExist) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Applicant tidak ditemukan");
+
+        if (condition){
+            setImmediate(async () => {
+                await this.emailHelper.sendEvaluationEmail(applicantExist.email, {
+                    applicant_name: applicantExist.full_name,
+                    applicant_phone: applicantExist.phone,
+                    status: "Lulus",
+                    position_name: "Disembunyikan",
+                    next_step: identifier != "Selection" ? "Mengikuti Psikotes" : "Mengikuti Interview",
+                    sender_name: employee.full_name,
+                    sender_position: employee.occupation || "",
+                    sender_email: employee.email || "",
+                    sender_phone: employee.phone
+                })
+            })
+        }
+
+        const updatedData = await this.applicantFormDao.updateById(body, id)
+        if (!updatedData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Gagal mengupdate data applicant");
+
+
+        return responseHandler.returnSuccess(httpStatus.CREATED, "Seleksi berhasil dicatat", {});
+    }
 
     createInterview = async (body, id, condition, employee) => {
         if (!employee)
@@ -76,7 +113,7 @@ class ApplicantFormService {
         if (condition === "lulus") {
             const uid = `${id}-${employee.id}`
             const applicantInterviewData = await this.applicantInterviewDao.create({ ...body, form_id: id, interviewer_id: employee.id, uid })
-            if (!applicantInterviewData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Gagal dalam membuat Applicant Interview"); 
+            if (!applicantInterviewData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Gagal dalam membuat Applicant Interview");
 
             // Send email for success condition
             await this.emailHelper.sendApplicantEmail(
@@ -151,16 +188,16 @@ class ApplicantFormService {
         const applicationExist = await this.applicantFormDao.findById(id);
         if (!applicationExist)
             return responseHandler.returnError(
-            httpStatus.BAD_REQUEST,
+                httpStatus.BAD_REQUEST,
                 "Tidak ada data pada ID"
             );
-        
+
         if (!applicationExist.is_passed_interview)
             return responseHandler.returnError(
                 httpStatus.BAD_REQUEST,
                 "Applicant tidak lulus/belum melewati Seleksi Pertama"
             );
-        
+
         if (applicationExist.is_passed || applicationExist.is_passed === false)
             return responseHandler.returnError(
                 httpStatus.BAD_REQUEST,
@@ -272,7 +309,7 @@ class ApplicantFormService {
             extra["division_id"] = jobvacancy.division_id;
         }
 
-        userData['role_id'] = jobvacancy.role != "GURU" ? 6 : 11
+        userData['role_id'] = jobvacancy.role != "GURU" ? 6 : 11 //TODO: DJSANJKDAJKNJK
 
         const { user_id, full_name, email, phone, nik, pob, dob, religion, martial_status } = applicantData.dataValues
         const payload = {
@@ -283,7 +320,9 @@ class ApplicantFormService {
         if (!employeeData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Gagal membuat data employee")
         const updatedApplicant = await this.applicantFormDao.updateById({ employee_id: employeeData.id }, id)
         if (!updatedApplicant) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Gagal mengupdate data applicant")
-        await this.userDao.updateById(applicantData.user_id, userData)
+        const updatedUser = await this.userDao.updateById({ avatar: applicantData.file_path,  }, applicantData.user_id)
+        if (!updatedUser) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Gagal mengupdate data user")
+        await this.userDao.updateById(userData, applicantData.user_id)
         return responseHandler.returnSuccess(httpStatus.OK, "Berhasil Aggregasi Applicant", updatedApplicant)
     }
 
@@ -318,7 +357,7 @@ class ApplicantFormService {
                 "Gagal membuat data detail"
             );
 
-        await this.jobVacancyDao.updateCounter(applicantFormData.vacancy_id);
+        // await this.jobVacancyDao.updateCounter(applicantFormData.vacancy_id);
         return responseHandler.returnSuccess(
             httpStatus.OK,
             "Berhasil membuat Applicant Form dan Detail",

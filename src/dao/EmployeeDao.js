@@ -8,9 +8,11 @@ const User = models.user
 const EmployeeAttendance = models.employeeattendance
 const EmployeeVacation = models.employeevacation
 const EmployeePosition = models.employeeposition
+const EmployeeAccount = models.employeeaccount
 const EmployeeAttachment = models.employeeattachment
 const FormPosistion = models.formposition
 const Training = models.training
+const EmployeeEvaluation = models.employeeevaluation
 class EmployeesDao extends SuperDao {
   constructor() {
     super(Employees);
@@ -25,7 +27,7 @@ class EmployeesDao extends SuperDao {
   }
 
   async getCount(filter) {
-    const { search, division_id, status } = filter
+    const { search, division_id, status, have_account } = filter
     return Employees.count({
       where: {
         [Op.or]: [
@@ -36,6 +38,12 @@ class EmployeesDao extends SuperDao {
         ...(status && { employee_status: { [Op.like]: "%" + status + "%" } }),
         ...(division_id && { division_id }),
       },
+      include: [
+        {
+          model: EmployeeAccount,
+          required: have_account ? true : false
+        }
+      ]
     });
   }
 
@@ -46,7 +54,8 @@ class EmployeesDao extends SuperDao {
   }
 
   async getEmployeesPage(filter, offset, limit) {
-    const { search, division_id, status } = filter
+    let { search, division_id, status, have_account, sort_name } = filter
+    sort_name = sort_name === "1" ? true : false
     return Employees.findAll({
       where: {
         ...(status && { employee_status: { [Op.like]: "%" + status + "%" } }),
@@ -123,13 +132,22 @@ class EmployeesDao extends SuperDao {
       },
       include: [
         {
+          model: EmployeeAccount,
+          required: have_account ? true : false
+        },
+        {
           model: User,
+          attributes: ["full_name", "email", "id"],
           required: false
         }
       ],
       offset: offset,
       limit: limit,
-      order: [["id", "DESC"]],
+      ...(sort_name ? {
+        order: [["full_name", "ASC"]]
+      } : { 
+        order: [["id", "DESC"]],
+      })
     });
   }
 
@@ -139,6 +157,7 @@ class EmployeesDao extends SuperDao {
       include: [
         {
           model: User,
+          attributes: ["full_name", "email", "id", 'avatar'],
           required: false
         },
         {
@@ -162,6 +181,14 @@ class EmployeesDao extends SuperDao {
     })
   }
 
+  async getOnlyId(where) {
+    const employeeData = await Employees.findAll({
+      where, attributes: ['id']
+    })
+    if(employeeData.length < 1) return false
+    return employeeData.map(employee => employee.id);
+  }
+
   getMe(id) {
     return Employees.findOne({
       where: { id },
@@ -171,6 +198,22 @@ class EmployeesDao extends SuperDao {
           required: false
         }
       ]
+    })
+  }
+
+  async getEmployeeForEvaluation(filter, month_id){
+    const  { division_id } = filter
+    return Employees.findAll({
+      where: { division_id, current_evaluation_id: null },
+      include: [
+        {
+          model: EmployeeEvaluation,
+          required: false,
+          where: {
+            month_start: month_id,
+          },
+        },
+      ],
     })
   }
 

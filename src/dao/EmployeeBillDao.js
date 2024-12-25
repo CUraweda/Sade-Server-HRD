@@ -1,6 +1,6 @@
 const SuperDao = require("./SuperDao");
 const models = require("../models");
-const { Op } = require("sequelize");
+const { Op, fn, col } = require("sequelize");
 
 const EmployeeBill = models.employeebill;
 const BillType = models.billtype
@@ -12,10 +12,13 @@ class EmployeeBillDao extends SuperDao {
     }
 
     async getCount(filter) {
-         let { search, account_id } = filter
-        if(!search) search = ""
+        let { search, account_id, current_month } = filter
+        if (!search) search = ""
         return EmployeeBill.count({
             where: {
+                ...(current_month == 'y' && {
+                    createdAt: {[Op.between]: [startDate, currentDate]}
+                }),
                 [Op.or]: [
                     { description: { [Op.like]: "%" + search + "%" } },
                     { amount: { [Op.like]: "%" + search + "%" } }
@@ -24,12 +27,18 @@ class EmployeeBillDao extends SuperDao {
             },
         });
     }
-    
+
     async getPage(offset, limit, filter) {
-        let { search, account_id } = filter
-        if(!search) search = ""
+        let { search, account_id, current_month } = filter
+        if (!search) search = ""
+        let currentDate = new Date()
+        let startDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+
         return EmployeeBill.findAll({
             where: {
+                ...(current_month == 'y' && {
+                    createdAt: {[Op.between]: [startDate, currentDate]}
+                }),
                 [Op.or]: [
                     { description: { [Op.like]: "%" + search + "%" } },
                     { amount: { [Op.like]: "%" + search + "%" } }
@@ -49,13 +58,34 @@ class EmployeeBillDao extends SuperDao {
         });
     }
 
-    async getWithBillType(id) {
+    async getForSLipGjai(filter) {
+        const { account_id } = filter
+        return BillType.findAll({
+            attributes: [
+                'name', 'is_subtraction'
+            ],
+            include: [
+                {
+                    model: EmployeeBill,
+                    required: true,
+                    where: { account_id }
+                }
+            ],
+            order: [["is_subtraction", "ASC"]]
+        })
+    }
+
+    async getWithBillType(filter) {
+        const { id, account_id } = filter
         return EmployeeBill.findOne({
-            where: { id },
+            where: {
+                ...(id && { id }),
+                ...(account_id && { account_id }),
+            },
             include: [
                 {
                     model: BillType,
-                    required: true
+                    required: false
                 },
                 {
                     model: EmployeeAccount,

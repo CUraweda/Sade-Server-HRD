@@ -1,0 +1,31 @@
+name: Staging CD
+
+on:
+  push:
+    branches: [ dev ]
+  pull_request:
+    branches: [ "dev" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment: HRD-ENV
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+          
+      - name: Deploy using ssh
+        uses: appleboy/ssh-action@v1.1.0
+        with:
+          host: ${{ secrets.STAGING_HOST }}
+          username: ${{ secrets.STAGING_USERNAME }}
+          key: ${{ secrets.STAGING_PRIVATE_KEY }}
+          port: 22
+          debug: true
+          script: |
+            cd staging/Sade-Server-HRD
+            git pull origin dev
+            npx sequelize db:migrate 
+            npm i
+            pm2 restart 1
