@@ -5,6 +5,7 @@ const nodemailer = require("nodemailer");
 const handlebars = require("handlebars");
 const fs = require("fs");
 const path = require("path");
+const { error } = require("console");
 
 const transporter = nodemailer.createTransport({
   //? GMAIL CONFIG
@@ -64,11 +65,11 @@ class EmailHelper {
       console.log(e)
     }
   }
-  
+
   async sendExcelEvaluation(to, data = {}) {
     try {
       const { employee, path } = data
-      const currentMonth = new Date().getMonth()  + 1
+      const currentMonth = new Date().getMonth() + 1
       await this.email.sendMail(
         {
           from: process.env.EMAIL_FROM, to, subject: `Evaluasi Penilaian - ${employee.full_name}`,
@@ -84,6 +85,8 @@ class EmailHelper {
       console.log(e)
     }
   }
+
+
 
   async sendApplicantEmail(
     dynamic,
@@ -143,6 +146,34 @@ class EmailHelper {
     } catch (err) {
       console.log(err);
       return false;
+    }
+  }
+
+  async sendEvaluationEmail(to, data) {
+    try {
+      readHTMLFile(path.resolve(__dirname, '../views/appplicant_success.html'), function (err, html) {
+        if (err) {
+          console.log(err)
+          return false
+        }
+
+        const template = handlebars.compile(html)
+        data['company_name'] = 'Sekolah Alam Depok'
+        const htmlToSend = template(data)
+        const mOpts = {
+          from: config.email.account, to, subject: "Hasil Seleksi - Sekolah Alam Depok",
+          html: htmlToSend
+        }
+
+        transporter.sendMail(mailOptions, (err, res) => {
+          if (err) return false
+        })
+
+        return true
+      })
+    } catch (e) {
+      console.log(e)
+      return false
     }
   }
 }

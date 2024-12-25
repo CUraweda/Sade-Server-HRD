@@ -1,9 +1,9 @@
 /* eslint-disable class-methods-use-this */
 
 const config = require("../config/config");
-const logger = require("../config/logger");
 const nodemailer = require("nodemailer");
 const handlebars = require("handlebars");
+const Email = require('email-templates')
 const fs = require("fs");
 
 const transporter = nodemailer.createTransport({
@@ -25,15 +25,6 @@ const transporter = nodemailer.createTransport({
   // },
 });
 
-var readHTMLFile = function (path, callback) {
-  fs.readFile(path, { encoding: "utf-8" }, function (err, html) {
-    if (err) {
-      callback(err);
-    } else {
-      callback(null, html);
-    }
-  });
-};
 
 class EmailHelper {
   constructor() {
@@ -44,19 +35,48 @@ class EmailHelper {
         pass: process.env.PASSWORD
       }
     })
+    this.emailTemplate = new Email({
+      message: { from: process.env.EMAIL_ACCOUNT },
+      send: true,
+      transport: this.email,
+      views: {
+        root: path.resolve('src/views'),
+        options: {
+          extension: 'html'
+        }
+      }
+    })
+  }
+  async renderEmail(templateName, variables) {
+    const html = await this.emailTemplate.render(templateName, variables);
+    return html;
+  }
+  async readHTMLFile(path) {
+    try {
+      const html = await fs.readFile(path, { encoding: "utf-8" });
+      return html;
+    } catch (err) {
+      throw new Error(`Error reading HTML file: ${err.message}`);
+    }
   }
 
-  async sendSlipGaji(to, attachment){
-    try{
+  async sendSlipGaji(to, attachment) {
+    try {
       const currentDate = new Date().toISOString().split('T')[0]
-      await this.email.sendMail(
-        { from: process.env.EMAIL_FROM, to, subject: `Slip Gaji - ${currentDate}` },
-        attachment
-      )
-    }catch(e){
+      const mailOptions = {
+        from: config.email.account,
+        to,
+        subject: `Slip Gaji - ${currentDate}`,
+        attachments: attachment ? [attachment] : [], // Ensure attachment is included properly
+      };
+
+      await this.email.sendMail(mailOptions);
+    } catch (e) {
       console.log(e)
     }
   }
+
+  async
 
   async sendEmail(
     webUrl,
@@ -68,31 +88,23 @@ class EmailHelper {
     attachment = false
   ) {
     try {
-      readHTMLFile(body, function (err, html) {
-        if (err) {
-          console.log("error reading file", err);
-          return;
-        }
-        var template = handlebars.compile(html);
-        var replacements = {
-          url: webUrl,
-        };
-        var htmlToSend = template(replacements);
-        var mailOptions = {
-          from: from,
-          to: to,
-          subject: subject,
-          html: htmlToSend,
-        };
-        transporter.sendMail(mailOptions, function (error, response) {
-          if (error) {
-            console.log(error);
-          }
-        });
-      });
+      const html = await this.readHTMLFile(templatePath);
+      const template = handlebars.compile(html);
+      const replacements = { url: webUrl };
+      const htmlToSend = template(replacements);
+
+      const mailOptions = {
+        from,
+        to,
+        subject,
+        html: htmlToSend,
+        ...(attachment && { attachments: [attachment] }), // Include attachments if provided
+      };
+
+      // Send the email
+      await this.email.sendMail(mailOptions);
     } catch (err) {
-      console.log(err);
-      logger.error(err);
+      console.log(err)
       return false;
     }
   }

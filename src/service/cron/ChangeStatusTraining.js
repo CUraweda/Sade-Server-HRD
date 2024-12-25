@@ -12,7 +12,7 @@ module.exports = async function changeStatusTraining() {
 
         //Change to 'Sedang Berjalan'
         await Training.update({ is_active: true, status: "Sedang Berjalan" }, {
-            where: { is_active: true, status: "Menunggu", start_date: { [Op.lte]: currentDate } }
+            where: { is_active: true, status: "Menunggu Pelaksanaan", start_date: { [Op.lte]: currentDate } }
         })
 
         console.log(`============== Changing Status Training, checked at ${currentDate.toISOString()}`)

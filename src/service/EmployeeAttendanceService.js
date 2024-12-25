@@ -127,7 +127,7 @@ class EmployeeAttendanceService {
 
         if (!division_id) return responseHandler.returnError(httpStatus.UNPROCESSABLE_ENTITY, "Anda tidak terdaftar pada divisi apapun")
         const { outstation_id, is_outstation } = await this.checkOutstation(employee)
-        if (is_outstation && !file) return responseHandler.returnError(httpStatus.UNPROCESSABLE_ENTITY, "Anda sedang Dinas Luar, mohon sertakan gambar")
+        // if (is_outstation && !file) return responseHandler.returnError(httpStatus.UNPROCESSABLE_ENTITY, "Anda sedang Dinas Luar, mohon sertakan gambar")
 
         const currentTime = new Date()
         const endTime = `${currentTime.toISOString().split('T')[0]}T23:59:59.999Z`
@@ -214,7 +214,6 @@ class EmployeeAttendanceService {
             }
             filter.date = { start_date, end_date }
         }
-        
         const totalRows = await this.employeeAttendanceDao.getCount(filter);
         const totalPage = Math.ceil(totalRows / limit);
 

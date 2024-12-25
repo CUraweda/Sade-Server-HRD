@@ -38,7 +38,9 @@ class ApplicantFormService {
         return responseHandler.returnSuccess(httpStatus.CREATED, "Applicant form created successfully", applicantFormData);
     };
 
-    evaluateApplication = async (id, condition, identifier) => {
+    evaluateApplication = async (id, condition, identifier, args) => {
+        const { employee } = args
+        if (!employee) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Anda tidak termasuk karyawan");
         condition = condition != "lulus" ? false : true
 
         let body = {}
@@ -55,8 +57,29 @@ class ApplicantFormService {
                 return responseHandler.returnError(httpStatus.BAD_REQUEST, "Identifier tidak sesuai");
         }
 
+        const applicantExist = await this.applicantFormDao.findById(id)
+        if (!applicantExist) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Applicant tidak ditemukan");
+
+        if (condition){
+            setImmediate(async () => {
+                await this.emailHelper.sendEvaluationEmail(applicantExist.email, {
+                    applicant_name: applicantExist.full_name,
+                    applicant_phone: applicantExist.phone,
+                    status: "Lulus",
+                    position_name: "Disembunyikan",
+                    next_step: identifier != "Selection" ? "Mengikuti Psikotes" : "Mengikuti Interview",
+                    sender_name: employee.full_name,
+                    sender_position: employee.occupation || "",
+                    sender_email: employee.email || "",
+                    sender_phone: employee.phone
+                })
+            })
+        }
+
         const updatedData = await this.applicantFormDao.updateById(body, id)
-        if (!updatedData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Anda tidak termasuk karyawan");
+        if (!updatedData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Gagal mengupdate data applicant");
+
+
         return responseHandler.returnSuccess(httpStatus.CREATED, "Seleksi berhasil dicatat", {});
     }
 
@@ -297,9 +320,9 @@ class ApplicantFormService {
         if (!employeeData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Gagal membuat data employee")
         const updatedApplicant = await this.applicantFormDao.updateById({ employee_id: employeeData.id }, id)
         if (!updatedApplicant) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Gagal mengupdate data applicant")
-        const updatedUser = await this.userDao.updateById({ avatar: applicantData.file_path }, applicantData.user_id)
+        const updatedUser = await this.userDao.updateById({ avatar: applicantData.file_path,  }, applicantData.user_id)
         if (!updatedUser) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Gagal mengupdate data user")
-        await this.userDao.updateById(applicantData.user_id, userData)
+        await this.userDao.updateById(userData, applicantData.user_id)
         return responseHandler.returnSuccess(httpStatus.OK, "Berhasil Aggregasi Applicant", updatedApplicant)
     }
 

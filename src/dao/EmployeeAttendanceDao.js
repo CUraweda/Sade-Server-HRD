@@ -26,8 +26,9 @@ class EmployeeAttendanceDao extends SuperDao {
                         worktime_id: { [Op.like]: "%" + search + "%" },
                     },
                     {
-                        employee_id: { [Op.like]: "%" + search + "%" },
+                        "$employee.full_name$": { [Op.like]: "%" + search + "%" },
                     },
+
                     {
                         uid: { [Op.like]: "%" + search + "%" },
                     },
@@ -78,7 +79,7 @@ class EmployeeAttendanceDao extends SuperDao {
                         worktime_id: { [Op.like]: "%" + search + "%" },
                     },
                     {
-                        employee_id: { [Op.like]: "%" + search + "%" },
+                        "$employee.full_name$": { [Op.like]: "%" + search + "%" },
                     },
                     {
                         uid: { [Op.like]: "%" + search + "%" },

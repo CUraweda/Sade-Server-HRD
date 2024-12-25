@@ -10,10 +10,11 @@ class JobdeskGradeDao extends SuperDao {
     }
 
     async getCount(filter) {
-        let { search } = filter;
+        let { search, group_id } = filter;
         if (!search) search = "";
         return JobdeskGrade.count({
             where: {
+                ...(group_id && { group_id }),
                 [Op.or]: [
                     { name: { [Op.like]: "%" + search + "%" } },
                     { grade: { [Op.like]: "%" + search + "%" } },
@@ -23,10 +24,11 @@ class JobdeskGradeDao extends SuperDao {
     }
 
     async getPage(offset, limit, filter) {
-        let { search } = filter;
+        let { search, group_id } = filter;
         if (!search) search = "";
         return JobdeskGrade.findAll({
             where: {
+                ...(group_id && { group_id }),
                 [Op.or]: [
                     { name: { [Op.like]: "%" + search + "%" } },
                     { grade: { [Op.like]: "%" + search + "%" } },
@@ -34,16 +36,22 @@ class JobdeskGradeDao extends SuperDao {
             },
             offset: offset,
             limit: limit,
-            order: [["id", "DESC"]],
+            order: [["indicator", "DESC"]],
         });
     }
 
     async checkUID(uids){
         const { grade_uid, indicator_uid } = uids
-        return Jobdesk.findOne({
+        return JobdeskGrade.findOne({
             where: {
-                ...(grade_uid && {  grade_uid }),
-                ...(indicator_uid && {  indicator_uid })
+                [Op.or]: [
+                    {
+                        ...(grade_uid && {  grade_uid }),
+                    },
+                    {
+                        ...(indicator_uid && {  indicator_uid })
+                    }
+                ]
             }
         })
     }
