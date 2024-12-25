@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+
+      * {
+        font-family: Inter;
+        font-weight: 400;
+      }
+
+      .container {
+        padding-inline: 3rem;
+      }
+
+      .container-style {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+        margin-top: 3rem;
+      }
+
+      .status {
+        font-weight: bold;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="container-style">
+        <div>Assalamu'alaikum Wr Wb</div>
+        <div>
+          Terima kasih telah melakukan sesi interview dan observasi sesuai
+          jadwal yang telah ditentukan.
+        </div>
+        <div>
+          <div>
+            Setelah melihat hasil interview dan observasi, kami dari Sekolah
+            Alam Depok menginformasikan bahwa Bpk/Ibu/Sdr/i
+          </div>
+          <div class="status">{{name}}</div>
+        </div>
+        <div>
+          <div>dinyatakan</div>
+          <div class="status">{{status}}</div>
+        </div>
+        <div>
+          dan diterima di Sekolah Alam Depok. Untuk selanjutnya dapat hadir pada
+          hari pertama masa percobaan:
+        </div>
+        <div>Hari/Tgl: <span class="status">{{date}}</span></div>
+        <div>
+          Pkl <span class="status">{{time}}</span>
+          <span class="status">{{hrd_name}}</span>
+        </div>
+        <div>*Masa percobaan ini dilakukan selama {{probation_due}}</div>
+        <div>
+          Mohon datang tepat waktu dan konfirmasi kehadiran dengan membalas
+          email ini.
+        </div>
+        <div>
+          *Dimohon untuk membawa tempat makan, sendok & alat shalat(jika
+          beragama islam)
+        </div>
+        <div>Terima kasih</div>
+        <div>Admin SADe</div>
+      </div>
+    </div>
+  </body>
+</html>
