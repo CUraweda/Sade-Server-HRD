@@ -60,7 +60,7 @@ class ApplicantFormService {
         const applicantExist = await this.applicantFormDao.findById(id)
         if (!applicantExist) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Applicant tidak ditemukan");
 
-        if (condition){
+        if (condition) {
             setImmediate(async () => {
                 await this.emailHelper.sendEvaluationEmail(applicantExist.email, {
                     applicant_name: applicantExist.full_name,
@@ -185,7 +185,7 @@ class ApplicantFormService {
                 httpStatus.BAD_REQUEST,
                 "Kondisi Lulus atau Tidak Lulus tidak dispesifikan"
             );
-        const applicationExist = await this.applicantFormDao.findById(id);
+        const applicationExist = await this.applicantFormDao.getAggregationData(id);
         if (!applicationExist)
             return responseHandler.returnError(
                 httpStatus.BAD_REQUEST,
@@ -234,26 +234,9 @@ class ApplicantFormService {
             await this.aggregateToEmployee(id, body);
 
             // Send email for success condition
-            await this.emailHelper.sendApplicantEmail(
-                {
-                    status: condition,
-                    //applicant
-                    applicantName: applicationExist.full_name,
-                    applicantPhone: applicationExist.phone,
-                    // applicantEmployee: applicationExist.full_name,
-                    positionName: employee.major,
-                    nextStep: '{{next_step}}',
-
-                    //sender
-                    senderName: employee.full_name,
-                    senderPosition: employee.occupation,
-                    senderEmail: employee.email,
-                    senderPhone: employee.phone,
-                },
-                applicationExist.email,
-                'Kontrak Kerja - Sekolah Alam Depok',
-                '../views/applicant_success.html'
-            );
+            applicationExist['added_data'] = body
+            applicationExist['hrd_data'] = employee
+            await this.emailHelper.sendSecondEvaluation(applicationExist.email, applicationExist)
 
             payload = {
                 is_passed: true,
@@ -261,16 +244,13 @@ class ApplicantFormService {
             }
 
         }
-        const applicantFormData = await this.applicantFormDao.updateById(
-            payload,
-            id
-        );
+        // const applicantFormData = await this.applicantFormDao.updateById(payload, id);
 
-        if (!applicantFormData)
-            return responseHandler.returnError(
-                httpStatus.BAD_REQUEST,
-                "Gagal mengupdate Applicant Form"
-            );
+        // if (!applicantFormData)
+        //     return responseHandler.returnError(
+        //         httpStatus.BAD_REQUEST,
+        //         "Gagal mengupdate Applicant Form"
+        //     );
 
         return responseHandler.returnSuccess(
             httpStatus.CREATED,
@@ -320,7 +300,7 @@ class ApplicantFormService {
         if (!employeeData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Gagal membuat data employee")
         const updatedApplicant = await this.applicantFormDao.updateById({ employee_id: employeeData.id }, id)
         if (!updatedApplicant) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Gagal mengupdate data applicant")
-        const updatedUser = await this.userDao.updateById({ avatar: applicantData.file_path,  }, applicantData.user_id)
+        const updatedUser = await this.userDao.updateById({ avatar: applicantData.file_path, }, applicantData.user_id)
         if (!updatedUser) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Gagal mengupdate data user")
         await this.userDao.updateById(userData, applicantData.user_id)
         return responseHandler.returnSuccess(httpStatus.OK, "Berhasil Aggregasi Applicant", updatedApplicant)
