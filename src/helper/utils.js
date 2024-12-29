@@ -79,7 +79,41 @@ function convertToIndonesianRupiahWords(number) {
   return words.trim() + " Rupiah";
 }
 
+function getMonthAndDayRange(startDate, endDate) {
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+
+  if (start > end) {
+    throw new Error("startDate must be before endDate");
+  }
+
+  let months = 0;
+  let days = 0;
+
+  // Calculate the difference in months and days
+  while (start < end) {
+    // If adding a month goes beyond the end date, break the loop
+    const nextMonth = new Date(start);
+    nextMonth.setMonth(start.getMonth() + 1);
+
+    if (nextMonth <= end) {
+      months++;
+      start.setMonth(start.getMonth() + 1);
+    } else {
+      break;
+    }
+  }
+
+  // Calculate the remaining days
+  days = Math.floor((end - start) / (1000 * 60 * 60 * 24));
+
+  return `${months} bulan ${days} hari`;
+}
+
+
+
 module.exports = {
   formatDateForSQL,
-  convertToIndonesianRupiahWords
+  convertToIndonesianRupiahWords,
+  getMonthAndDayRange
 };

@@ -1,6 +1,7 @@
 /* eslint-disable class-methods-use-this */
 
 const config = require("../config/config");
+const { getMonthAndDayRange } = require("../helper/utils")
 const nodemailer = require("nodemailer");
 const handlebars = require("handlebars");
 const fs = require("fs");
@@ -146,6 +147,39 @@ class EmailHelper {
     } catch (err) {
       console.log(err);
       return false;
+    }
+  }
+
+  async sendSecondEvaluation(to, data) {
+    try {
+      const filePath = data.divison_id != 4 ? "../views/lulus_interview_pelamar_bukan_shati.html" : "../views/lulus_interview_pelamar_bukan_shati.html"
+      readHTMLFile(path.resolve(__dirname, filePath), function (err, html) {
+        if (err) {
+          console.log("error reading file", err);
+          return;
+        }
+
+        const template = handlebars.compile(html)
+        const probationStartDate = new Date(data.added_data.probation_start_date)
+        const probationEndDate = new Date(data.added_data.probation_end_date)
+        const htmlFile = template({
+          name: data.full_name,
+          status: "LULUS",
+          date: probationStartDate.toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' }),
+          time: probationStartDate.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }),
+          hrd_name: data.hrd_data.full_name,
+          probation_due: getMonthAndDayRange(data.added_data.probation_start_date, data.added_data.probation_end_date)
+        })
+        transporter.sendMail({ 
+          from: config.email.account, to, subject: "Kontrak Kerja - Sekolah Alam Depok",
+          html: htmlFile
+         }, function (error, response) {
+          if (error) console.log(error);
+        });
+      });
+    } catch (err) {
+      console.log(err)
+      return false
     }
   }
 

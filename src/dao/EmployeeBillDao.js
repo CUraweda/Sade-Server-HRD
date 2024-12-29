@@ -17,7 +17,7 @@ class EmployeeBillDao extends SuperDao {
         return EmployeeBill.count({
             where: {
                 ...(current_month == 'y' && {
-                    createdAt: {[Op.between]: [startDate, currentDate]}
+                    created_at: {[Op.between]: [startDate, currentDate]}
                 }),
                 [Op.or]: [
                     { description: { [Op.like]: "%" + search + "%" } },
@@ -37,7 +37,7 @@ class EmployeeBillDao extends SuperDao {
         return EmployeeBill.findAll({
             where: {
                 ...(current_month == 'y' && {
-                    createdAt: {[Op.between]: [startDate, currentDate]}
+                    created_at: {[Op.between]: [startDate, currentDate]}
                 }),
                 [Op.or]: [
                     { description: { [Op.like]: "%" + search + "%" } },
