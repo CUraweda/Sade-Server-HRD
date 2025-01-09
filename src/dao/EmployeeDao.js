@@ -13,6 +13,7 @@ const EmployeeAttachment = models.employeeattachment
 const FormPosistion = models.formposition
 const Training = models.training
 const EmployeeEvaluation = models.employeeevaluation
+const EmployeeSignature = models.employeesignature
 class EmployeesDao extends SuperDao {
   constructor() {
     super(Employees);
@@ -171,6 +172,10 @@ class EmployeesDao extends SuperDao {
               model: EmployeePosition
             }
           ],
+          required: false
+        },
+        {
+          model: EmployeeSignature,
           required: false
         },
         {

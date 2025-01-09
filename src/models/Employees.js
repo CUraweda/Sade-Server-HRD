@@ -56,7 +56,9 @@ module.exports = (sequelize, DataTypes) => {
       Employees.hasMany(models.employeeoutstation, {
         foreignKey: "employee_id",
       })
-      
+      Employees.hasMany(models.employeesignature, {
+        foreignKey: "employee_id",
+      })
     }
   }
   Employees.init(
@@ -94,7 +96,9 @@ module.exports = (sequelize, DataTypes) => {
       is_asessor: DataTypes.BOOLEAN,
       raw_workhour: DataTypes.INTEGER,
       current_evaluation_id: DataTypes.INTEGER,
-      needed_employee_files: DataTypes.STRING
+      needed_employee_files: DataTypes.STRING,
+      is_on_contract: DataTypes.BOOLEAN,
+      contract_end_date: DataTypes.DATE
     },
     {
       sequelize,

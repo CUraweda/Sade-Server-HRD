@@ -170,10 +170,10 @@ class EmailHelper {
           hrd_name: data.hrd_data.full_name,
           probation_due: getMonthAndDayRange(data.added_data.probation_start_date, data.added_data.probation_end_date)
         })
-        transporter.sendMail({ 
+        transporter.sendMail({
           from: config.email.account, to, subject: "Kontrak Kerja - Sekolah Alam Depok",
           html: htmlFile
-         }, function (error, response) {
+        }, function (error, response) {
           if (error) console.log(error);
         });
       });
@@ -207,6 +207,32 @@ class EmailHelper {
       })
     } catch (e) {
       console.log(e)
+      return false
+    }
+  }
+
+  async sendContractEmail(to, data, buffer_docx) {
+    try {
+      readHTMLFile(path.resolve(__dirname, '../views/applicant_success2.html'), function (err, html) {
+        if (err) return console.log("error reading file", err);
+
+        const template = handlebars.compile(html)
+        const htmlData = template(data)
+        transporter.sendMail({
+          from: config.email.account, to, subject: "Kontrak Kerja - Sekolah Alam Depok",
+          html: htmlData,
+          attachments: [
+            {
+              filename: "Kontrak Kerja.docx",
+              content: buffer_docx
+            }
+          ]
+        }, function (error, response) {
+          if (error) console.log(error);
+        });
+      });
+    } catch (err) {
+      console.log(err)
       return false
     }
   }
