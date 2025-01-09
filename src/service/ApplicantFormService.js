@@ -175,34 +175,13 @@ class ApplicantFormService {
     }
 
     createSecondEvalution = async (id, condition, body, employee) => {
-        if (!employee)
-            return responseHandler.returnError(
-                httpStatus.BAD_REQUEST,
-                "Anda tidak termasuk karyawan"
-            );
-        if (!condition)
-            return responseHandler.returnError(
-                httpStatus.BAD_REQUEST,
-                "Kondisi Lulus atau Tidak Lulus tidak dispesifikan"
-            );
+        if (!employee) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Anda tidak termasuk karyawan");
+        if (!condition) return responseHandler.returnError(httpStatus.BAD_REQUEST,"Kondisi Lulus atau Tidak Lulus tidak dispesifikan");
         const applicationExist = await this.applicantFormDao.getAggregationData(id);
-        if (!applicationExist)
-            return responseHandler.returnError(
-                httpStatus.BAD_REQUEST,
-                "Tidak ada data pada ID"
-            );
+        if (!applicationExist) return responseHandler.returnError(httpStatus.BAD_REQUEST,"Tidak ada data pada ID");
 
-        if (!applicationExist.is_passed_interview)
-            return responseHandler.returnError(
-                httpStatus.BAD_REQUEST,
-                "Applicant tidak lulus/belum melewati Seleksi Pertama"
-            );
-
-        if (applicationExist.is_passed || applicationExist.is_passed === false)
-            return responseHandler.returnError(
-                httpStatus.BAD_REQUEST,
-                "Applicant Sudah Pernah melewati Seleksi Kedua"
-            );
+        if (!applicationExist.is_passed_interview)return responseHandler.returnError(httpStatus.BAD_REQUEST,"Applicant tidak lulus/belum melewati Seleksi Pertama");
+        if (applicationExist.is_passed || applicationExist.is_passed === false)return responseHandler.returnError(httpStatus.BAD_REQUEST,"Applicant Sudah Pernah melewati Seleksi Kedua");
 
         let payload;
         condition = condition.toLowerCase();

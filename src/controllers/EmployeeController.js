@@ -50,7 +50,7 @@ class EmployeeController {
       var id = req.params.id;
       const employee = req.user?.employee
 
-      const resData = await this.employeeService.actionProbation("SUCCESS", id, employee);
+      const resData = await this.employeeService.actionProbation("SUCCESS", id, employee, req.body);
 
       res.status(resData.statusCode).send(resData.response);
     } catch (e) {

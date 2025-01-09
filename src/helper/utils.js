@@ -110,10 +110,113 @@ function getMonthAndDayRange(startDate, endDate) {
   return `${months} bulan ${days} hari`;
 }
 
+function formatToIndonesianDate(sqlDatetime) {
+  const monthNames = [
+    "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+    "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+  ];
+
+  // Convert the SQL datetime string into a JavaScript Date object
+  const date = new Date(sqlDatetime);
+
+  // Extract the day, month, and year
+  const day = date.getDate(); // Get the day (1-31)
+  const month = date.getMonth(); // Get the month (0-11)
+  const year = date.getFullYear(); // Get the full year
+
+  // Format the date in Indonesian format
+  return `${day} ${monthNames[month]} ${year}`;
+}
+
+function calculateAndConvertToIndonesianWords(startDatetime, endDatetime) {
+  const units = ["", "Ribu", "Juta", "Milyar", "Triliun"];
+  const numbersInWords = ["", "Satu", "Dua", "Tiga", "Empat", "Lima", "Enam", "Tujuh", "Delapan", "Sembilan"];
+
+  // Helper function to convert a number into Indonesian words
+  function convertToIndonesianWords(number) {
+    if (number === 0) return "Nol";
+    if (number < 0) return "Minus " + convertToIndonesianWords(Math.abs(number));
+
+    let words = "";
+    let unitIndex = 0;
+
+    while (number > 0) {
+      let groupOfThree = number % 1000;
+
+      if (groupOfThree > 0) {
+        let groupWords = "";
+
+        if (groupOfThree >= 100) {
+          if (groupOfThree >= 200) {
+            groupWords += numbersInWords[Math.floor(groupOfThree / 100)] + " Ratus ";
+          } else {
+            groupWords += "Seratus ";
+          }
+          groupOfThree %= 100;
+        }
+
+        if (groupOfThree >= 10) {
+          if (groupOfThree >= 20) {
+            groupWords += numbersInWords[Math.floor(groupOfThree / 10)] + " Puluh ";
+            groupOfThree %= 10;
+          } else if (groupOfThree === 10) {
+            groupWords += "Sepuluh ";
+            groupOfThree = 0;
+          } else if (groupOfThree === 11) {
+            groupWords += "Sebelas ";
+            groupOfThree = 0;
+          } else {
+            groupWords += numbersInWords[groupOfThree] + " Belas ";
+            groupOfThree = 0;
+          }
+        }
+
+        if (groupOfThree > 0) {
+          if (groupOfThree === 1 && unitIndex === 1) {
+            groupWords += "Se";
+          } else {
+            groupWords += numbersInWords[groupOfThree] + " ";
+          }
+        }
+
+        words = groupWords + units[unitIndex] + " " + words;
+      }
+
+      number = Math.floor(number / 1000);
+      unitIndex++;
+    }
+
+    return words.trim();
+  }
+
+  // Convert datetimes to Date objects
+  const startDate = new Date(startDatetime);
+  const endDate = new Date(endDatetime);
+
+  // Calculate the difference in years and months
+  const yearsDiff = endDate.getFullYear() - startDate.getFullYear();
+  const monthsDiff = endDate.getMonth() - startDate.getMonth();
+
+  // Calculate the total number of months between the two dates
+  let totalMonths = yearsDiff * 12 + monthsDiff;
+
+  // If the end date's month is earlier than the start date's month, subtract 1
+  if (monthsDiff < 0) {
+    totalMonths -= 1;
+  }
+
+  // Convert the number of months to Indonesian words
+  const text = convertToIndonesianWords(totalMonths);
+
+  // Return the result
+  return { length: totalMonths, text };
+}
 
 
 module.exports = {
   formatDateForSQL,
   convertToIndonesianRupiahWords,
-  getMonthAndDayRange
+  formatToIndonesianDate,
+  getMonthAndDayRange,
+  calculateAndConvertToIndonesianWords
 };
