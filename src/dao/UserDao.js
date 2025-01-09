@@ -12,6 +12,7 @@ const FormXtra = models.formextra
 const SubjectXtra = models.subjectextra
 const Headmaster = models.headmaster
 const EmployeeOutstation = models.employeeoutstation
+const EmployeeSignature = models.employeesignature
 
 class UserDao extends SuperDao {
   constructor() {
@@ -124,6 +125,12 @@ class UserDao extends SuperDao {
       include: [
         { 
           model: Employee,
+          include: [
+            {
+              model: EmployeeSignature,
+              required: false,
+            }
+          ],
           required: false,
         }
       ]

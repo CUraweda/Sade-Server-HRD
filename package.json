@@ -19,6 +19,7 @@
     "canvas": "^2.11.2",
     "cors": "^2.8.5",
     "cross-env": "^7.0.3",
+    "docxtemplater": "^3.56.0",
     "dotenv": "^16.4.5",
     "exceljs": "^4.4.0",
     "express": "^4.19.2",
@@ -35,8 +36,13 @@
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
     "pdfkit-table": "^0.1.99",
+    "pizzip": "^3.1.7",
     "sequelize": "^6.37.3",
     "sequelize-cli": "^6.6.2",
     "winston": "^3.13.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.17.0",
+    "globals": "^15.14.0"
   }
 }

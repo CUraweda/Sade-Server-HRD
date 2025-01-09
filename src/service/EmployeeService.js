@@ -6,6 +6,7 @@ const { response } = require("express");
 const EmployeeOutstationDao = require('../dao/EmployeeOutstationDao')
 const ApplicantFormDao = require('../dao/ApplicantFormDao')
 const EmailHelper = require("../helper/EmailHelper");
+const WordHelper = require('../helper/WordHelper')
 
 class EmployeeService {
   constructor() {
@@ -62,40 +63,40 @@ class EmployeeService {
     }
   };
 
-  actionProbation = async (condition, id, employee) => {
+
+  actionProbation = async (condition, id, employee, body = {}) => {
+    const { contract_end_date } = body
     if (!id) return responseHandler.returnError(httpStatus.BAD_REQUEST, "ID is required")
     if (!employee)
       return responseHandler.returnError(
         httpStatus.BAD_REQUEST,
         "Anda tidak termasuk karyawan"
       );
-    const employeeData = await this.employeeDao.findById(id)
+    const employeeData = await this.employeeDao.getDetail(id)
     if (!employeeData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Employee Not Found")
     if (!employeeData.still_in_probation) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Employee already finish the probation")
-    let userPayload = {}, employeePayload = {}
+      let userPayload = {}, employeePayload = {}
     switch (condition) {
       case "SUCCESS":
-        // userPayload = { role_id: 11 }
-        employeePayload = { still_in_probation: false, probation_end_date: new Date(), employee_status: "Kontrak" }
+        if (!contract_end_date) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Tanggal Kontrak harus diisi")
+        employeePayload = { still_in_probation: false, probation_end_date: new Date(), employee_status: "Kontrak", contract_end_date, is_on_contract: true }
+        const generatedContract = await new WordHelper("surat_kontrak_template").generateContractEmployee({
+          employer: employee, applicant: employeeData, contract_end_date
+        })
 
-        // Send email for success condition
-        await this.emailHelper.sendApplicantEmail(
-          {
-            //applicant
-            applicantName: employeeData.full_name,
-            applicantEmail: employeeData.email,
-            applicantEmployee: employeeData.full_name,
-            applicantMajor: employeeData.major,
-
-            //sender
-            senderName: employee.full_name,
-            senderPosition: employee.occupation,
-            senderEmail: employee.email,
-            senderPhone: employee.phone,
-          },
+        await this.emailHelper.sendContractEmail(
           employeeData.email,
-          'Kontrak Kerja - Sekolah Alam Depok',
-          '../views/applicant_success2.html'
+          {
+            applicant_name: employeeData.full_name,
+            applicant_email: employeeData.email,
+            applicant_employee: employeeData.full_name,
+            applicant_major: employeeData.major,
+            sender_name: employee.full_name,
+            sender_position: employee.occupation,
+            sender_email: employee.email,
+            sender_phone: employee.phone,
+          },
+          generatedContract
         );
         break;
       case "FAIL":

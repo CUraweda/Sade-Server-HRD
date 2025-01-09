@@ -10,6 +10,16 @@ class TrainingSuggestionService {
         this.trainingDao = new TrainingDao()
     }
 
+    chooseStatus = (start_date, end_date) => {
+        const currentDate = new Date()
+        const startDate = new Date(start_date);
+        const endDate = new Date(end_date);
+    
+        if (currentDate < startDate) return { status: "Menunggu Pelaksanaan", is_active: true }
+        else if (currentDate >= startDate && currentDate <= endDate) return { status: "Sedang Berjalan", is_active: true }
+        else if (currentDate > endDate)return { status: "Selesai", is_active: false }
+    }
+
     create = async (body) => {
         const trainingSuggestionData = await this.trainingSuggestionDao.create(body);
         if (!trainingSuggestionData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Training Suggestion Gagal dibuat");
@@ -39,7 +49,9 @@ class TrainingSuggestionService {
 
         if(body.is_approved){
             const { approver_id, employee_id, title, start_date, end_date, location} = dataExist
-            const trainingData = await this.trainingDao.create({ proposer_id: approver_id, purpose: body.purpose, status: "Menunggu", is_active: true, employee_id, title, start_date, end_date, location})
+            const statusData = this.chooseStatus(start_date, end_date)
+
+            const trainingData = await this.trainingDao.create({ proposer_id: approver_id, purpose: body.purpose, ...statusData, employee_id, title, start_date, end_date, location})
             if (!trainingData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Training Gagal dibuat");
         }
 

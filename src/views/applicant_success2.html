@@ -5,50 +5,36 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-    <style>
-      @import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
-
-      * {
-        font-family: Inter;
-        font-weight: 600;
-      }
-
-      .container {
-        padding-inline: 3rem;
-      }
-
-      .container-style {
-        display: flex;
-        flex-direction: column;
-        gap: 2rem;
-        margin-top: 3rem;
-      }
-    </style>
   </head>
-  <body>
-    <div class="container">
-      <div class="container-style">
+  <body style="font-family: 'Inter', sans-serif; font-weight: 600; margin: 0; padding: 0; line-height: 1.5; color: #000;">
+    <div style="padding: 0 3rem;">
+      <div style="margin-top: 3rem; display: flex; flex-direction: column; gap: 2rem;">
         <div>Kepada: {{applicant_email}}</div>
         <div>Subjek: Kontrak Kerja - {{applicant_employee}}</div>
         <div>Yth. {{applicant_name}}</div>
 
         <div>
-          Terlampir adalah surat kontrak kerja Anda sebagai {{applicant_major}}
-          di {{company_name}}. Mohon untuk membaca dengan seksama dan memberikan
-          tanda tangan Anda. Setelah itu, harap mengirimkan kembali surat
-          kontrak yang telah ditandatangani dalam bentuk PDF ke email ini.
+          Terlampir adalah surat kontrak kerja Anda sebagai {{applicant_major}} di {{company_name}}.
+          Mohon untuk membaca dengan seksama dan memberikan tanda tangan Anda. Setelah itu, harap
+          mengirimkan kembali surat kontrak yang telah ditandatangani dalam bentuk PDF ke email ini.
         </div>
 
         <div>
-          Silahkan lakukan pelengkapan berkas pada link ini dan
-          https://pelengkapanberkas/ link berikut untuk melakukan registrasi
-          karyawan baru https://sekolahalamdepok.sch.id/guru-dan-karyawan/
+          Link dibawah untuk melanjutkan ke halaman karyawan
+          <a href="https://sekolahalamdepok.sch.id" target="_blank" style="color: #007bff; text-decoration: none;">
+            https://sekolahalamdepok.sch.id
+          </a>.
         </div>
 
-        <div>Terima Kasih.,</div>
+        <div>Terima Kasih.</div>
 
         <div>
-          Hormat Kami,<br />{{sender_name}}<br />{{sender_position}}<br />{{company_name}}<br />{{sender_email}}<br />{{sender_phone}}
+          Hormat Kami,<br />
+          {{sender_name}}<br />
+          {{sender_position}}<br />
+          {{company_name}}<br />
+          <a href="mailto:{{sender_email}}" style="color: #007bff; text-decoration: none;">{{sender_email}}</a><br />
+          <a href="tel:{{sender_phone}}" style="color: #007bff; text-decoration: none;">{{sender_phone}}</a>
         </div>
       </div>
     </div>
