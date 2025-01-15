@@ -191,11 +191,11 @@ class EmployeeAttendanceDao extends SuperDao {
                 const attendanceCount = result.employeeattendances ? result.employeeattendances.length : 0;
 
                 let cutiCount = 0, izinCount = 0
-                if(result.employeevacations.length > 0){
+                if (result.employeevacations.length > 0) {
                     cutiCount = result.employeevacations.filter(vacation => vacation.type === 'CUTI').length
                     izinCount = result.employeevacations.filter(vacation => vacation.type === 'IZIN').length
                 }
-        
+
                 return {
                     full_name: result.full_name,
                     attendance_count: attendanceCount,
@@ -221,6 +221,46 @@ class EmployeeAttendanceDao extends SuperDao {
         if (!updateEmployee) return false
 
         return deleteData
+    }
+
+    async getDataStatus(filter) {
+        const { employee_id, date, search } = filter
+        return EmployeeAttendance.findAll({
+            where: {
+                ...(search && {
+                    [Op.or]: [
+                        {
+                            worktime_id: { [Op.like]: "%" + search + "%" },
+                        },
+                        {
+                            "$employee.full_name$": { [Op.like]: "%" + search + "%" },
+                        },
+                        {
+                            uid: { [Op.like]: "%" + search + "%" },
+                        },
+                        {
+                            description: { [Op.like]: "%" + search + "%" },
+                        },
+                        {
+                            status: { [Op.like]: "%" + search + "%" },
+                        },
+                        {
+                            is_outstation: { [Op.like]: "%" + search + "%" },
+                        },
+                    ]
+                }),
+                ...(employee_id && { employee_id }),
+                ...(date && { created_at: { [Op.between]: [date.start_date, date.end_date] } })
+            },
+            include: [
+                {
+                    model: Employee,
+                    attributes: ['full_name'],
+                    required: false
+                }
+            ],
+            attributes: ["status"]
+        })
     }
 
     async totalAttendanceWorktimeRange(start_date, end_date) {
