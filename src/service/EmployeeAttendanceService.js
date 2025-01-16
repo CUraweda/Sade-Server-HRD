@@ -184,10 +184,15 @@ class EmployeeAttendanceService {
     };
 
     showPage = async (page, limit, offset, filter) => {
-        const { date, iteration } = filter
-        if (iteration && date) {
-            let start_date = new Date(date)
-            let end_date = new Date(date)
+        let { date, start_date, end_date, iteration } = filter
+        if ((iteration && date) || (start_date && end_date)) {
+            start_date = new Date(start_date)
+            end_date = new Date(end_date)
+
+            if (date){
+                start_date = new Date(date)
+                end_date = new Date(date)
+            }
             switch (iteration) {
                 case "week":
                     const dayOfWeek = start_date.getDay();
@@ -233,6 +238,28 @@ class EmployeeAttendanceService {
         if (!attendanceData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Employee Attendance Tidak ditemukan");
 
         return responseHandler.returnSuccess(httpStatus.OK, "Data Employee Attendance Ditemukan", attendanceData);
+    }
+
+    showRekapStatus = async (filter) => {
+        let { start_date, end_date } = filter
+        if (start_date && end_date) {
+            start_date = new Date(start_date)
+            end_date = new Date(end_date)
+            start_date.setHours(0, 0, 0, 0);
+            end_date.setHours(23, 59, 59, 999);
+            filter.date = { start_date, end_date }
+        }
+        const attendanceData = await this.employeeAttendanceDao.getDataStatus(filter)
+        if (!attendanceData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Employee Attendance Tidak ditemukan");
+        
+        let statusData = {}
+        for (let resultData of attendanceData) {
+            const { status } = resultData
+            if (!statusData[status]) statusData[status] = 0
+            statusData[status]++
+        }
+
+        return responseHandler.returnSuccess(httpStatus.OK, "Data Employee Attendance Ditemukan", statusData);
     }
 
     showTotalWorktime = async (filter) => {

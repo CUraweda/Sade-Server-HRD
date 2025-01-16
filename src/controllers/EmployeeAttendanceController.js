@@ -14,14 +14,14 @@ class EmployeeAttendanceController {
         try {
             const page = +req.query.page || 0;
             const limit = +req.query.limit || 10;
-            const { search, outstation, type, status, division_id, date, employee_id, iteration } = req.query;
+            const { search, outstation, type, status, division_id, date, employee_id, iteration, start_date, end_date } = req.query;
 
             const offset = limit * page;
             const resData = await this.employeeAttendanceService.showPage(
                 page,
                 limit,
                 offset,
-                { search, outstation, type, status, division_id, date, employee_id, iteration }
+                { search, outstation, type, status, division_id, date, employee_id, iteration, start_date, end_date }
             );
 
             res.status(resData.statusCode).send(resData.response);
@@ -139,6 +139,16 @@ class EmployeeAttendanceController {
 
             res.status(resData.statusCode).send(resData.response)
         } catch (error) {
+            console.log(e);
+            res.status(httpStatus.BAD_GATEWAY).send(e);
+        }
+    }
+    
+    getRekapStatus = async (req, res) => {
+        try{
+            const resData = await this.employeeAttendanceService.showRekapStatus(req.query)
+            res.status(resData.statusCode).send(resData.response)
+        }catch(e){
             console.log(e);
             res.status(httpStatus.BAD_GATEWAY).send(e);
         }
