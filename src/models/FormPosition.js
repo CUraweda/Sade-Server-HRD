@@ -22,9 +22,11 @@ module.exports = (sequelize, DataTypes) => {
         },
         {
             sequelize,
+            underscored: true,
             tableName: 'tbl_employee_form_position',
             modelName: 'formposition',
-            timestamps: false
+            timestamps: true
+
         }
     );
 
