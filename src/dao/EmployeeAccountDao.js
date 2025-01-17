@@ -15,7 +15,6 @@ class EmployeeaccountDao extends SuperDao {
 
     async getCount(filter) {
         let { search, year, month } = filter
-        if (!search) search = ""
         const currentDate = new Date()
         if (!(year && month)) {
             month = currentDate.getMonth() + 1
@@ -23,11 +22,13 @@ class EmployeeaccountDao extends SuperDao {
         }
         return Employeeaccount.count({
             where: {
-                [Op.or]: [
-                    {
-                        "$employee.full_name$": { [Op.like]: "%" + search + "%" }
-                    }
-                ],
+                ...(search && {
+                    [Op.or]: [
+                        {
+                            "$employee.full_name$": { [Op.like]: "%" + search + "%" }
+                        }
+                    ],
+                }),
                 ...((year && month) && {
                     month_id: month, year
                 })
@@ -42,21 +43,22 @@ class EmployeeaccountDao extends SuperDao {
     }
 
     async getPage(offset, limit, filter) {
-        let { search, year, month } = filter
-        if (!search) search = ""
+        let { search, year, month, no_month } = filter
         const currentDate = new Date()
-        if (!(year && month)) {
+        if (!no_month && !(year && month)) {
             month = currentDate.getMonth() + 1
             year = currentDate.getFullYear()
         }
 
         return Employeeaccount.findAll({
             where: {
-                [Op.or]: [
-                    {
-                        "$employee.full_name$": { [Op.like]: "%" + search + "%" }
-                    }
-                ],
+                ...(search && {
+                    [Op.or]: [
+                        {
+                            "$employee.full_name$": { [Op.like]: "%" + search + "%" }
+                        }
+                    ],
+                }),
                 ...((year && month) && {
                     month_id: month, year
                 })
@@ -92,6 +94,33 @@ class EmployeeaccountDao extends SuperDao {
                 ...(month_id && { month_id }),
                 ...(year && { year })
             }
+        })
+    }
+
+    async getRecapFilter(filter){
+        let {search, month, year} = filter
+        return Employeeaccount.findAll({
+            where: { 
+                ...(search && {
+                    [Op.or]: [
+                        {
+                            "$employee.full_name$": { [Op.like]: "%" + search + "%" }
+                        }
+                    ]
+                }),
+                ...((year && month) && {
+                    month_id: month, year
+                })
+             },
+             include: [
+                {
+                    model: Employees,
+                    attributes: ["full_name"],
+                    required: false
+                }
+             ],
+             attributes: ["is_paid", "paid_amount", "temp_total"],
+             order: [["is_paid", "ASC"]]
         })
     }
 

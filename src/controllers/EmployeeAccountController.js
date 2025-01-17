@@ -9,14 +9,15 @@ class EmployeeAccountController {
     try {
       const page = +req.query.page || 0
       const limit = +req.query.limit || 10;
-      const { search, year, month } = req.query;
-
+      let { search, year, month, no_month } = req.query;
+  
+      no_month = no_month = "Y" ? true : false
       const offset = limit * page;
       const resData = await this.employeeAccountService.showPage(
         page,
         limit,
         offset,
-        { search, year, month }
+        { search, year, month, no_month }
       );
 
       res.status(resData.statusCode).send(resData.response);
@@ -78,6 +79,17 @@ class EmployeeAccountController {
     } catch (e) {
       console.log(e);
       res.status(httpStatus.BAD_GATEWAY).send(e);
+    }
+  }
+  
+  getRecapData = async (req, res) => {
+    try{
+      const resData = await this.employeeAccountService.showRecap(req.query)
+      
+      res.status(resData.statusCode).send(resData.response);
+    }catch(e){
+      console.log(e);
+      res.status(httpStatus.BAD_GATEWAY).send(e)    
     }
   }
 
