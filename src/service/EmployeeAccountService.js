@@ -138,9 +138,9 @@ class EmployeeAccountService {
                 payload["facility"] = !remove_data ? dataExist.facility + billExist.amount : dataExist.facility - billExist.amount
                 break;
             default:
-                if(billExist.billtype.is_subtraction){
+                if (billExist.billtype.is_subtraction) {
                     payload["other_cut"] = !remove_data ? dataExist.other_cut + billExist.amount : dataExist.other_cut - billExist.amount
-                }else payload["other_income"] = !remove_data ? dataExist.other_income + billExist.amount : dataExist.other_income - billExist.amount
+                } else payload["other_income"] = !remove_data ? dataExist.other_income + billExist.amount : dataExist.other_income - billExist.amount
                 break;
         }
 
@@ -199,7 +199,7 @@ class EmployeeAccountService {
         return responseHandler.returnSuccess(httpStatus.OK, "EmployeeAccount data found", Object.values(monthMap));
     }
 
-showDetail = async (id) => {
+    showDetail = async (id) => {
         if (!id) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Please Provide an ID");
         const employeeAccountData = await this.employeeAccountDao.getDetail(id)
         if (!employeeAccountData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "EmployeeAccount data not found");
@@ -217,6 +217,18 @@ showDetail = async (id) => {
         bills = Object.values(bills)
 
         return responseHandler.returnSuccess(httpStatus.OK, "EmployeeAccount data found", { account: employeeAccountData, bills });
+    }
+
+    showRecap = async (filter) => {
+        const employeeAccountData = await this.employeeAccountDao.getRecapFilter(filter)
+        if (!employeeAccountData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "EmployeeAccount data not found");
+
+        const recapData = { unpaid: { length: 0, total: 0 }, paid: { length: 0, total: 0 } }
+        employeeAccountData.forEach((data) => {
+            recapData[data.is_paid ? "paid" : "unpaid"].length++
+            recapData[data.is_paid ? "paid" : "unpaid"].total += data.is_paid ? data.paid_amount : data.temp_total
+        })
+        return responseHandler.returnSuccess(httpStatus.OK, "EmployeeAccount data found", recapData);
     }
 
     showOne = async (id) => {
