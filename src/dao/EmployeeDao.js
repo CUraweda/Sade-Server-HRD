@@ -12,6 +12,7 @@ const EmployeeAccount = models.employeeaccount
 const EmployeeAttachment = models.employeeattachment
 const FormPosistion = models.formposition
 const Training = models.training
+const Division = models.division
 const EmployeeEvaluation = models.employeeevaluation
 const EmployeeSignature = models.employeesignature
 class EmployeesDao extends SuperDao {
@@ -28,7 +29,7 @@ class EmployeesDao extends SuperDao {
   }
 
   async getCount(filter) {
-    const { search, division_id, status, have_account } = filter
+    const { search, division_id, status, have_account, probation_end_date, probation_start_date } = filter
     return Employees.count({
       where: {
         [Op.or]: [
@@ -36,6 +37,10 @@ class EmployeesDao extends SuperDao {
             full_name: { [Op.like]: "%" + search + "%" },
           },
         ],
+        ...((probation_start_date && probation_end_date) && {
+          probation_start_date: { [Op.between]: [probation_start_date, probation_end_date] },
+          probation_end_date: { [Op.between]: [probation_start_date, probation_end_date] },
+        }),
         ...(status && { employee_status: { [Op.like]: "%" + status + "%" } }),
         ...(division_id && { division_id }),
       },
@@ -55,12 +60,16 @@ class EmployeesDao extends SuperDao {
   }
 
   async getEmployeesPage(filter, offset, limit) {
-    let { search, division_id, status, have_account, sort_name } = filter
+    let { search, division_id, status, have_account, sort_name, probation_start_date, probation_end_date } = filter
     sort_name = sort_name === "1" ? true : false
     return Employees.findAll({
       where: {
         ...(status && { employee_status: { [Op.like]: "%" + status + "%" } }),
         ...(division_id && { division_id }),
+        ...((probation_start_date && probation_end_date) && {
+          probation_start_date: { [Op.between]: [probation_start_date, probation_end_date] },
+          probation_end_date: { [Op.between]: [probation_start_date, probation_end_date] },
+        }),
         ...(search && {
           [Op.or]: [
             {
@@ -146,7 +155,7 @@ class EmployeesDao extends SuperDao {
       limit: limit,
       ...(sort_name ? {
         order: [["full_name", "ASC"]]
-      } : { 
+      } : {
         order: [["id", "DESC"]],
       })
     });
@@ -186,11 +195,33 @@ class EmployeesDao extends SuperDao {
     })
   }
 
+  async getGradeRecap() {
+    return Employees.findAll({
+      attributes: ["grade", [sequelize.fn("COUNT", "grade"), "total_data"]],
+      group: ["grade"]
+    })
+  }
+
+  async getStatusRecap() {
+    return Employees.findAll({
+      attributes: ["employee_status", [sequelize.fn("COUNT", "employee_status"), "total_data"]],
+      group: ["employee_status"]
+    })
+  }
+
+  async getDivisionRecap() {
+    return Employees.findAll({
+      include: { model: Division, attributes: [] },
+      attributes: ["division_id", [sequelize.col('division.name'), "name"], [sequelize.fn("COUNT", sequelize.col("division_id")), "total_data"]],
+      group: ["division_id"]
+    })
+  }
+
   async getOnlyId(where) {
     const employeeData = await Employees.findAll({
       where, attributes: ['id']
     })
-    if(employeeData.length < 1) return false
+    if (employeeData.length < 1) return false
     return employeeData.map(employee => employee.id);
   }
 
@@ -206,8 +237,8 @@ class EmployeesDao extends SuperDao {
     })
   }
 
-  async getEmployeeForEvaluation(filter, month_id){
-    const  { division_id } = filter
+  async getEmployeeForEvaluation(filter, month_id) {
+    const { division_id } = filter
     return Employees.findAll({
       where: { division_id, current_evaluation_id: null },
       include: [

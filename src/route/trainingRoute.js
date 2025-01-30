@@ -15,6 +15,11 @@ router.get(
     trainingController.getAll
 )
 router.get(
+    "/show-recap-status",
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11]),
+    trainingController.getRecapStatus
+)
+router.get(
     "/recap-dashboard",
     auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10,11]),
     trainingController.getRecapDashboard

@@ -1,6 +1,6 @@
 const SuperDao = require("./SuperDao");
 const models = require("../models");
-const { Op } = require("sequelize");
+const { Op, fn, col } = require("sequelize");
 
 const Training = models.training;
 const Employees = models.employees
@@ -27,7 +27,7 @@ class TrainingDao extends SuperDao {
     }
 
     async getPage(offset, limit, filter) {
-        let { search, status, employee_id, active} = filter
+        let { search, status, employee_id, active, start_date, end_date } = filter
         if (!search) search = ""
         return Training.findAll({
             where: {
@@ -35,8 +35,14 @@ class TrainingDao extends SuperDao {
                     { title: { [Op.like]: "%" + search + "%" } },
                     { purpose: { [Op.like]: "%" + search + "%" } },
                 ],
-            ...(active && { is_active: true }),
+                ...(active && { is_active: true }),
                 ...(employee_id && { employee_id }),
+                ...((start_date && end_date) && {
+                    [Op.or]: [
+                        { start_date: { [Op.between]: [start_date, end_date] } },
+                        { end_date: { [Op.between]: [start_date, end_date] } },
+                    ]
+                }),
                 ...(status && { status: { [Op.like]: `%${status}%` } })
             },
             include: [
@@ -52,7 +58,7 @@ class TrainingDao extends SuperDao {
                 },
                 {
                     model: TrainingAttendance,
-                    orderBy: [['created_at', 'DESC'], ],
+                    orderBy: [['created_at', 'DESC'],],
                     required: false
                 },
             ],
@@ -62,13 +68,20 @@ class TrainingDao extends SuperDao {
         });
     }
 
-    async getAllActive(){
+    async getAllActive() {
         return Training.findAll({
             where: { is_active: true }
         })
     }
 
-    async getByIdWithEmployee(id){
+    async getStatusRecap() {
+        return Training.findAll({
+            attributes: ["status", [fn("COUNT", col("status")), "total_data"]],
+            group: ["status"]
+        })
+    }
+
+    async getByIdWithEmployee(id) {
         return Training.findOne({
             where: { id },
             include: [

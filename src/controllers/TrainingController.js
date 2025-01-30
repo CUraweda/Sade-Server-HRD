@@ -10,11 +10,11 @@ class TrainingController {
         try {
             const page = +req.query.page || 0;
             const limit = +req.query.limit || 10;
-            let { search, status, by_token, employee_id } = req.query;
+            let { search, status, by_token, employee_id, start_date, end_date } = req.query;
 
             const offset = limit * page;
             if(by_token && by_token != "0") employee_id = req.user.employee.id
-            const resData = await this.trainingService.showPage(page, limit, offset, { search, status, employee_id });
+            const resData = await this.trainingService.showPage(page, limit, offset, { search, status, employee_id, start_date, end_date });
 
             res.status(resData.statusCode).send(resData.response);
         } catch (e) {
@@ -29,6 +29,16 @@ class TrainingController {
             if (!id) res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Please provide an ID");
             const resData = await this.trainingService.showOne(id);
 
+            res.status(resData.statusCode).send(resData.response);
+        } catch (e) {
+            console.log(e);
+            res.status(httpStatus.BAD_GATEWAY).send(e);
+        }
+    };
+
+    getRecapStatus = async (req, res) => {
+        try {
+            const resData = await this.trainingService.showRecapStatus();
             res.status(resData.statusCode).send(resData.response);
         } catch (e) {
             console.log(e);

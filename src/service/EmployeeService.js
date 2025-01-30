@@ -170,6 +170,24 @@ class EmployeeService {
     return responseHandler.returnSuccess(httpStatus.OK, "Data attachment berhasil didapatkan", employeeFiles);
   };
 
+  showRecapGrade = async () => {
+    const employeeData = await this.employeeDao.getGradeRecap()
+    if (!employeeData) return responseHandler.returnError(httpStatus.UNPROCESSABLE_ENTITY, "Tidak didapatkan data karyawan")
+    return responseHandler.returnSuccess(httpStatus.OK, "Data rekap berhasil didapatkan", employeeData);
+  };
+
+  showRecapStatus = async () => {
+    const employeeData = await this.employeeDao.getStatusRecap()
+    if (!employeeData) return responseHandler.returnError(httpStatus.UNPROCESSABLE_ENTITY, "Tidak didapatkan data karyawan")
+    return responseHandler.returnSuccess(httpStatus.OK, "Data rekap berhasil didapatkan", employeeData);
+  };
+
+  showRecapDivision = async () => {
+    const employeeData = await this.employeeDao.getDivisionRecap()
+    if (!employeeData) return responseHandler.returnError(httpStatus.UNPROCESSABLE_ENTITY, "Tidak didapatkan data karyawan")
+    return responseHandler.returnSuccess(httpStatus.OK, "Data rekap berhasil didapatkan", employeeData);
+  };
+
   showByUser = async (data) => {
     if (!data.employee) return responseHandler.returnError(httpStatus.UNPROCESSABLE_ENTITY, "Anda tidak termasuk kedalam Karyawan")
     const { id } = data.employee

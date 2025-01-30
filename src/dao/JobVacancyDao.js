@@ -1,6 +1,6 @@
 const SuperDao = require("./SuperDao");
 const models = require("../models");
-const { Op } = require("sequelize");
+const { Op, fn, col } = require("sequelize");
 
 const JobVacancy = models.jobvacancy;
 const JobVacancyDetail = models.vacancydetail
@@ -72,6 +72,32 @@ class JobVacancyDao extends SuperDao {
             limit: limit,
             order: [["id", "DESC"]],
         });
+    }
+
+
+    async getByDivision() {
+        return Division.findAll({
+            group: ["id"],
+            attributes: [
+                "id",
+                "name",
+                [fn("COUNT", col("jobvacancies.applicantforms.id")), "length"]
+            ],
+            include: [
+                {
+                    model: JobVacancy,
+                    include: [
+                        {
+                            model: ApplicantForm,
+                            required: false,
+                            attributes: []
+                        },
+                    ],
+                    attributes: [],
+                    required: false
+                }
+            ]
+        })
     }
 
     // async updateCounter(id) {

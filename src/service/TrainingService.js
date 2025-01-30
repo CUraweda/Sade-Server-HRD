@@ -68,6 +68,13 @@ class TrainingService {
 
         return responseHandler.returnSuccess(httpStatus.OK, "Training record found", trainingData);
     };
+
+    showRecapStatus = async () => {
+        const trainingData = await this.trainingDao.getStatusRecap()
+        if (!trainingData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Training record not found");
+
+        return responseHandler.returnSuccess(httpStatus.OK, "Training record found", trainingData);
+    };
 }
 
 module.exports = TrainingService;

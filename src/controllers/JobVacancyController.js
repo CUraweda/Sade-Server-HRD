@@ -39,6 +39,17 @@ class JobVacancyController {
             res.status(httpStatus.BAD_GATEWAY).send(e);
         }
     };
+    
+    getRecapDivision = async (req, res) => {
+        try{
+            const resData = await this.jobVacancyService.showDivisionRecap()
+            
+            res.status(resData.statusCode).send(resData.response);
+        }catch(e){
+            console.log(e);
+            res.status(httpStatus.BAD_GATEWAY).send(e);
+        }
+    }
 
     createOne = async (req, res) => {
         try {
