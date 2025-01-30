@@ -22,8 +22,8 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
-      tableName: "tbl_edu_calendars",
       modelName: "educalendar",
+      tableName: "tbl_edu_calendars",
       underscored: true,
     }
   );

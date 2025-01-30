@@ -83,8 +83,8 @@ class ApplicantFormValidator {
 
     async evaluateFirstValidator(req, res, next) {
         const schema = Joi.object({
-            plan_date: Joi.date(),
-            portal: Joi.string()
+            plan_date: Joi.date().optional(),
+            portal: Joi.string().optional()
         });
 
         const options = { abortEarly: false, allowUnknown: true, stripUnknown: true };

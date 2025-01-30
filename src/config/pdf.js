@@ -14,7 +14,6 @@ class PDFGenerator {
         const doc = new PDFDocument({ margin: 60 });
         const documentFixed = { xStart: doc.opt.margin, yStart: doc.opt.margin, xEnd: doc.page.width - doc.opt.margin, yEnd: doc.page.width - doc.opt.margin }
         const urlToSave = path.join(this.storageUrl, `Slip-Gaji_${accountData.id}_${accountData.month_id}_${accountData.year}.pdf`);
-        console.log(urlToSave)
         const writeStream = fs.createWriteStream(urlToSave);
         const monthConstant = constantData.monthList
 

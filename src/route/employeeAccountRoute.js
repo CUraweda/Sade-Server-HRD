@@ -30,6 +30,11 @@ router.get(
     employeeAccountController.getRecapYear
 )
 router.get(
+    "/recap-data",
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13]),
+    employeeAccountController.getRecapData
+)
+router.get(
     "/:id",
     auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]),
     employeeAccountController.getOne

@@ -185,7 +185,7 @@ class EmailHelper {
 
   async sendEvaluationEmail(to, data) {
     try {
-      readHTMLFile(path.resolve(__dirname, '../views/appplicant_success.html'), function (err, html) {
+      readHTMLFile(path.resolve(__dirname, '../views/applicant_success.html'), function (err, html) {
         if (err) {
           console.log(err)
           return false
@@ -199,7 +199,7 @@ class EmailHelper {
           html: htmlToSend
         }
 
-        transporter.sendMail(mailOptions, (err, res) => {
+        transporter.sendMail(mOpts, (err, res) => {
           if (err) return false
         })
 
