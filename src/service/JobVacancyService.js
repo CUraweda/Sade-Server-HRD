@@ -64,6 +64,13 @@ class JobVacancyService {
 
         return responseHandler.returnSuccess(httpStatus.OK, "Job vacancy deleted successfully", {});
     };
+    
+    showDivisionRecap = async () => {
+        const jobVacancyData = await this.jobVacancyDao.getByDivision()
+        if (!jobVacancyData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Failed to retrive job vacancy recap");
+    
+        return responseHandler.returnSuccess(httpStatus.OK, "Job vacancy recap successfully retrived", jobVacancyData);
+    }
 
     showPage = async (page, limit, offset, filter) => {
         const totalRows = await this.jobVacancyDao.getCount(filter);

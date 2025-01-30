@@ -52,10 +52,13 @@ class ApplicantFormService {
             case "Psychology":
                 body["is_passed_psychological_test"] = condition
                 body["status"] = condition ? constant.applicantPsychologyEvaluation.success : constant.applicantPsychologyEvaluation.fail
+                body = {...body, ...args.body}
                 break
             default:
                 return responseHandler.returnError(httpStatus.BAD_REQUEST, "Identifier tidak sesuai");
         }
+
+        console.log(body)
 
         const applicantExist = await this.applicantFormDao.findById(id)
         if (!applicantExist) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Applicant tidak ditemukan");

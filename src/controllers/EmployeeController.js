@@ -72,9 +72,39 @@ class EmployeeController {
     }
   };
 
+  showRecapGrade = async (req, res) => {
+    try {
+      const resData = await this.employeeService.showRecapGrade();
+      res.status(resData.statusCode).send(resData.response);
+    } catch (e) {
+      console.log(e)
+      res.status(httpStatus.BAD_GATEWAY).send(e);
+    }
+  };
+
+  showRecapStatus = async (req, res) => {
+    try {
+      const resData = await this.employeeService.showRecapStatus();
+      res.status(resData.statusCode).send(resData.response);
+    } catch (e) {
+      console.log(e)
+      res.status(httpStatus.BAD_GATEWAY).send(e);
+    }
+  };
+
+  showRecapDivision = async (req, res) => {
+    try {
+      const resData = await this.employeeService.showRecapDivision();
+      res.status(resData.statusCode).send(resData.response);
+    } catch (e) {
+      console.log(e)
+      res.status(httpStatus.BAD_GATEWAY).send(e);
+    }
+  };
+
   showAllIsGuru = async (req, res) => {
     try {
-      var isGuru = req.query.is_initial || "";
+    var isGuru = req.query.is_initial || "";
 
       const resData = await this.employeeService.showEmployeeIsGuru(isGuru);
 
@@ -112,13 +142,13 @@ class EmployeeController {
     try {
       const page = req.query.page ? req.query.page != "0" ? +req.query.page - 1 : 0 : 0
       const limit = +req.query.limit || 10;
-      const { search, division_id, status, isAssign, have_account, sort_name } = req.query
+      const { search, division_id, status, isAssign, have_account, sort_name, probation_end_date, probation_start_date } = req.query
       const offset = limit * page;
 
       const resData = await this.employeeService.showPage(
         page,
         limit,
-        { search, isAssign, division_id, status, have_account, sort_name },
+        { search, isAssign, division_id, status, have_account, sort_name, probation_end_date, probation_start_date },
         offset
       );
 

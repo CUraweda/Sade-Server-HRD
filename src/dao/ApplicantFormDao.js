@@ -19,11 +19,12 @@ class ApplicantFormDao extends SuperDao {
     }
 
     async getCount(filter) {
-        let { search, status } = filter
+        let { search, status, division_id, start_date, end_date } = filter
         if (!search) search = ""
         return ApplicantForm.count({
             where: {
-            ...(status && { status }),
+                ...((start_date && end_date) && { createdAt: { [Op.between]: [start_date, end_date] } }),
+                ...(status && { status }),
                 [Op.or]: [
                     {
                         full_name: { [Op.like]: "%" + search + "%" },
@@ -33,11 +34,20 @@ class ApplicantFormDao extends SuperDao {
                     },
                 ],
             },
+            include: [
+                ...(division_id ? [
+                    {
+                        model: JobVacancy,
+                        where: { division_id },
+                        required: true
+                    }
+                ] : [])
+            ]
         });
     }
-    
+
     async getPage(offset, limit, filter) {
-        let { search, status } = filter
+        let { search, status, division_id, start_date, end_date } = filter
         if (!search) search = ""
         return ApplicantForm.findAll({
             where: {
@@ -50,8 +60,16 @@ class ApplicantFormDao extends SuperDao {
                         email: { [Op.like]: "%" + search + "%" },
                     },
                 ],
+                ...((start_date && end_date) && { createdAt: { [Op.between]: [start_date, end_date] } })
             },
             include: [
+                ...(division_id ? [
+                    {
+                        model: JobVacancy,
+                        where: { division_id },
+                        required: true
+                    }
+                ] : []),
                 {
                     model: ApplicantAcademic,
                     required: false
@@ -86,17 +104,17 @@ class ApplicantFormDao extends SuperDao {
     }
 
     async getByVacancy(vacancy_id, filter) {
-        let { search,is_passed, is_passed_interview, status } = filter
+        let { search, is_passed, is_passed_interview, status } = filter
         if (!search) search = ""
-         return ApplicantForm.findAll({
+        return ApplicantForm.findAll({
             where: {
                 vacancy_id,
                 ...(status && { status }),
-                ...(is_passed != undefined && { is_passed } ),
-                ...(is_passed_interview != undefined && { is_passed_interview } ),
+                ...(is_passed != undefined && { is_passed }),
+                ...(is_passed_interview != undefined && { is_passed_interview }),
                 [Op.and]: [
                     {
-                        full_name: { [Op.like]: "%" + search +  "%"}
+                        full_name: { [Op.like]: "%" + search + "%" }
                     }
                 ]
             },

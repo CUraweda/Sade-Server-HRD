@@ -11,10 +11,10 @@ class ApplicantFormController {
         try {
             const page = +req.query.page || 0;
             const limit = +req.query.limit || 10;
-            const { search, status } = req.query;
+            const { search, status, division_id, start_date, end_date } = req.query;
 
             const offset = limit * page;
-            const resData = await this.applicantFormService.showPage(page, limit, offset, { search, status });
+            const resData = await this.applicantFormService.showPage(page, limit, offset, { search, status, division_id, start_date, end_date });
 
             res.status(resData.statusCode).send(resData.response);
         } catch (e) {
@@ -139,8 +139,13 @@ class ApplicantFormController {
         try {
             const id = +req.params.id
             const { condition } = req.params
+            const { portal, plan_date } = req.body
             const resData = await this.applicantFormService.evaluateApplication(id, condition.toString().toLowerCase(), "Psychology", {
-                employee: req.user.employee
+                employee: req.user.employee,
+                body: {
+                    psychology_place: portal,
+                    psychology_date: plan_date
+                }
             })
             
             res.status(resData.statusCode).send(resData.response);
