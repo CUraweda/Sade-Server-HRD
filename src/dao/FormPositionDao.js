@@ -13,16 +13,17 @@ class FormPositionDao extends SuperDao {
         const { employee_id } = filter
         return FormPosition.count({
             where: {
-                ...(employee_id && employee_id)
+                ...(employee_id && { employee_id })
             }
         });
     }
 
     async getPage(offset, limit, filter) {
         const { employee_id } = filter
+        console.log(employee_id)
         return FormPosition.findAll({
             where: {
-                ...(employee_id && employee_id)
+                ...(employee_id && { employee_id })
             },
             offset: offset,
             limit: limit,
