@@ -81,7 +81,7 @@ class JobVacancyDao extends SuperDao {
             attributes: [
                 "id",
                 "name",
-                [fn("COUNT", col("jobvacancies.applicantforms.id")), "length"]
+                [fn("COUNT", col("jobvacancies.id")), "length"]
             ],
             include: [
                 {
