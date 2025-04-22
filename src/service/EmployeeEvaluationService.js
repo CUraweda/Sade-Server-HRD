@@ -230,7 +230,6 @@ class EmployeeEvaluationService {
         let { month_id, division_id } = data
         if (!month_id) month_id = new Date().getMonth()
         const employeeData = await this.employeeDao.getEmployeeForEvaluation(data, month_id)
-        console.log(employeeData)
         if (employeeData.length < 1) return responseHandler.returnError(httpStatus.BAD_REQUEST, "No data need to be generated");
 
         let currentAcademicYear = await this.academicYearDao.getHighestAcademicYear()
