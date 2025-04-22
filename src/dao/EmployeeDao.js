@@ -240,7 +240,7 @@ class EmployeesDao extends SuperDao {
   async getEmployeeForEvaluation(filter, month_id) {
     const { division_id } = filter
     return Employees.findAll({
-      where: { division_id, current_evaluation_id: null },
+      where: { division_id },
       include: [
         {
           model: EmployeeEvaluation,
