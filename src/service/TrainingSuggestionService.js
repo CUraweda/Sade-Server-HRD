@@ -22,6 +22,13 @@ class TrainingSuggestionService {
 
     create = async (body) => {
         const trainingSuggestionData = await this.trainingSuggestionDao.create(body);
+        if(body.is_approved){
+            const { approver_id, employee_id, title, start_date, end_date, location} = trainingSuggestionData
+            const statusData = this.chooseStatus(start_date, end_date)
+
+            const trainingData = await this.trainingDao.create({ proposer_id: approver_id, purpose: "Disarankan oleh HRD", ...statusData, employee_id, title, start_date, end_date, location})
+            if (!trainingData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Training Gagal dibuat");
+        }
         if (!trainingSuggestionData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Training Suggestion Gagal dibuat");
 
         return responseHandler.returnSuccess(httpStatus.CREATED, "Data Training Suggestion Berhasil dibuat", trainingSuggestionData);
