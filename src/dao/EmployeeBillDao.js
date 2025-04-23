@@ -14,6 +14,8 @@ class EmployeeBillDao extends SuperDao {
     async getCount(filter) {
         let { search, account_id, current_month } = filter
         if (!search) search = ""
+        let currentDate = new Date()
+        let startDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
         return EmployeeBill.count({
             where: {
                 ...(current_month == 'y' && {
