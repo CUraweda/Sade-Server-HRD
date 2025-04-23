@@ -42,7 +42,6 @@ class TrainingSuggestionController {
 
     createOne = async (req, res) => {
         try {
-            console.log(req.user)
             if(req.user?.role_id === 5) req.body['is_approved'] = true
             const resData = await this.trainingSuggestionService.create(req.body);
 
