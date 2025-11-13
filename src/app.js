@@ -13,14 +13,14 @@ process.env.TZ = "Asia/Jakarta";
 
 const app = express();
 
-
-const corsOptions = {
-  origin: '*',
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTION',
-  credentials: true,
-};
-
-app.use(cors(corsOptions));
+// CORS
+if (process.env.CORS_MODE === 'open') {
+  app.use(cors());
+  app.options('*', cors());
+} else {
+  app.use(cors({ origin: false }));
+  app.options('*', cors({ origin: false }));
+}
 
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
