@@ -47,7 +47,7 @@ class TrainingSuggestionService {
     approveOne = async (id, body) => {
         const { employee } = body
         delete body.employee
-        if (!employee) return responseHandler.returnError(httpStatus.UNPROCESSABLE_ENTITY, "Anda bukan termasuk karyawan");
+        // if (!employee) return responseHandler.returnError(httpStatus.UNPROCESSABLE_ENTITY, "Anda bukan termasuk karyawan");
         const dataExist = await this.trainingSuggestionDao.findById(id);
         if (!dataExist) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Training Suggestion Tidak Ada");
 
