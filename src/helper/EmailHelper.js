@@ -10,21 +10,20 @@ const { error } = require("console");
 
 const transporter = nodemailer.createTransport({
   //? GMAIL CONFIG
-  service: "gmail",
-  auth: {
-    user: config.email.account,
-    pass: config.email.password
-  }
+  // service: "gmail",
+  // auth: {
+  //   user: config.email.account,
+  //   pass: config.email.password
+  // }
 
   //? SMTP CONFIG
-  // host: config.email.host,
-  // port: config.email.port,
-  // secure: true,
-  // auth: {
-  //   // TODO: replace `user` and `pass` values from <https://forwardemail.net>
-  //   user: config.email.account,
-  //   pass: config.email.password,
-  // },
+  host: config.email.host,
+  port: +config.email.port,
+  secure: true,
+  auth: {
+    user: config.email.account,
+    pass: config.email.password,
+  },
 });
 
 var readHTMLFile = function (path, callback) {
