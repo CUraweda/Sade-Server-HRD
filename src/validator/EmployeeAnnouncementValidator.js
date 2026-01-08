@@ -8,7 +8,7 @@ class EmployeeAnnouncementValidator {
             title: Joi.string(),
             plan_date: Joi.date(),
             notes: Joi.string(),
-            is_specific: Joi.boolean().required(),
+            is_specific: Joi.boolean(),
             employee_ids: Joi.array()
         });
 
