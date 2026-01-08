@@ -69,7 +69,12 @@ class ApplicantFormDao extends SuperDao {
                         where: { division_id },
                         required: true
                     }
-                ] : []),
+                ] : [
+                    {
+                        model: JobVacancy,
+                        required: false
+                    }
+                ]),
                 {
                     model: ApplicantAcademic,
                     required: false
