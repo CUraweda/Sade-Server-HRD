@@ -180,7 +180,8 @@ class EmployeeAttendanceDao extends SuperDao {
                                     [Op.between]: [start_date, end_date]
                                 }
                             }
-                        ]
+                        ],
+                        is_approved: true,
                     },
                     required: false
                 }
