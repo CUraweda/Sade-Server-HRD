@@ -5,7 +5,7 @@ const ApiError = require("../helper/ApiError");
 class DivisionValidator {
     async createUpdateValidator(req, res, next) {
         const schema = Joi.object({
-            name: Joi.string(),
+            name: Joi.string().required(),
             color: Joi.string()
         });
 

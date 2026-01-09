@@ -29,12 +29,14 @@ const transporter = nodemailer.createTransport({
 class EmailHelper {
   constructor() {
     this.email = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.EMAIL_ACCOUNT,
-        pass: process.env.PASSWORD
-      }
-    })
+			host: config.email.host,
+			port: +config.email.port,
+			secure: true,
+			auth: {
+				user: config.email.account,
+				pass: config.email.password,
+			},
+		});
     this.emailTemplate = new Email({
       message: { from: process.env.EMAIL_ACCOUNT },
       send: true,
@@ -75,8 +77,6 @@ class EmailHelper {
       console.log(e)
     }
   }
-
-  async
 
   async sendEmail(
     webUrl,

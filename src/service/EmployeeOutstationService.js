@@ -38,7 +38,9 @@ class EmployeeOutstationService {
         
         const outstationData = await this.employeeOutstationDao.updateWhere(body, { id });
         if (!outstationData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Data Employee Outstation Gagal diperbaharui");
-        await this.attachEmployeeActive(dataExist.employee_id, id)
+
+        if (body.is_active) await this.attachEmployeeActive(dataExist.employee_id, id)
+        else await this.attachEmployeeUnactive(dataExist.employee_id);
 
         return responseHandler.returnSuccess(httpStatus.CREATED, "Data Employee Outstation Berhasil diperbaharui", {});
     };
@@ -78,3 +80,4 @@ class EmployeeOutstationService {
 }
 
 module.exports = EmployeeOutstationService;
+

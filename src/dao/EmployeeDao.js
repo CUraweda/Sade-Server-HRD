@@ -149,6 +149,10 @@ class EmployeesDao extends SuperDao {
           model: User,
           attributes: ["full_name", "email", "id"],
           required: false
+        },
+        {
+          model: Division,
+          required: false
         }
       ],
       offset: offset,

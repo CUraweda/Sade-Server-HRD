@@ -28,7 +28,12 @@ class EmployeeOutstationDao extends SuperDao {
         if (!search) search = ""
         return EmployeeOutstation.findAll({
             where: {
-                description: { [Op.like]: "%" + search + "%" }
+                [Op.or]: [
+                    { description: { [Op.like]: "%" + search + "%" }},
+                    {
+                        "$employee.full_name$": { [Op.like]: "%" + search + "%" },
+                    },
+                ]
             },
             include: [
                 {

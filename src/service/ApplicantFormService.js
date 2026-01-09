@@ -40,7 +40,7 @@ class ApplicantFormService {
 
     evaluateApplication = async (id, condition, identifier, args) => {
         const { employee } = args
-        if (!employee) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Anda tidak termasuk karyawan");
+        // if (!employee) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Anda tidak termasuk karyawan");
         condition = condition != "lulus" ? false : true
 
         let body = {}
@@ -71,10 +71,10 @@ class ApplicantFormService {
                     status: "Lulus",
                     position_name: "Disembunyikan",
                     next_step: identifier != "Selection" ? "Mengikuti Psikotes" : "Mengikuti Interview",
-                    sender_name: employee.full_name,
-                    sender_position: employee.occupation || "",
-                    sender_email: employee.email || "",
-                    sender_phone: employee.phone
+                    sender_name: employee?.full_name || 'HRD',
+                    sender_position: employee?.occupation || "",
+                    sender_email: employee?.email || "",
+                    sender_phone: employee?.phone || ""
                 })
             })
         }
