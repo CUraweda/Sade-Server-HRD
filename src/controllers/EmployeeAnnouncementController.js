@@ -57,6 +57,10 @@ class EmployeeAnnouncementController {
 
     createOne = async (req, res) => {
         try {
+            if (req.file) {
+                req.body.file_path = req.file.path,
+                req.body.file_type = req.file.mimetype
+            }
             const resData = await this.employeeAnnouncementService.create(req.body);
 
             res.status(resData.statusCode).send(resData.response);
@@ -68,6 +72,10 @@ class EmployeeAnnouncementController {
 
     update = async (req, res) => {
         try {
+            if (req.file) {
+                req.body.file_path = req.file.path,
+                req.body.file_type = req.file.mimetype
+            }
             const id = +req.params.id;
             if (!id) res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Tolong sertakan ID");
             const resData = await this.employeeAnnouncementService.update(id, req.body);

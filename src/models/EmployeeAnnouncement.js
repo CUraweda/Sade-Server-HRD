@@ -15,6 +15,8 @@ module.exports = (sequelize, DataTypes) => {
 
     EmployeeAnnouncement.init(
         {
+            file_path: DataTypes.STRING,
+            file_type: DataTypes.STRING,
             title: DataTypes.STRING,
             plan_date: DataTypes.DATE,
             notes: DataTypes.TEXT,
