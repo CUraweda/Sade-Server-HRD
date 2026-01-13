@@ -87,11 +87,11 @@ class ApplicantFormService {
     }
 
     createInterview = async (body, id, condition, employee) => {
-        if (!employee)
-            return responseHandler.returnError(
-                httpStatus.BAD_REQUEST,
-                "Anda tidak termasuk karyawan"
-            );
+        // if (!employee)
+        //     return responseHandler.returnError(
+        //         httpStatus.BAD_REQUEST,
+        //         "Anda tidak termasuk karyawan"
+        //     );
         if (!condition)
             return responseHandler.returnError(
                 httpStatus.BAD_REQUEST,
