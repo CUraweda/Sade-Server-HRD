@@ -87,11 +87,11 @@ class ApplicantFormService {
     }
 
     createInterview = async (body, id, condition, employee) => {
-        if (!employee)
-            return responseHandler.returnError(
-                httpStatus.BAD_REQUEST,
-                "Anda tidak termasuk karyawan"
-            );
+        // if (!employee)
+        //     return responseHandler.returnError(
+        //         httpStatus.BAD_REQUEST,
+        //         "Anda tidak termasuk karyawan"
+        //     );
         if (!condition)
             return responseHandler.returnError(
                 httpStatus.BAD_REQUEST,
@@ -114,8 +114,8 @@ class ApplicantFormService {
             );
 
         if (condition === "lulus") {
-            const uid = `${id}-${employee.id}`
-            const applicantInterviewData = await this.applicantInterviewDao.create({ ...body, form_id: id, interviewer_id: employee.id, uid })
+            // const uid = `${id}-${employee.id}`
+            const applicantInterviewData = await this.applicantInterviewDao.create({ ...body, form_id: id })
             if (!applicantInterviewData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Gagal dalam membuat Applicant Interview");
 
             // Send email for success condition
@@ -129,10 +129,10 @@ class ApplicantFormService {
                     applicantName: applicantExist.full_name,
                     applicantPosition: applicantExist.position,
                     //sender
-                    senderName: employee.full_name,
-                    senderPosition: employee.occupation,
-                    senderPhone: employee.phone,
-                    senderEmail: employee.email,
+                    senderName: employee?.full_name || 'HRD',
+                    senderPosition: employee?.occupation || "",
+                    senderPhone: employee?.phone || "",
+                    senderEmail: employee?.email || ""
                 },
                 applicantExist.email,
                 'Interview Invitation - Sekolah Alam Depok',
@@ -152,14 +152,14 @@ class ApplicantFormService {
             await this.emailHelper.sendApplicantEmail(
                 {
                     status: condition,
-                    positionName: employee.major,
+                    positionName: employee?.major ?? '',
                     //applicant
                     applicantName: applicantExist.full_name,
                     //sender
-                    senderName: employee.full_name,
-                    senderPosition: employee.occupation,
-                    senderEmail: employee.email,
-                    senderPhone: employee.phone,
+                    senderName: employee?.full_name || 'HRD',
+                    senderPosition: employee?.occupation || "",
+                    senderPhone: employee?.phone || "",
+                    senderEmail: employee?.email || ""
                 },
                 applicantExist.email,
                 `Hasil Wawancara - Sekolah Alam Depok`,
