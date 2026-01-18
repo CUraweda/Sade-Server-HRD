@@ -39,12 +39,14 @@ var readHTMLFile = function (path, callback) {
 class EmailHelper {
   constructor() {
     this.email = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.EMAIL_ACCOUNT,
-        pass: process.env.PASSWORD
-      }
-    })
+			host: config.email.host,
+			port: +config.email.port,
+			secure: true,
+			auth: {
+				user: config.email.account,
+				pass: config.email.password,
+			},
+		});
   }
 
   async sendSlipGaji(to, slipGajiPath) {
@@ -52,7 +54,7 @@ class EmailHelper {
       const currentDate = new Date().toISOString().split('T')[0]
       await this.email.sendMail(
         {
-          from: process.env.EMAIL_FROM, to, subject: `Slip Gaji - ${currentDate}`,
+          from: config.email.account, to, subject: `Slip Gaji - ${currentDate}`,
           attachments: [
             {
               filename: 'slip-gaji.pdf',
@@ -72,7 +74,7 @@ class EmailHelper {
       const currentMonth = new Date().getMonth() + 1
       await this.email.sendMail(
         {
-          from: process.env.EMAIL_FROM, to, subject: `Evaluasi Penilaian - ${employee.full_name}`,
+          from: config.email.account, to, subject: `Evaluasi Penilaian - ${employee.full_name}`,
           attachments: [
             {
               filename: `Evaluasi ${employee.full_name} Bulan ${currentMonth}.xlsx`,
@@ -238,3 +240,4 @@ class EmailHelper {
 }
 
 module.exports = EmailHelper;
+

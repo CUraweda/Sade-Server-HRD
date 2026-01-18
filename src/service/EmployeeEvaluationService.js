@@ -158,21 +158,23 @@ class EmployeeEvaluationService {
                     sheet.addRow([unit.name, jobdesk.name, null, null, grade.name, grade.grade, grade.indicator, jobdesk.personal_grade || 0, jobdesk.partner_grade || 0, jobdesk.assesor_grade || 0, jobdesk.overall_grade]);
                     row++;
                 });
-                sheet.mergeCells(jobdeskStart, 2, row - 1, 4)
-                sheet.mergeCells(jobdeskStart, 8, row - 1, 8)
-                sheet.mergeCells(jobdeskStart, 9, row - 1, 9)
-                sheet.mergeCells(jobdeskStart, 10, row - 1, 10)
-                sheet.mergeCells(jobdeskStart, 11, row - 1, 11)
+                if (row > jobdeskStart) {
+                    sheet.mergeCells(jobdeskStart, 2, row - 1, 4)
+                    sheet.mergeCells(jobdeskStart, 8, row - 1, 8)
+                    sheet.mergeCells(jobdeskStart, 9, row - 1, 9)
+                    sheet.mergeCells(jobdeskStart, 10, row - 1, 10)
+                    sheet.mergeCells(jobdeskStart, 11, row - 1, 11)
 
-                const jobdeskCell = sheet.getCell(jobdeskStart, 2)
-                jobdeskCell.alignment = { vertical: 'middle', horizontal: "left" }
+                    const jobdeskCell = sheet.getCell(jobdeskStart, 2)
+                    jobdeskCell.alignment = { vertical: 'middle', horizontal: "left" }
 
-                for (let col of [8, 9, 10, 11]) {
-                    const cell = sheet.getCell(jobdeskStart, col);
-                    cell.alignment = { vertical: 'middle', horizontal: 'center' };
+                    for (let col of [8, 9, 10, 11]) {
+                        const cell = sheet.getCell(jobdeskStart, col);
+                        cell.alignment = { vertical: 'middle', horizontal: 'center' };
+                    }
                 }
             });
-            sheet.mergeCells(unitStart, 1, row - 1, 1);
+            if (row > unitStart) sheet.mergeCells(unitStart, 1, row - 1, 1);
         });
 
         sheet.getColumn(1).width = 7
