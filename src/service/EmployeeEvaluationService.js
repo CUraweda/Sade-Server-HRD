@@ -48,7 +48,28 @@ class EmployeeEvaluationService {
         return { overall_grade_raw: averageGrade, overall_grade: choosenGrade.grade, choosen_grade_id: choosenGrade.id }
     }
 
-    calculateOne = async (id) => {
+    calculatePreview = async (id) => {
+        const evaluationData = await this.employeeEvaluationDao.getDetail(id)
+        if (!evaluationData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Failed to get detail data");
+
+        const calculationEvaluationDatas = await this.employeeEvaluationDao.getDetailCalculation(id);
+        if (!calculationEvaluationDatas) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Failed to get calculation data", calculationEvaluationDatas);
+        
+        for (let unitIndex in calculationEvaluationDatas) {
+            const jobdeskUnit = calculationEvaluationDatas[unitIndex]
+            if (jobdeskUnit.employeejobdesks.length < 1) continue
+            for (let jobdeskIndex in jobdeskUnit.employeejobdesks) {
+                const employeeJobdesk = jobdeskUnit.employeejobdesks[jobdeskIndex]
+                if (employeeJobdesk.choosen_grade_id) continue
+                const gradingData = this.chooseGradeForJobdesk(employeeJobdesk, employeeJobdesk.jobdeskgroupgrading.jobdeskgradings)
+                calculationEvaluationDatas[unitIndex].employeejobdesks[jobdeskIndex] = { ...employeeJobdesk, ...gradingData }
+            }
+        }
+
+        return responseHandler.returnSuccess(httpStatus.CREATED, "Employee evaluations created successfully", calculationEvaluationDatas);
+    };
+
+    calculateEvaluation = async (id) => {
         const evaluationData = await this.employeeEvaluationDao.getDetail(id)
         if (!evaluationData) return responseHandler.returnError(httpStatus.BAD_REQUEST, "Failed to get detail data");
 

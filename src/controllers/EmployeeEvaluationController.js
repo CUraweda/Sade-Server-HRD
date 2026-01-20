@@ -70,11 +70,24 @@ class EmployeeEvaluationController {
         }
     };
 
+    calculatePreview = async (req, res) => {
+        try {
+            const id = +req.params.id;
+            if (!id) res.status(httpStatus.UNPROCESSABLE_ENTITY).send('Please provide an ID');
+            const resData = await this.employeeEvaluationService.calculatePreview(id);
+
+            res.status(resData.statusCode).send(resData.response);
+        } catch (e) {
+            console.log(e);
+            res.status(httpStatus.BAD_GATEWAY).send(e);
+        }
+    }
+
     calculateEvaluation = async (req, res) => {
         try {
             const id = +req.params.id;
             if (!id) res.status(httpStatus.UNPROCESSABLE_ENTITY).send("Please provide an ID");
-            const resData = await this.employeeEvaluationService.calculateOne(id);
+            const resData = await this.employeeEvaluationService.calculateEvaluation(id);
 
             res.status(resData.statusCode).send(resData.response);
         } catch (e) {
@@ -111,3 +124,4 @@ class EmployeeEvaluationController {
 }
 
 module.exports = EmployeeEvaluationController;
+

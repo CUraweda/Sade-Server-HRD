@@ -32,6 +32,11 @@ router.post(
     employeeEvaluationController.createByMonth
 )
 router.post(
+    "/calculate-preview/:id",
+    auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]),
+    employeeEvaluationController.calculatePreview
+)
+router.post(
     "/calculate/:id",
     auth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]),
     employeeEvaluationController.calculateEvaluation
