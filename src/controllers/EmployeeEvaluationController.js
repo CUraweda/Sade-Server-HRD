@@ -10,10 +10,10 @@ class EmployeeEvaluationController {
         try {
             const page = +req.query.page || 0;
             const limit = +req.query.limit || 10;
-            const { search, month, division } = req.query;
+            const { search, month, division, employee } = req.query;
 
             const offset = limit * page;
-            const resData = await this.employeeEvaluationService.showPage(page, limit, offset, { search, month, division });
+            const resData = await this.employeeEvaluationService.showPage(page, limit, offset, { search, month, division, employee });
 
             res.status(resData.statusCode).send(resData.response);
         } catch (e) {
