@@ -62,7 +62,8 @@ class EmployeeEvaluationService {
                 const employeeJobdesk = jobdeskUnit.employeejobdesks[jobdeskIndex]
                 if (employeeJobdesk.choosen_grade_id) continue
                 const gradingData = this.chooseGradeForJobdesk(employeeJobdesk, employeeJobdesk.jobdeskgroupgrading.jobdeskgradings)
-                calculationEvaluationDatas[unitIndex].employeejobdesks[jobdeskIndex] = { ...employeeJobdesk, ...gradingData }
+                for (const [k, v] of Object.entries(gradingData)) 
+                    calculationEvaluationDatas[unitIndex].employeejobdesks[jobdeskIndex].setDataValue(k, v);                
             }
         }
 
@@ -85,7 +86,8 @@ class EmployeeEvaluationService {
                 if (employeeJobdesk.choosen_grade_id) continue
                 const gradingData = this.chooseGradeForJobdesk(employeeJobdesk, employeeJobdesk.jobdeskgroupgrading.jobdeskgradings)
                 updateJobdeskDao.push(this.employeeJobdeskDao.updateById(gradingData, employeeJobdesk.id))
-                calculationEvaluationDatas[unitIndex].employeejobdesks[jobdeskIndex] = { ...employeeJobdesk, ...gradingData }
+                for (const [k, v] of Object.entries(gradingData)) 
+                    calculationEvaluationDatas[unitIndex].employeejobdesks[jobdeskIndex].setDataValue(k, v);                
             }
         }
         await Promise.all(updateJobdeskDao)
@@ -354,3 +356,8 @@ class EmployeeEvaluationService {
 }
 
 module.exports = EmployeeEvaluationService;
+
+
+
+
+
