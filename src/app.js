@@ -18,8 +18,28 @@ if (process.env.CORS_MODE === 'open') {
   app.use(cors());
   app.options('*', cors());
 } else {
-  app.use(cors({ origin: false }));
-  app.options('*', cors({ origin: false }));
+  const allowedOriginPattern = process.env.CORS_ORIGIN_REGEX || '';
+  const allowedOriginRegex = allowedOriginPattern ? new RegExp(allowedOriginPattern, 'i') : null;
+  const isOriginAllowed = (origin) => !!(allowedOriginRegex && allowedOriginRegex.test(origin));
+  const isOriginMissingAllowed = process.env.CORS_ALLOW_MISSING_ORIGIN === 'true';
+  const corsOptions = {
+    origin(origin, cb) {
+      if (!origin) return cb(null, isOriginMissingAllowed);
+      if (isOriginAllowed(origin)) return cb(null, true);
+      return cb(new Error('Not allowed by CORS'));
+    },
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'x-refresh-request'],
+    credentials: true,
+  };
+  app.use((req, res, next) => {
+    const origin = req.get('origin');
+    if (!origin && isOriginMissingAllowed) return next();
+    if (origin && isOriginAllowed(origin)) return next();
+    return res.status(403).json({ message: 'Forbidden' });
+  });
+  app.use(cors(corsOptions));
+  app.options('*', cors(corsOptions));
 }
 
 app.use(express.json({ limit: '50mb' }));
@@ -46,3 +66,5 @@ const db = require("./models");
 db.sequelize.sync()
 
 module.exports = app;
+
+
